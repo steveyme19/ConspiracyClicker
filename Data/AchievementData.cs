@@ -290,6 +290,250 @@ public static class AchievementData
             Type = AchievementType.TotalEvidence,
             Threshold = 100000000,
             TinfoilReward = 5
+        },
+
+        // === PRESTIGE ACHIEVEMENTS ===
+        new Achievement
+        {
+            Id = "ascend_1",
+            Name = "Illuminated",
+            Description = "Perform your first Illuminati Ascension",
+            FlavorText = "Welcome to the pyramid, initiate.",
+            Type = AchievementType.TimesAscended,
+            Threshold = 1,
+            TinfoilReward = 10
+        },
+        new Achievement
+        {
+            Id = "ascend_5",
+            Name = "Inner Circle",
+            Description = "Ascend 5 times",
+            FlavorText = "You're moving up the ranks.",
+            Type = AchievementType.TimesAscended,
+            Threshold = 5,
+            TinfoilReward = 25
+        },
+        new Achievement
+        {
+            Id = "ascend_10",
+            Name = "Grand Master",
+            Description = "Ascend 10 times",
+            FlavorText = "The all-seeing eye blinks in approval.",
+            Type = AchievementType.TimesAscended,
+            Threshold = 10,
+            TinfoilReward = 50
+        },
+        new Achievement
+        {
+            Id = "ascend_25",
+            Name = "Illuminati Prime",
+            Description = "Ascend 25 times",
+            FlavorText = "You've transcended the pyramid itself.",
+            Type = AchievementType.TimesAscended,
+            Threshold = 25,
+            TinfoilReward = 100
+        },
+
+        // === MATRIX ACHIEVEMENTS ===
+        new Achievement
+        {
+            Id = "matrix_1",
+            Name = "Red Pill",
+            Description = "Break the Matrix for the first time",
+            FlavorText = "Welcome to the real real world.",
+            Type = AchievementType.TimesMatrixBroken,
+            Threshold = 1,
+            TinfoilReward = 50
+        },
+        new Achievement
+        {
+            Id = "matrix_3",
+            Name = "The Architect's Concern",
+            Description = "Break the Matrix 3 times",
+            FlavorText = "You're causing stability issues.",
+            Type = AchievementType.TimesMatrixBroken,
+            Threshold = 3,
+            TinfoilReward = 100
+        },
+        new Achievement
+        {
+            Id = "matrix_5",
+            Name = "Anomaly",
+            Description = "Break the Matrix 5 times",
+            FlavorText = "The equations no longer balance.",
+            Type = AchievementType.TimesMatrixBroken,
+            Threshold = 5,
+            TinfoilReward = 200
+        },
+
+        // === QUEST ACHIEVEMENTS ===
+        new Achievement
+        {
+            Id = "quest_1",
+            Name = "Field Agent",
+            Description = "Complete your first quest",
+            FlavorText = "Your first mission. Many more to come.",
+            Type = AchievementType.QuestsCompleted,
+            Threshold = 1,
+            TinfoilReward = 2
+        },
+        new Achievement
+        {
+            Id = "quest_10",
+            Name = "Seasoned Operative",
+            Description = "Complete 10 quests",
+            FlavorText = "You've got experience now.",
+            Type = AchievementType.QuestsCompleted,
+            Threshold = 10,
+            TinfoilReward = 5
+        },
+        new Achievement
+        {
+            Id = "quest_50",
+            Name = "Mission Control",
+            Description = "Complete 50 quests",
+            FlavorText = "You run a tight operation.",
+            Type = AchievementType.QuestsCompleted,
+            Threshold = 50,
+            TinfoilReward = 15
+        },
+        new Achievement
+        {
+            Id = "quest_100",
+            Name = "Shadow Commander",
+            Description = "Complete 100 quests",
+            FlavorText = "Your believers follow you into any darkness.",
+            Type = AchievementType.QuestsCompleted,
+            Threshold = 100,
+            TinfoilReward = 30
+        },
+        new Achievement
+        {
+            Id = "quest_500",
+            Name = "Conspiracy Central",
+            Description = "Complete 500 quests",
+            FlavorText = "You've built an empire of truth-seekers.",
+            Type = AchievementType.QuestsCompleted,
+            Threshold = 500,
+            TinfoilReward = 100
+        },
+
+        // === CRITICAL HIT ACHIEVEMENTS ===
+        new Achievement
+        {
+            Id = "crit_10",
+            Name = "Lucky Strike",
+            Description = "Land 10 critical clicks",
+            FlavorText = "The universe agrees with you.",
+            Type = AchievementType.CriticalClicks,
+            Threshold = 10,
+            TinfoilReward = 2
+        },
+        new Achievement
+        {
+            Id = "crit_100",
+            Name = "Precision Truther",
+            Description = "Land 100 critical clicks",
+            FlavorText = "Every click counts double... sometimes more.",
+            Type = AchievementType.CriticalClicks,
+            Threshold = 100,
+            TinfoilReward = 5
+        },
+        new Achievement
+        {
+            Id = "crit_1000",
+            Name = "Critical Mass",
+            Description = "Land 1,000 critical clicks",
+            FlavorText = "Your finger has achieved enlightenment.",
+            Type = AchievementType.CriticalClicks,
+            Threshold = 1000,
+            TinfoilReward = 15
+        },
+        new Achievement
+        {
+            Id = "crit_10000",
+            Name = "One With The Click",
+            Description = "Land 10,000 critical clicks",
+            FlavorText = "You don't find critical hits. They find you.",
+            Type = AchievementType.CriticalClicks,
+            Threshold = 10000,
+            TinfoilReward = 50
+        },
+
+        // === ENDGAME EVIDENCE ===
+        new Achievement
+        {
+            Id = "evidence_1q",
+            Name = "Quadrillionaire Truther",
+            Description = "Gather 1 quadrillion evidence",
+            Type = AchievementType.TotalEvidence,
+            Threshold = 1000000000000000,
+            TinfoilReward = 50,
+            MultiplierReward = 1.1
+        },
+        new Achievement
+        {
+            Id = "evidence_1qi",
+            Name = "Evidence Transcendence",
+            Description = "Gather 1 quintillion evidence",
+            Type = AchievementType.TotalEvidence,
+            Threshold = 1000000000000000000,
+            TinfoilReward = 100,
+            MultiplierReward = 1.2
+        },
+
+        // === LATE GAME GENERATORS ===
+        new Achievement
+        {
+            Id = "spy_satellite_1",
+            Name = "Eye in the Sky",
+            Description = "Own your first Spy Satellite",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "spy_satellite",
+            TinfoilReward = 10
+        },
+        new Achievement
+        {
+            Id = "shadow_gov_1",
+            Name = "Power Behind the Throne",
+            Description = "Own your first Shadow Government",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "shadow_government",
+            TinfoilReward = 15
+        },
+        new Achievement
+        {
+            Id = "time_machine_1",
+            Name = "Temporal Agent",
+            Description = "Own your first Time Machine",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "time_machine",
+            TinfoilReward = 25
+        },
+        new Achievement
+        {
+            Id = "reality_editor_1",
+            Name = "Reality Hacker",
+            Description = "Own your first Reality Editor",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "reality_editor",
+            TinfoilReward = 50
+        },
+        new Achievement
+        {
+            Id = "universe_creator_1",
+            Name = "God Complex (Achieved)",
+            Description = "Own your first Universe Creator",
+            FlavorText = "Congratulations. You've won. Or have you?",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "universe_creator",
+            TinfoilReward = 100,
+            MultiplierReward = 1.5
         }
     };
 

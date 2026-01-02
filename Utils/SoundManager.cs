@@ -13,6 +13,13 @@ public static class SoundManager
         set => _enabled = value;
     }
 
+    public static bool IsMuted => !_enabled;
+
+    public static void ToggleMute()
+    {
+        _enabled = !_enabled;
+    }
+
     // Cached sound players
     private static readonly Dictionary<string, SoundPlayer> _sounds = new();
     private static bool _initialized = false;

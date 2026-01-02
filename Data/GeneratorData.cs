@@ -123,6 +123,7 @@ public static class GeneratorData
             Name = "Mind Control Tower",
             FlavorText = "5G? Try 5000G. Straight to the brain.",
             BaseCost = 75000000000000,
+            CostMultiplier = 1.13,
             BaseProduction = 1200000000,
             BelieverBonus = 500000
         },
@@ -132,6 +133,7 @@ public static class GeneratorData
             Name = "Weather Machine",
             FlavorText = "HAARP was just the prototype.",
             BaseCost = 2000000000000000,
+            CostMultiplier = 1.12,
             BaseProduction = 8000000000,
             BelieverBonus = 2000000
         },
@@ -141,6 +143,7 @@ public static class GeneratorData
             Name = "Clone Facility",
             FlavorText = "Celebrity replacements made fresh daily.",
             BaseCost = 60000000000000000,
+            CostMultiplier = 1.11,
             BaseProduction = 55000000000,
             BelieverBonus = 8000000
         },
@@ -150,6 +153,7 @@ public static class GeneratorData
             Name = "Time Machine",
             FlavorText = "Mandela Effect? More like Mandela THEFT.",
             BaseCost = 2000000000000000000,
+            CostMultiplier = 1.10,
             BaseProduction = 400000000000,
             BelieverBonus = 30000000
         },
@@ -159,6 +163,7 @@ public static class GeneratorData
             Name = "Hollow Earth Base",
             FlavorText = "Admiral Byrd was right. It's cozy down here.",
             BaseCost = 80000000000000000000.0,
+            CostMultiplier = 1.09,
             BaseProduction = 3000000000000.0,
             BelieverBonus = 120000000
         },
@@ -170,6 +175,7 @@ public static class GeneratorData
             Name = "Secret Moon Base",
             FlavorText = "The dark side has GREAT real estate.",
             BaseCost = 4000000000000000000000.0,
+            CostMultiplier = 1.08,
             BaseProduction = 25000000000000,
             BelieverBonus = 500000000
         },
@@ -179,6 +185,7 @@ public static class GeneratorData
             Name = "Alien Alliance",
             FlavorText = "They're not little green men. They're tall grey accountants.",
             BaseCost = 250000000000000000000000.0,
+            CostMultiplier = 1.07,
             BaseProduction = 200000000000000,
             BelieverBonus = 2000000000
         },
@@ -188,6 +195,7 @@ public static class GeneratorData
             Name = "Dimension Portal",
             FlavorText = "CERN opened it. We just... borrowed access.",
             BaseCost = 20000000000000000000000000.0,
+            CostMultiplier = 1.06,
             BaseProduction = 1800000000000000,
             BelieverBonus = 10000000000
         },
@@ -197,6 +205,7 @@ public static class GeneratorData
             Name = "Simulation Admin Access",
             FlavorText = "sudo truth --force",
             BaseCost = 2000000000000000000000000000.0,
+            CostMultiplier = 1.05,
             BaseProduction = 18000000000000000,
             BelieverBonus = 50000000000
         },
@@ -206,6 +215,7 @@ public static class GeneratorData
             Name = "Reality Editor",
             FlavorText = "Ctrl+Z the cover-ups.",
             BaseCost = 250000000000000000000000000000.0,
+            CostMultiplier = 1.05,
             BaseProduction = 200000000000000000,
             BelieverBonus = 250000000000
         },
@@ -217,6 +227,7 @@ public static class GeneratorData
             Name = "Multiverse Network",
             FlavorText = "In one timeline, this is all true. This is that timeline.",
             BaseCost = 40000000000000000000000000000000.0,
+            CostMultiplier = 1.04,
             BaseProduction = 2500000000000000000,
             BelieverBonus = 1500000000000
         },
@@ -226,6 +237,7 @@ public static class GeneratorData
             Name = "Cosmic Consciousness",
             FlavorText = "You ARE the conspiracy now.",
             BaseCost = 8000000000000000000000000000000000.0,
+            CostMultiplier = 1.04,
             BaseProduction = 35000000000000000000.0,
             BelieverBonus = 10000000000000
         },
@@ -235,6 +247,7 @@ public static class GeneratorData
             Name = "Truth Singularity",
             FlavorText = "All conspiracies converge into one. You're at the center.",
             BaseCost = 2000000000000000000000000000000000000.0,
+            CostMultiplier = 1.03,
             BaseProduction = 600000000000000000000.0,
             BelieverBonus = 80000000000000
         },
@@ -244,6 +257,7 @@ public static class GeneratorData
             Name = "Omniscience Engine",
             FlavorText = "You don't find the truth. The truth finds you.",
             BaseCost = 800000000000000000000000000000000000000.0,
+            CostMultiplier = 1.03,
             BaseProduction = 15000000000000000000000.0,
             BelieverBonus = 750000000000000
         },
@@ -253,6 +267,7 @@ public static class GeneratorData
             Name = "Universe Creator",
             FlavorText = "Why uncover conspiracies when you can CREATE realities?",
             BaseCost = 500000000000000000000000000000000000000000.0,
+            CostMultiplier = 1.02,
             BaseProduction = 500000000000000000000000.0,
             BelieverBonus = 10000000000000000
         }

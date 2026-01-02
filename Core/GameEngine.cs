@@ -209,6 +209,9 @@ public class GameEngine
         // Apply Prestige believer bonus
         if (_state.IlluminatiUpgrades.Contains("believer_magnetism")) totalBelievers *= 1.25;
 
+        // Apply Matrix believer bonus
+        totalBelievers *= GetMatrixBelieverMultiplier();
+
         _state.Believers = totalBelievers;
     }
 
@@ -312,7 +315,7 @@ public class GameEngine
     {
         double basePower = 1.0;
         double multiplier = 1.0;
-        double epsBonus = 0.0;
+        double epsBonus = 0.01; // Baseline: clicks always give 1% of EPS
 
         foreach (var upgradeId in _state.PurchasedUpgrades)
         {
@@ -358,6 +361,10 @@ public class GameEngine
         if (_state.IlluminatiUpgrades.Contains("secret_handshake")) multiplier *= 1.10;
         if (_state.IlluminatiUpgrades.Contains("all_seeing_investment"))
             multiplier *= 1.0 + (_state.IlluminatiTokens * 0.01);
+
+        // Matrix bonuses
+        multiplier *= GetMatrixClickMultiplier();
+        epsBonus += GetMatrixEpsToClickBonus();
 
         // EPS to click component from upgrades
         double epsComponent = epsBonus > 0 ? CalculateBaseEps() * GetEpsMultiplier() * epsBonus : 0;
@@ -428,6 +435,9 @@ public class GameEngine
 
         // Conspiracy bonus
         if (_state.ProvenConspiracies.Contains("you_are_conspiracy")) multiplier *= 2.0;
+
+        // Matrix bonuses
+        multiplier *= GetMatrixEpsMultiplier();
 
         return multiplier;
     }
@@ -588,8 +598,8 @@ public class GameEngine
             _state.ActiveQuests.Remove(activeQuest);
             _state.BusyBelievers -= activeQuest.BelieversSent;
 
-            // Apply quest success bonus from Tinfoil Shop and Skills
-            double adjustedSuccessChance = quest.SuccessChance + GetTinfoilQuestSuccessBonus() + GetSkillQuestSuccessBonus();
+            // Apply quest success bonus from Tinfoil Shop, Skills, and Matrix
+            double adjustedSuccessChance = quest.SuccessChance + GetTinfoilQuestSuccessBonus() + GetSkillQuestSuccessBonus() + GetMatrixQuestSuccessBonus();
             adjustedSuccessChance = Math.Min(adjustedSuccessChance, 0.95);
             bool success = SkillQuestsNeverFail() || _random.NextDouble() < adjustedSuccessChance;
             double evidenceReward = 0;
@@ -791,6 +801,11 @@ public class GameEngine
                     _state.GetGeneratorCount(achievement.TargetId) >= achievement.Threshold,
                 AchievementType.ConspiraciesProven => _state.ProvenConspiracies.Count >= achievement.Threshold,
                 AchievementType.PlayTime => _state.TotalPlayTimeSeconds >= achievement.Threshold,
+                AchievementType.TimesAscended => _state.TimesAscended >= achievement.Threshold,
+                AchievementType.TimesMatrixBroken => _state.TimesMatrixBroken >= achievement.Threshold,
+                AchievementType.QuestsCompleted => _state.QuestsCompleted >= achievement.Threshold,
+                AchievementType.TotalTinfoil => _state.Tinfoil >= achievement.Threshold,
+                AchievementType.CriticalClicks => _state.CriticalClicks >= achievement.Threshold,
                 _ => false
             };
 
@@ -817,6 +832,7 @@ public class GameEngine
         int owned = _state.GetGeneratorCount(generatorId);
         double cost = generator.GetCost(owned);
         if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) cost *= 0.9;
+        cost *= GetMatrixCostMultiplier();
         return cost;
     }
 
@@ -1077,5 +1093,129 @@ public class GameEngine
         _state.Tinfoil += challenge.TinfoilReward;
         OnTick?.Invoke();
         return true;
+    }
+
+    // === MATRIX PRESTIGE (2nd Layer) ===
+    public bool CanBreakMatrix()
+    {
+        return MatrixData.CanBreakMatrix(_state.TimesAscended, _state.TotalIlluminatiTokensEarned);
+    }
+
+    public int GetGlitchTokensFromMatrix()
+    {
+        // Calculate total Illuminati tokens ever spent on upgrades
+        int tokensSpent = 0;
+        foreach (var upgradeId in _state.IlluminatiUpgrades)
+        {
+            var upgrade = PrestigeData.GetById(upgradeId);
+            if (upgrade != null) tokensSpent += upgrade.TokenCost;
+        }
+        return MatrixData.CalculateGlitchTokensEarned(tokensSpent + _state.IlluminatiTokens);
+    }
+
+    public bool BreakMatrix()
+    {
+        if (!CanBreakMatrix()) return false;
+
+        int glitchTokensEarned = GetGlitchTokensFromMatrix();
+        _state.GlitchTokens += glitchTokensEarned;
+        _state.TimesMatrixBroken++;
+
+        // Full reset including Illuminati tokens and upgrades
+        _state.Evidence = 0;
+        _state.TotalEvidenceEarned = 0;
+        _state.Believers = 0;
+        _state.BusyBelievers = 0;
+        _state.Generators.Clear();
+        _state.PurchasedUpgrades.Clear();
+        _state.ProvenConspiracies.Clear();
+        _state.ActiveQuests.Clear();
+        _state.ComboMeter = 0;
+        _state.ComboClicks = 0;
+        _state.Tinfoil = 0;
+        _state.TinfoilShopPurchases.Clear();
+        _state.IlluminatiTokens = 0;
+        _state.IlluminatiUpgrades.Clear();
+        _state.TimesAscended = 0;
+        _state.TotalIlluminatiTokensEarned = 0;
+
+        // Keep: GlitchTokens, MatrixUpgrades, UnlockedSkills, Achievements
+
+        _prestigeNotified = false;
+        OnPrestigeComplete?.Invoke();
+        OnTick?.Invoke();
+        return true;
+    }
+
+    public bool CanAffordMatrixUpgrade(string upgradeId)
+    {
+        var upgrade = MatrixData.GetById(upgradeId);
+        if (upgrade == null || _state.MatrixUpgrades.Contains(upgradeId)) return false;
+        return _state.GlitchTokens >= upgrade.GlitchCost;
+    }
+
+    public bool PurchaseMatrixUpgrade(string upgradeId)
+    {
+        if (!CanAffordMatrixUpgrade(upgradeId)) return false;
+        var upgrade = MatrixData.GetById(upgradeId);
+        if (upgrade == null) return false;
+
+        _state.GlitchTokens -= upgrade.GlitchCost;
+        _state.MatrixUpgrades.Add(upgradeId);
+        OnTick?.Invoke();
+        return true;
+    }
+
+    public IEnumerable<MatrixUpgrade> GetAvailableMatrixUpgrades()
+    {
+        return MatrixData.MatrixUpgrades.Where(u => !_state.MatrixUpgrades.Contains(u.Id));
+    }
+
+    public IEnumerable<MatrixUpgrade> GetPurchasedMatrixUpgrades()
+    {
+        return MatrixData.MatrixUpgrades.Where(u => _state.MatrixUpgrades.Contains(u.Id));
+    }
+
+    public double GetMatrixEpsMultiplier()
+    {
+        double multiplier = 1.0;
+        if (_state.MatrixUpgrades.Contains("reality_warp")) multiplier *= 3.0;
+        if (_state.MatrixUpgrades.Contains("the_one")) multiplier *= 10.0;
+        return multiplier;
+    }
+
+    public double GetMatrixClickMultiplier()
+    {
+        double multiplier = 1.0;
+        if (_state.MatrixUpgrades.Contains("bullet_time")) multiplier *= 5.0;
+        return multiplier;
+    }
+
+    public double GetMatrixBelieverMultiplier()
+    {
+        double multiplier = 1.0;
+        if (_state.MatrixUpgrades.Contains("source_code_access")) multiplier *= 2.0;
+        return multiplier;
+    }
+
+    public double GetMatrixCostMultiplier()
+    {
+        double multiplier = 1.0;
+        if (_state.MatrixUpgrades.Contains("architect_meeting")) multiplier *= 0.5;
+        return multiplier;
+    }
+
+    public double GetMatrixQuestSuccessBonus()
+    {
+        double bonus = 0;
+        if (_state.MatrixUpgrades.Contains("agent_infiltration")) bonus += 1.0;
+        return bonus;
+    }
+
+    public double GetMatrixEpsToClickBonus()
+    {
+        // neo_clicking adds extra 1% EPS to clicks (total 2%)
+        if (_state.MatrixUpgrades.Contains("neo_clicking")) return 0.01;
+        return 0;
     }
 }

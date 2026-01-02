@@ -8,7 +8,12 @@ public enum AchievementType
     TotalGenerators,
     ConspiraciesProven,
     PlayTime,
-    Special
+    Special,
+    TimesAscended,
+    TimesMatrixBroken,
+    QuestsCompleted,
+    TotalTinfoil,
+    CriticalClicks
 }
 
 public class Achievement

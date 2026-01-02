@@ -308,6 +308,114 @@ public partial class MainWindow : Window
 
         // Show main menu on startup
         RefreshMainMenu();
+
+        // Add keyboard shortcuts
+        this.KeyDown += MainWindow_KeyDown;
+        this.Focusable = true;
+    }
+
+    private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+    {
+        // Ignore if menu is showing
+        if (MainMenuOverlay.Visibility == Visibility.Visible) return;
+
+        switch (e.Key)
+        {
+            // Spacebar = Click
+            case Key.Space:
+                _engine.ProcessClick();
+                SoundManager.Play("click");
+                e.Handled = true;
+                break;
+
+            // 1-9 = Buy generators (based on visible order)
+            case Key.D1:
+            case Key.NumPad1:
+                BuyGeneratorByIndex(0);
+                e.Handled = true;
+                break;
+            case Key.D2:
+            case Key.NumPad2:
+                BuyGeneratorByIndex(1);
+                e.Handled = true;
+                break;
+            case Key.D3:
+            case Key.NumPad3:
+                BuyGeneratorByIndex(2);
+                e.Handled = true;
+                break;
+            case Key.D4:
+            case Key.NumPad4:
+                BuyGeneratorByIndex(3);
+                e.Handled = true;
+                break;
+            case Key.D5:
+            case Key.NumPad5:
+                BuyGeneratorByIndex(4);
+                e.Handled = true;
+                break;
+            case Key.D6:
+            case Key.NumPad6:
+                BuyGeneratorByIndex(5);
+                e.Handled = true;
+                break;
+            case Key.D7:
+            case Key.NumPad7:
+                BuyGeneratorByIndex(6);
+                e.Handled = true;
+                break;
+            case Key.D8:
+            case Key.NumPad8:
+                BuyGeneratorByIndex(7);
+                e.Handled = true;
+                break;
+            case Key.D9:
+            case Key.NumPad9:
+                BuyGeneratorByIndex(8);
+                e.Handled = true;
+                break;
+
+            // Tab = Cycle tabs
+            case Key.Tab:
+                CycleTab(Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? -1 : 1);
+                e.Handled = true;
+                break;
+
+            // M = Toggle mute
+            case Key.M:
+                SoundManager.ToggleMute();
+                UpdateSoundIcon();
+                e.Handled = true;
+                break;
+        }
+    }
+
+    private void BuyGeneratorByIndex(int index)
+    {
+        if (index < GeneratorData.AllGenerators.Count)
+        {
+            var gen = GeneratorData.AllGenerators[index];
+            if (_engine.PurchaseGenerator(gen.Id))
+            {
+                SoundManager.Play("purchase");
+            }
+        }
+    }
+
+    private void CycleTab(int direction)
+    {
+        var tabs = new[] { GeneratorsTab, UpgradesTab, ConspiraciesTab, QuestsTab, TinfoilShopTab, SkillsTab, AchievementsTab, IlluminatiTab };
+        var visibleTabs = tabs.Where(t => t.Visibility == Visibility.Visible).ToList();
+        if (visibleTabs.Count == 0) return;
+
+        int currentIndex = visibleTabs.FindIndex(t => t.IsSelected);
+        int newIndex = (currentIndex + direction + visibleTabs.Count) % visibleTabs.Count;
+        visibleTabs[newIndex].IsSelected = true;
+    }
+
+    private void UpdateSoundIcon()
+    {
+        SoundToggleIcon.Text = SoundManager.IsMuted ? "🔇" : "🔊";
     }
 
     private void OnRendering(object? sender, EventArgs e)
@@ -1669,16 +1777,10 @@ public partial class MainWindow : Window
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-        var iconText = IconData.GeneratorIcons.TryGetValue(gen.Id, out var icon) ? icon : "?";
-        var iconBlock = new TextBlock
-        {
-            Text = iconText,
-            FontSize = 20,
-            Foreground = GreenBrush,
-            VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(0, 0, 10, 0),
-            FontFamily = new FontFamily("Segoe UI Symbol")
-        };
+        var fallbackText = IconData.GeneratorIcons.TryGetValue(gen.Id, out var icon) ? icon : "?";
+        var iconElement = IconHelper.CreateIconWithFallback(gen.Id, fallbackText, 28, GreenBrush);
+        iconElement.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+        iconElement.SetValue(MarginProperty, new Thickness(0, 0, 10, 0));
 
         var leftStack = new StackPanel();
         leftStack.Children.Add(new TextBlock { Text = gen.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush });
@@ -1691,10 +1793,10 @@ public partial class MainWindow : Window
         rightStack.Children.Add(new TextBlock { Tag = "cost", FontWeight = FontWeights.Bold, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right });
         rightStack.Children.Add(new TextBlock { Tag = "owned", FontSize = 11, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Right });
 
-        Grid.SetColumn(iconBlock, 0);
+        Grid.SetColumn(iconElement, 0);
         Grid.SetColumn(leftStack, 1);
         Grid.SetColumn(rightStack, 2);
-        grid.Children.Add(iconBlock);
+        grid.Children.Add(iconElement);
         grid.Children.Add(leftStack);
         grid.Children.Add(rightStack);
 
@@ -2554,8 +2656,10 @@ public partial class MainWindow : Window
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-                var iconText = IconData.ConspiracyIcons.TryGetValue(conspiracy.Id, out var icon) ? icon : "?";
-                var iconBlock = new TextBlock { Text = iconText, FontSize = 24, Foreground = GreenBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 12, 0) };
+                var fallbackText = IconData.ConspiracyIcons.TryGetValue(conspiracy.Id, out var icon) ? icon : "?";
+                var iconElement = IconHelper.CreateIconWithFallback(conspiracy.Id, fallbackText, 32, GreenBrush);
+                iconElement.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+                iconElement.SetValue(MarginProperty, new Thickness(0, 0, 12, 0));
 
                 var stack = new StackPanel();
                 stack.Children.Add(new TextBlock { Text = $"[PROVEN] {conspiracy.Name}", FontWeight = FontWeights.Bold, Foreground = GreenBrush });
@@ -2563,9 +2667,9 @@ public partial class MainWindow : Window
                 var bonusText = conspiracy.MultiplierBonus > 1.0 ? $"x{conspiracy.MultiplierBonus} all production" : $"+{conspiracy.ClickBonus} click power";
                 stack.Children.Add(new TextBlock { Text = bonusText, FontSize = 11, Foreground = GoldBrush, Margin = new Thickness(0, 3, 0, 0) });
 
-                Grid.SetColumn(iconBlock, 0);
+                Grid.SetColumn(iconElement, 0);
                 Grid.SetColumn(stack, 1);
-                grid.Children.Add(iconBlock);
+                grid.Children.Add(iconElement);
                 grid.Children.Add(stack);
                 border.Child = grid;
                 ConspiracyPanel.Children.Add(border);
@@ -2581,25 +2685,27 @@ public partial class MainWindow : Window
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-                var iconText = IconData.ConspiracyIcons.TryGetValue(conspiracy.Id, out var icon) ? icon : "?";
-                var iconBlock = new TextBlock { Text = iconText, FontSize = 20, Foreground = DimBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+                var fallbackText2 = IconData.ConspiracyIcons.TryGetValue(conspiracy.Id, out var icon2) ? icon2 : "?";
+                var iconElement2 = IconHelper.CreateIconWithFallback(conspiracy.Id, fallbackText2, 28, DimBrush);
+                iconElement2.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+                iconElement2.SetValue(MarginProperty, new Thickness(0, 0, 10, 0));
 
                 var leftStack = new StackPanel();
                 leftStack.Children.Add(new TextBlock { Text = conspiracy.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush });
                 leftStack.Children.Add(new TextBlock { Text = conspiracy.Description, FontSize = 11, Foreground = LightBrush });
                 leftStack.Children.Add(new TextBlock { Text = conspiracy.FlavorText, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic, TextWrapping = TextWrapping.Wrap, MaxWidth = 280 });
-                var bonusText = conspiracy.MultiplierBonus > 1.0 ? $"Reward: x{conspiracy.MultiplierBonus} all + {conspiracy.TinfoilReward} Tinfoil" : $"Reward: +{conspiracy.ClickBonus} click + {conspiracy.TinfoilReward} Tinfoil";
-                leftStack.Children.Add(new TextBlock { Text = bonusText, FontSize = 10, Foreground = GoldBrush, Margin = new Thickness(0, 3, 0, 0) });
+                var bonusText2 = conspiracy.MultiplierBonus > 1.0 ? $"Reward: x{conspiracy.MultiplierBonus} all + {conspiracy.TinfoilReward} Tinfoil" : $"Reward: +{conspiracy.ClickBonus} click + {conspiracy.TinfoilReward} Tinfoil";
+                leftStack.Children.Add(new TextBlock { Text = bonusText2, FontSize = 10, Foreground = GoldBrush, Margin = new Thickness(0, 3, 0, 0) });
 
                 var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0, 0, 0) };
                 bool canClaim = state.TotalEvidenceEarned >= conspiracy.EvidenceCost;
                 rightStack.Children.Add(new TextBlock { Text = canClaim ? "✓ CLAIM" : $"Need {NumberFormatter.Format(conspiracy.EvidenceCost)}", FontWeight = FontWeights.Bold, Foreground = canClaim ? GreenBrush : DimBrush });
                 rightStack.Children.Add(new TextBlock { Text = "total evidence", FontSize = 9, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Center });
 
-                Grid.SetColumn(iconBlock, 0);
+                Grid.SetColumn(iconElement2, 0);
                 Grid.SetColumn(leftStack, 1);
                 Grid.SetColumn(rightStack, 2);
-                grid.Children.Add(iconBlock);
+                grid.Children.Add(iconElement2);
                 grid.Children.Add(leftStack);
                 grid.Children.Add(rightStack);
 
