@@ -35,6 +35,7 @@ public partial class MainWindow : Window
     private int _lastUpgradeCount = -1;
     private int _lastPurchasedUpgradeCount = -1;
     private int _lastProvenConspiracyCount = -1;
+    private readonly Dictionary<string, (double cost, int owned, double prod)> _lastGenState = new();
     private int _lastTinfoilCount = -1;
     private int _lastQuestCount = -1;
 
@@ -2325,11 +2326,18 @@ public partial class MainWindow : Window
             double baseProduction = gen.GetProduction(owned);
             double multipliedProduction = baseProduction * epsMult;
 
+            // Always update enabled state (depends on evidence which changes constantly)
+            button.IsEnabled = state.Evidence >= cost;
+
+            // Dirty-check: skip text updates if nothing changed
+            var newState = (cost, owned, multipliedProduction);
+            if (_lastGenState.TryGetValue(gen.Id, out var lastState) && lastState == newState)
+                continue;
+            _lastGenState[gen.Id] = newState;
+
             // Per-generator production (with multipliers)
             double perGenBase = gen.BaseProduction;
             double perGenMultiplied = perGenBase * epsMult;
-
-            button.IsEnabled = state.Evidence >= cost;
 
             if (button.Content is Grid grid)
             {

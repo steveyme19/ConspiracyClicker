@@ -14,7 +14,7 @@ public static class PrestigeData
 {
     public const double PRESTIGE_THRESHOLD = 1_000_000_000_000; // 1 trillion
     public const double TOKEN_SCALING = 100_000_000_000; // 100 billion base for steeper curve
-    public const double TOKEN_POWER = 0.55; // Steeper than sqrt (0.5), rewards higher evidence more
+    public const double TOKEN_POWER = 0.6; // Steeper curve for better first-prestige rewards
 
     public static readonly List<IlluminatiUpgrade> IlluminatiUpgrades = new()
     {

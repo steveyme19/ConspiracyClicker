@@ -397,11 +397,11 @@ public static class TinfoilShopData
         {
             Id = "fate_weaver",
             Name = "Fate Weaver",
-            Description = "Quests cannot fail",
+            Description = "+50% quest success rate",
             FlavorText = "You don't follow destiny. Destiny follows you.",
             TinfoilCost = 75000,
             Type = TinfoilUpgradeType.QuestSuccess,
-            Value = 1.0,
+            Value = 0.5,
             Icon = "∞"
         },
         new TinfoilUpgrade

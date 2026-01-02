@@ -65,6 +65,62 @@ public static class QuestData
             TinfoilReward = 40,
             Icon = "🏭"
         },
+        new Quest
+        {
+            Id = "underground_bunker_survey",
+            Name = "Underground Bunker Survey",
+            Description = "Map abandoned government shelters for hidden tech",
+            FlavorText = "Built for nuclear war. Used for something else entirely.",
+            Risk = QuestRisk.Medium,
+            BelieversRequired = 350,
+            DurationSeconds = 350,
+            SuccessChance = 0.68,
+            EvidenceMultiplier = 400,
+            TinfoilReward = 14,
+            Icon = "🏚️"
+        },
+        new Quest
+        {
+            Id = "corporate_mole_placement",
+            Name = "Corporate Mole Placement",
+            Description = "Insert believers into suspicious megacorp positions",
+            FlavorText = "The real conspiracy is always in the quarterly reports.",
+            Risk = QuestRisk.Medium,
+            BelieversRequired = 600,
+            DurationSeconds = 400,
+            SuccessChance = 0.65,
+            EvidenceMultiplier = 500,
+            TinfoilReward = 16,
+            Icon = "💼"
+        },
+        new Quest
+        {
+            Id = "crop_circle_decryption",
+            Name = "Crop Circle Decryption",
+            Description = "Decode messages left in agricultural formations",
+            FlavorText = "Farmers blame pranksters. Pranksters blame aliens. We blame both.",
+            Risk = QuestRisk.Medium,
+            BelieversRequired = 1200,
+            DurationSeconds = 600,
+            SuccessChance = 0.58,
+            EvidenceMultiplier = 1000,
+            TinfoilReward = 28,
+            Icon = "🌾"
+        },
+        new Quest
+        {
+            Id = "mind_control_frequency_jam",
+            Name = "Mind Control Frequency Jam",
+            Description = "Disrupt subliminal broadcast signals in populated areas",
+            FlavorText = "That ringing in your ears? We're about to make it stop.",
+            Risk = QuestRisk.Medium,
+            BelieversRequired = 2000,
+            DurationSeconds = 750,
+            SuccessChance = 0.52,
+            EvidenceMultiplier = 2000,
+            TinfoilReward = 45,
+            Icon = "📻"
+        },
 
         // === HIGH RISK (Big rewards, can lose believers) ===
         new Quest
