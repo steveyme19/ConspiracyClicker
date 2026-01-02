@@ -82,6 +82,14 @@ public class GameState
     public double WhistleBlowerX { get; set; }
     public double WhistleBlowerY { get; set; }
 
+    // Challenge Mode
+    public string? ActiveChallengeId { get; set; }
+    public DateTime ChallengeStartTime { get; set; }
+    public double ChallengeProgress { get; set; }
+    public int ChallengeClickCount { get; set; }
+    public int ChallengeHighRiskQuestsCompleted { get; set; }
+    public HashSet<string> CompletedChallenges { get; set; } = new();
+
     public double AvailableBelievers => Math.Max(0, Believers - BusyBelievers);
 
     public int GetGeneratorCount(string id)

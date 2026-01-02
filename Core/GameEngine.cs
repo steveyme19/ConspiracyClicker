@@ -34,6 +34,7 @@ public class GameEngine
     public event Action? OnPrestigeAvailable;
     public event Action<StoredChallenge>? OnDailyChallengeComplete;
     public event Action? OnPrestigeComplete;
+    public event Action<double, double, TimeSpan>? OnOfflineProgress; // evidenceEarned, believersGained, timeAway
 
     private bool _prestigeNotified = false;
     private DateTime _lastDailyCheck = DateTime.MinValue;
@@ -58,6 +59,58 @@ public class GameEngine
         Stop();
         var loadedState = _saveManager.LoadFromSlot(slot);
         CopyState(loadedState);
+        CalculateOfflineProgress();
+    }
+
+    private const double OFFLINE_RATE = 0.25; // 25% of normal earnings while offline
+    private const double MAX_OFFLINE_HOURS = 24; // Cap at 24 hours of offline earnings
+
+    private void CalculateOfflineProgress()
+    {
+        if (_state.LastSaveTime == DateTime.MinValue) return;
+        if (_state.ActiveChallengeId != null) return; // No offline progress during challenges
+
+        TimeSpan timeAway = DateTime.Now - _state.LastSaveTime;
+        if (timeAway.TotalMinutes < 1) return; // Minimum 1 minute away
+
+        // Cap at max hours
+        double secondsAway = Math.Min(timeAway.TotalSeconds, MAX_OFFLINE_HOURS * 3600);
+
+        // Calculate base EPS (without active events)
+        double eps = CalculateEvidencePerSecond();
+        if (eps <= 0) return;
+
+        // Apply offline earnings (reduced rate)
+        double evidenceEarned = eps * secondsAway * OFFLINE_RATE;
+        _state.Evidence += evidenceEarned;
+        _state.TotalEvidenceEarned += evidenceEarned;
+
+        // Apply believer growth (generators that produce believers)
+        double believersGained = 0;
+        foreach (var gen in GeneratorData.AllGenerators)
+        {
+            if (gen.BelieverBonus > 0)
+            {
+                int owned = _state.GetGeneratorCount(gen.Id);
+                if (owned > 0)
+                {
+                    // Believer growth at reduced offline rate
+                    double growth = gen.BelieverBonus * owned * (secondsAway / 60.0) * OFFLINE_RATE;
+                    believersGained += growth;
+                }
+            }
+        }
+        _state.Believers += believersGained;
+
+        // Passive tinfoil from Matrix upgrade
+        if (_state.MatrixUpgrades.Contains("red_pill_factory"))
+        {
+            int tinfoilGained = (int)(secondsAway / 60.0 * 5 * OFFLINE_RATE); // 5 per minute at reduced rate
+            _state.Tinfoil += tinfoilGained;
+        }
+
+        // Notify UI
+        OnOfflineProgress?.Invoke(evidenceEarned, believersGained, TimeSpan.FromSeconds(secondsAway));
     }
 
     public void NewGame(int slot)
@@ -138,6 +191,15 @@ public class GameEngine
 
         _state.DailyChallenges.Clear();
         foreach (var d in source.DailyChallenges) _state.DailyChallenges.Add(d);
+
+        // Challenge mode state
+        _state.ActiveChallengeId = source.ActiveChallengeId;
+        _state.ChallengeStartTime = source.ChallengeStartTime;
+        _state.ChallengeProgress = source.ChallengeProgress;
+        _state.ChallengeClickCount = source.ChallengeClickCount;
+        _state.ChallengeHighRiskQuestsCompleted = source.ChallengeHighRiskQuestsCompleted;
+        _state.CompletedChallenges.Clear();
+        foreach (var c in source.CompletedChallenges) _state.CompletedChallenges.Add(c);
 
         _prestigeNotified = false;
     }
@@ -1217,5 +1279,128 @@ public class GameEngine
         // neo_clicking adds extra 1% EPS to clicks (total 2%)
         if (_state.MatrixUpgrades.Contains("neo_clicking")) return 0.01;
         return 0;
+    }
+
+    // === CHALLENGE MODES ===
+    public bool IsInChallenge => _state.ActiveChallengeId != null;
+
+    public ChallengeMode? GetActiveChallenge()
+    {
+        return _state.ActiveChallengeId != null ? ChallengeModeData.GetById(_state.ActiveChallengeId) : null;
+    }
+
+    public bool StartChallenge(string challengeId)
+    {
+        if (IsInChallenge) return false;
+        var challenge = ChallengeModeData.GetById(challengeId);
+        if (challenge == null || _state.CompletedChallenges.Contains(challengeId)) return false;
+
+        // Reset game state for challenge (similar to prestige but keeps nothing)
+        _state.Evidence = 0;
+        _state.TotalEvidenceEarned = 0;
+        _state.Believers = 0;
+        _state.BusyBelievers = 0;
+        _state.Generators.Clear();
+        _state.PurchasedUpgrades.Clear();
+        _state.ProvenConspiracies.Clear();
+        _state.ActiveQuests.Clear();
+        _state.Tinfoil = 0;
+        _state.TinfoilShopPurchases.Clear();
+        _state.IlluminatiTokens = 0;
+        _state.IlluminatiUpgrades.Clear();
+        _state.ComboMeter = 0;
+        _state.ComboClicks = 0;
+
+        // Set challenge state
+        _state.ActiveChallengeId = challengeId;
+        _state.ChallengeStartTime = DateTime.Now;
+        _state.ChallengeProgress = 0;
+        _state.ChallengeClickCount = 0;
+        _state.ChallengeHighRiskQuestsCompleted = 0;
+
+        OnTick?.Invoke();
+        return true;
+    }
+
+    public void AbandonChallenge()
+    {
+        _state.ActiveChallengeId = null;
+        _state.ChallengeProgress = 0;
+        OnTick?.Invoke();
+    }
+
+    public (bool completed, double progress, double timeRemaining) GetChallengeStatus()
+    {
+        var challenge = GetActiveChallenge();
+        if (challenge == null) return (false, 0, 0);
+
+        double elapsed = (DateTime.Now - _state.ChallengeStartTime).TotalSeconds;
+        double timeRemaining = challenge.TimeLimit > 0 ? Math.Max(0, challenge.TimeLimit - elapsed) : -1;
+
+        double progress = challenge.Type switch
+        {
+            ChallengeModeType.Speedrun => _state.TotalEvidenceEarned / challenge.TargetValue,
+            ChallengeModeType.NoClick => _state.TotalEvidenceEarned / challenge.TargetValue,
+            ChallengeModeType.Minimalist => _state.TotalEvidenceEarned / challenge.TargetValue,
+            ChallengeModeType.NoPrestige => _state.TotalEvidenceEarned / challenge.TargetValue,
+            ChallengeModeType.RiskyBusiness => _state.ChallengeHighRiskQuestsCompleted / challenge.TargetValue,
+            ChallengeModeType.ClickMaster => _state.ChallengeClickCount / challenge.TargetValue,
+            _ => 0
+        };
+
+        _state.ChallengeProgress = progress;
+        bool completed = progress >= 1.0 && (challenge.TimeLimit <= 0 || timeRemaining > 0);
+
+        return (completed, Math.Min(progress, 1.0), timeRemaining);
+    }
+
+    public bool CompleteChallenge()
+    {
+        var challenge = GetActiveChallenge();
+        if (challenge == null) return false;
+
+        var (completed, _, _) = GetChallengeStatus();
+        if (!completed) return false;
+
+        // Grant rewards
+        _state.Tinfoil += challenge.TinfoilReward;
+        _state.IlluminatiTokens += challenge.IlluminatiTokenReward;
+        _state.CompletedChallenges.Add(challenge.Id);
+
+        // End challenge
+        _state.ActiveChallengeId = null;
+        _state.ChallengeProgress = 0;
+
+        OnTick?.Invoke();
+        return true;
+    }
+
+    public bool IsChallengeViolation(ChallengeModeType checkType)
+    {
+        var challenge = GetActiveChallenge();
+        if (challenge == null) return false;
+
+        return challenge.Type switch
+        {
+            ChallengeModeType.NoClick when checkType == ChallengeModeType.NoClick => true,
+            ChallengeModeType.Minimalist when checkType == ChallengeModeType.Minimalist => true,
+            _ => false
+        };
+    }
+
+    public void RecordChallengeClick()
+    {
+        if (IsInChallenge)
+        {
+            _state.ChallengeClickCount++;
+        }
+    }
+
+    public void RecordChallengeHighRiskQuest()
+    {
+        if (IsInChallenge)
+        {
+            _state.ChallengeHighRiskQuestsCompleted++;
+        }
     }
 }

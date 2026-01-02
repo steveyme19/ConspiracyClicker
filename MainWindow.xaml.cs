@@ -38,6 +38,10 @@ public partial class MainWindow : Window
     private readonly Dictionary<string, (double cost, int owned, double prod)> _lastGenState = new();
     private int _lastTinfoilCount = -1;
     private int _lastQuestCount = -1;
+    private int _lastAchievementCount = -1;
+    private string _lastOwnedGenState = "";
+    private string _lastSkillTreeState = "";
+    private string _lastPrestigeState = "";
 
     // Frozen brushes for performance
     private static readonly SolidColorBrush GreenBrush;
@@ -297,6 +301,7 @@ public partial class MainWindow : Window
         _engine.OnPrestigeAvailable += OnPrestigeAvailable;
         _engine.OnPrestigeComplete += OnPrestigeComplete;
         _engine.OnDailyChallengeComplete += OnDailyChallengeComplete;
+        _engine.OnOfflineProgress += OnOfflineProgress;
 
         // Hook into rendering for smooth 60fps animations
         CompositionTarget.Rendering += OnRendering;
@@ -312,6 +317,23 @@ public partial class MainWindow : Window
         // Add keyboard shortcuts
         this.KeyDown += MainWindow_KeyDown;
         this.Focusable = true;
+
+        // Start eye animations
+        StartEyeAnimations();
+    }
+
+    private void StartEyeAnimations()
+    {
+        var ring1Anim = (Storyboard)FindResource("EyeRing1Animation");
+        ring1Anim.Begin(this, true);
+        var ring2Anim = (Storyboard)FindResource("EyeRing2Animation");
+        ring2Anim.Begin(this, true);
+        var pulseAnim = (Storyboard)FindResource("EyePulseAnimation");
+        pulseAnim.Begin(this, true);
+        var glowAnim = (Storyboard)FindResource("AmbientGlowAnimation");
+        glowAnim.Begin(this, true);
+        var ringPulseAnim = (Storyboard)FindResource("RingPulseAnimation");
+        ringPulseAnim.Begin(this, true);
     }
 
     private void MainWindow_KeyDown(object sender, KeyEventArgs e)
@@ -1787,7 +1809,7 @@ public partial class MainWindow : Window
         leftStack.Children.Add(new TextBlock { Text = gen.FlavorText, FontSize = 10, Foreground = DimBrush, TextWrapping = TextWrapping.Wrap, MaxWidth = 250 });
         leftStack.Children.Add(new TextBlock { Tag = "prod", FontSize = 11, Foreground = LightBrush, Margin = new Thickness(0, 3, 0, 0) });
         if (gen.BelieverBonus > 0)
-            leftStack.Children.Add(new TextBlock { Text = $"+{gen.BelieverBonus} believers each", FontSize = 10, Foreground = GoldBrush });
+            leftStack.Children.Add(new TextBlock { Text = $"+{NumberFormatter.Format(gen.BelieverBonus)} believers each", FontSize = 10, Foreground = GoldBrush });
 
         var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(10, 0, 0, 0) };
         rightStack.Children.Add(new TextBlock { Tag = "cost", FontWeight = FontWeights.Bold, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right });
@@ -2331,6 +2353,8 @@ public partial class MainWindow : Window
         UpdateSkillTreePanel();
         UpdateDailyChallengesPanel();
         UpdatePrestigePanel();
+        UpdateMatrixPanel();
+        UpdateChallengeModePanel();
         UpdateTabVisibility();
         UpdateTabHighlights();
     }
@@ -2836,6 +2860,10 @@ public partial class MainWindow : Window
     private void UpdateAchievementPanel()
     {
         var state = _engine.State;
+        int currentCount = state.UnlockedAchievements.Count;
+        if (currentCount == _lastAchievementCount) return;
+        _lastAchievementCount = currentCount;
+
         AchievementPanel.Children.Clear();
 
         foreach (var achievement in _engine.GetUnlockedAchievements())
@@ -2873,8 +2901,16 @@ public partial class MainWindow : Window
 
     private void UpdateOwnedGeneratorsPanel()
     {
-        OwnedGeneratorsPanel.Children.Clear();
         var state = _engine.State;
+        var sb = new System.Text.StringBuilder();
+        foreach (var gen in GeneratorData.AllGenerators)
+            sb.Append($"{gen.Id}:{state.GetGeneratorCount(gen.Id)};");
+        sb.Append($"b:{(int)state.Believers}");
+        string currentState = sb.ToString();
+        if (currentState == _lastOwnedGenState) return;
+        _lastOwnedGenState = currentState;
+
+        OwnedGeneratorsPanel.Children.Clear();
 
         foreach (var gen in GeneratorData.AllGenerators)
         {
@@ -2927,6 +2963,21 @@ public partial class MainWindow : Window
         AddNotification($"Daily challenge '{challenge.Name}' completed! Click to claim reward.", GoldBrush);
     }
 
+    private void OnOfflineProgress(double evidenceEarned, double believersGained, TimeSpan timeAway)
+    {
+        string timeText = timeAway.TotalHours >= 1
+            ? $"{(int)timeAway.TotalHours}h {timeAway.Minutes}m"
+            : $"{(int)timeAway.TotalMinutes}m";
+
+        string message = $"Welcome back! While you were away ({timeText}):\n";
+        message += $"+{NumberFormatter.Format(evidenceEarned)} Evidence";
+        if (believersGained >= 1)
+            message += $"\n+{NumberFormatter.Format(believersGained)} Believers";
+
+        ShowToast("WELCOME BACK!", $"+{NumberFormatter.Format(evidenceEarned)} Evidence");
+        AddNotification($"Offline progress ({timeText}): +{NumberFormatter.Format(evidenceEarned)} evidence", GoldBrush);
+    }
+
     private void PrestigeButton_Click(object sender, RoutedEventArgs e)
     {
         if (_engine.CanPrestige())
@@ -2946,6 +2997,318 @@ public partial class MainWindow : Window
     private void AscendCancel_Click(object sender, RoutedEventArgs e)
     {
         AscendOverlay.Visibility = Visibility.Collapsed;
+    }
+
+    // === MATRIX PRESTIGE ===
+    private void MatrixBreakButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_engine.CanBreakMatrix())
+        {
+            int glitchTokens = _engine.GetGlitchTokensFromMatrix();
+            if (System.Windows.MessageBox.Show(
+                $"Break the Matrix?\n\nYou will earn {glitchTokens} Glitch Token(s).\n\nThis resets ALL progress including Illuminati tokens and upgrades, but you keep Glitch Tokens, Matrix upgrades, skills, and achievements.",
+                "Break the Matrix",
+                System.Windows.MessageBoxButton.YesNo,
+                System.Windows.MessageBoxImage.Warning) == System.Windows.MessageBoxResult.Yes)
+            {
+                _engine.BreakMatrix();
+                ShowToast("MATRIX BROKEN!", "You have transcended reality!");
+                AddNotification("You have broken the Matrix! Glitch Tokens earned.", GreenBrush);
+            }
+        }
+    }
+
+    private void MatrixUpgradeButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is string upgradeId)
+        {
+            if (_engine.PurchaseMatrixUpgrade(upgradeId))
+            {
+                var upgrade = MatrixData.GetById(upgradeId);
+                SoundManager.Play("upgrade");
+                ShowToast("POWER UNLOCKED!", upgrade?.Name ?? "Matrix Upgrade");
+                AddNotification($"Matrix power unlocked: {upgrade?.Name}", GreenBrush);
+            }
+        }
+    }
+
+    private string _lastMatrixState = "";
+
+    private void UpdateMatrixPanel()
+    {
+        var state = _engine.State;
+        bool canBreak = _engine.CanBreakMatrix();
+        bool hasGlitchTokens = state.GlitchTokens > 0 || state.MatrixUpgrades.Count > 0;
+        bool showMatrix = canBreak || hasGlitchTokens || state.TimesAscended >= 3;
+
+        // Show Matrix section when conditions are met
+        MatrixSection.Visibility = showMatrix ? Visibility.Visible : Visibility.Collapsed;
+
+        if (!showMatrix) return;
+
+        // Update Matrix info
+        if (canBreak)
+        {
+            int glitchTokens = _engine.GetGlitchTokensFromMatrix();
+            MatrixInfoText.Text = $"You have ascended {state.TimesAscended} times.\nBreaking the Matrix will grant {glitchTokens} Glitch Token(s).";
+            MatrixBreakButton.IsEnabled = true;
+        }
+        else
+        {
+            int ascensionsNeeded = Math.Max(0, MatrixData.MATRIX_ASCENSION_REQUIREMENT - state.TimesAscended);
+            double tokensNeeded = Math.Max(0, MatrixData.MATRIX_TOKEN_REQUIREMENT - state.TotalIlluminatiTokensEarned);
+            MatrixInfoText.Text = $"Requirements to break the Matrix:\n• {ascensionsNeeded} more ascensions\n• {tokensNeeded:F0} more total Illuminati tokens";
+            MatrixBreakButton.IsEnabled = false;
+        }
+
+        GlitchTokensText.Text = $"⟁ {state.GlitchTokens} Glitch Token(s)";
+
+        // Check if state changed for panel rebuild
+        string currentState = $"{state.GlitchTokens}:{state.MatrixUpgrades.Count}";
+        if (currentState == _lastMatrixState) return;
+        _lastMatrixState = currentState;
+
+        var buttonStyle = (Style)FindResource("GeneratorButton");
+
+        // Show headers if we have tokens or upgrades
+        bool hasContent = state.GlitchTokens > 0 || _engine.GetAvailableMatrixUpgrades().Any();
+        MatrixUpgradesHeader.Visibility = hasContent ? Visibility.Visible : Visibility.Collapsed;
+        PurchasedMatrixHeader.Visibility = state.MatrixUpgrades.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        // Available Matrix upgrades
+        MatrixUpgradesPanel.Children.Clear();
+        foreach (var upgrade in _engine.GetAvailableMatrixUpgrades().OrderBy(u => u.GlitchCost))
+        {
+            var button = new Button { Style = buttonStyle, Tag = upgrade.Id, HorizontalContentAlignment = HorizontalAlignment.Stretch };
+            button.Click += MatrixUpgradeButton_Click;
+            button.IsEnabled = _engine.CanAffordMatrixUpgrade(upgrade.Id);
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            var iconBlock = new TextBlock { Text = upgrade.Icon, FontSize = 20, Foreground = GreenBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+
+            var stack = new StackPanel();
+            stack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush });
+            stack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 11, Foreground = LightBrush });
+            stack.Children.Add(new TextBlock { Text = upgrade.FlavorText, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic });
+
+            var costStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            costStack.Children.Add(new TextBlock { Text = $"{upgrade.GlitchCost} ⟁", FontWeight = FontWeights.Bold, Foreground = GreenBrush, HorizontalAlignment = HorizontalAlignment.Right });
+
+            Grid.SetColumn(iconBlock, 0);
+            Grid.SetColumn(stack, 1);
+            Grid.SetColumn(costStack, 2);
+            grid.Children.Add(iconBlock);
+            grid.Children.Add(stack);
+            grid.Children.Add(costStack);
+
+            button.Content = grid;
+            MatrixUpgradesPanel.Children.Add(button);
+        }
+
+        // Purchased Matrix upgrades
+        PurchasedMatrixPanel.Children.Clear();
+        foreach (var upgrade in _engine.GetPurchasedMatrixUpgrades())
+        {
+            var border = new Border
+            {
+                Background = new SolidColorBrush(Color.FromRgb(10, 40, 20)),
+                BorderBrush = GreenBrush,
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(4),
+                Padding = new Thickness(10, 6, 10, 6),
+                Margin = new Thickness(5)
+            };
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            var iconBlock = new TextBlock { Text = upgrade.Icon, FontSize = 16, Foreground = GreenBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+            var stack = new StackPanel();
+            stack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush });
+            stack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 10, Foreground = DimBrush });
+
+            Grid.SetColumn(iconBlock, 0);
+            Grid.SetColumn(stack, 1);
+            grid.Children.Add(iconBlock);
+            grid.Children.Add(stack);
+            border.Child = grid;
+            PurchasedMatrixPanel.Children.Add(border);
+        }
+    }
+
+    // === CHALLENGE MODES ===
+    private void StartChallengeBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is string challengeId)
+        {
+            var challenge = ChallengeModeData.GetById(challengeId);
+            if (challenge != null && System.Windows.MessageBox.Show(
+                $"Start '{challenge.Name}'?\n\nThis will reset all your current progress!\n\nRules: {challenge.Rules}",
+                "Start Challenge",
+                System.Windows.MessageBoxButton.YesNo,
+                System.Windows.MessageBoxImage.Warning) == System.Windows.MessageBoxResult.Yes)
+            {
+                if (_engine.StartChallenge(challengeId))
+                {
+                    ShowToast("CHALLENGE STARTED!", challenge.Name);
+                    AddNotification($"Challenge started: {challenge.Name}", GoldBrush);
+                }
+            }
+        }
+    }
+
+    private void ClaimChallengeBtn_Click(object sender, RoutedEventArgs e)
+    {
+        var challenge = _engine.GetActiveChallenge();
+        if (challenge != null && _engine.CompleteChallenge())
+        {
+            SoundManager.Play("achievement");
+            ShowToast("CHALLENGE COMPLETE!", $"+{challenge.TinfoilReward} Tinfoil");
+            AddNotification($"Challenge '{challenge.Name}' completed! Rewards claimed.", GreenBrush);
+        }
+    }
+
+    private void AbandonChallengeBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (System.Windows.MessageBox.Show(
+            "Abandon this challenge?\n\nYou will lose all progress.",
+            "Abandon Challenge",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Warning) == System.Windows.MessageBoxResult.Yes)
+        {
+            _engine.AbandonChallenge();
+            AddNotification("Challenge abandoned.", RedBrush);
+        }
+    }
+
+    private string _lastChallengeState = "";
+
+    private void UpdateChallengeModePanel()
+    {
+        var state = _engine.State;
+        var activeChallenge = _engine.GetActiveChallenge();
+
+        // Update active challenge display
+        if (activeChallenge != null)
+        {
+            ActiveChallengePanel.Visibility = Visibility.Visible;
+            ActiveChallengeTitle.Text = $"{activeChallenge.Icon} {activeChallenge.Name}";
+            ActiveChallengeRules.Text = activeChallenge.Rules;
+
+            var (completed, progress, timeRemaining) = _engine.GetChallengeStatus();
+            ChallengeProgressFill.Width = progress * 200;
+            ChallengeProgressText.Text = $"{progress:P0} Complete";
+
+            if (activeChallenge.TimeLimit > 0)
+            {
+                if (timeRemaining > 0)
+                {
+                    var time = TimeSpan.FromSeconds(timeRemaining);
+                    ChallengeTimeText.Text = $"Time remaining: {time:mm\\:ss}";
+                    ChallengeTimeText.Foreground = timeRemaining < 60 ? RedBrush : DimBrush;
+                }
+                else
+                {
+                    ChallengeTimeText.Text = "TIME'S UP!";
+                    ChallengeTimeText.Foreground = RedBrush;
+                }
+            }
+            else
+            {
+                ChallengeTimeText.Text = "No time limit";
+            }
+
+            ClaimChallengeBtn.Visibility = completed ? Visibility.Visible : Visibility.Collapsed;
+        }
+        else
+        {
+            ActiveChallengePanel.Visibility = Visibility.Collapsed;
+        }
+
+        // Check if state changed for panel rebuild
+        string currentState = $"{state.CompletedChallenges.Count}:{(activeChallenge?.Id ?? "none")}";
+        if (currentState == _lastChallengeState) return;
+        _lastChallengeState = currentState;
+
+        var buttonStyle = (Style)FindResource("GeneratorButton");
+
+        // Available challenges
+        ChallengeModesPanel.Children.Clear();
+        foreach (var challenge in ChallengeModeData.AllChallenges)
+        {
+            if (state.CompletedChallenges.Contains(challenge.Id)) continue;
+            if (_engine.IsInChallenge) continue; // Don't show other challenges while in one
+
+            var button = new Button { Style = buttonStyle, Tag = challenge.Id, HorizontalContentAlignment = HorizontalAlignment.Stretch };
+            button.Click += StartChallengeBtn_Click;
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            var iconBlock = new TextBlock { Text = challenge.Icon, FontSize = 24, Foreground = GoldBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+
+            var stack = new StackPanel();
+            stack.Children.Add(new TextBlock { Text = challenge.Name, FontWeight = FontWeights.Bold, Foreground = GoldBrush });
+            stack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 11, Foreground = LightBrush });
+            stack.Children.Add(new TextBlock { Text = challenge.Rules, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic });
+
+            var rewardStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            rewardStack.Children.Add(new TextBlock { Text = $"+{challenge.TinfoilReward} Tinfoil", FontWeight = FontWeights.Bold, Foreground = SilverBrush, HorizontalAlignment = HorizontalAlignment.Right });
+            if (challenge.IlluminatiTokenReward > 0)
+                rewardStack.Children.Add(new TextBlock { Text = $"+{challenge.IlluminatiTokenReward} Token", FontSize = 10, Foreground = PurpleBrush, HorizontalAlignment = HorizontalAlignment.Right });
+
+            Grid.SetColumn(iconBlock, 0);
+            Grid.SetColumn(stack, 1);
+            Grid.SetColumn(rewardStack, 2);
+            grid.Children.Add(iconBlock);
+            grid.Children.Add(stack);
+            grid.Children.Add(rewardStack);
+
+            button.Content = grid;
+            ChallengeModesPanel.Children.Add(button);
+        }
+
+        // Completed challenges
+        CompletedChallengesPanel.Children.Clear();
+        CompletedChallengesHeader.Visibility = state.CompletedChallenges.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        foreach (var challengeId in state.CompletedChallenges)
+        {
+            var challenge = ChallengeModeData.GetById(challengeId);
+            if (challenge == null) continue;
+
+            var border = new Border
+            {
+                Background = new SolidColorBrush(Color.FromRgb(20, 40, 20)),
+                BorderBrush = GreenBrush,
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(4),
+                Padding = new Thickness(10, 6, 10, 6),
+                Margin = new Thickness(5)
+            };
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            var iconBlock = new TextBlock { Text = challenge.Icon, FontSize = 16, Foreground = GreenBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+            var stack = new StackPanel();
+            stack.Children.Add(new TextBlock { Text = $"[COMPLETED] {challenge.Name}", FontWeight = FontWeights.Bold, Foreground = GreenBrush });
+            stack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 10, Foreground = DimBrush });
+
+            Grid.SetColumn(iconBlock, 0);
+            Grid.SetColumn(stack, 1);
+            grid.Children.Add(iconBlock);
+            grid.Children.Add(stack);
+            border.Child = grid;
+            CompletedChallengesPanel.Children.Add(border);
+        }
     }
 
     // === MAIN MENU ===
@@ -3104,9 +3467,14 @@ public partial class MainWindow : Window
     private void UpdateSkillTreePanel()
     {
         var state = _engine.State;
-        var buttonStyle = (Style)FindResource("GeneratorButton");
+        string currentState = $"{_engine.GetAvailableSkillPoints()}:{string.Join(",", state.UnlockedSkills)}";
 
         SkillPointsDisplay.Text = $"{_engine.GetAvailableSkillPoints()} / {_engine.GetTotalSkillPoints()}";
+
+        if (currentState == _lastSkillTreeState) return;
+        _lastSkillTreeState = currentState;
+
+        var buttonStyle = (Style)FindResource("GeneratorButton");
 
         // Researcher branch
         ResearcherSkillsPanel.Children.Clear();
@@ -3305,9 +3673,9 @@ public partial class MainWindow : Window
     private void UpdatePrestigePanel()
     {
         var state = _engine.State;
-        var buttonStyle = (Style)FindResource("GeneratorButton");
+        string currentState = $"{state.IlluminatiTokens}:{_engine.GetPurchasedIlluminatiUpgrades().Count()}:{(int)(state.TotalEvidenceEarned / 1e9)}";
 
-        // Prestige info
+        // Always update prestige info text (cheap operation)
         bool canPrestige = _engine.CanPrestige();
         int tokensFromPrestige = _engine.GetTokensFromPrestige();
 
@@ -3327,6 +3695,12 @@ public partial class MainWindow : Window
         }
 
         IlluminatiTokensText.Text = $"You have {state.IlluminatiTokens} Illuminati Token(s)";
+
+        // Only rebuild panels if state changed
+        if (currentState == _lastPrestigeState) return;
+        _lastPrestigeState = currentState;
+
+        var buttonStyle = (Style)FindResource("GeneratorButton");
 
         // Available upgrades
         IlluminatiUpgradesPanel.Children.Clear();

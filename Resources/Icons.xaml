@@ -519,4 +519,1685 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <!-- ==================== UPGRADE ICONS ==================== -->
+
+    <!-- Reinforced Tinfoil -->
+    <DrawingImage x:Key="Icon_reinforced_tinfoil">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M32,8 L12,48 L52,48 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#d8d8d8" Geometry="M32,12 L28,32 L32,30 L36,32 Z"/>
+                <GeometryDrawing Geometry="M20,36 L28,20 M44,36 L36,20">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M30,44 L34,44 L35,48 L29,48 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Magnifying Glass -->
+    <DrawingImage x:Key="Icon_magnifying_glass">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#88b8d4e8" Geometry="M24,24 A14,14 0 1,1 24.01,24"/>
+                <GeometryDrawing Geometry="M24,24 A14,14 0 1,1 24.01,24">
+                    <GeometryDrawing.Pen><Pen Brush="#8B4513" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M35,35 L52,52">
+                    <GeometryDrawing.Pen><Pen Brush="#8B4513" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#80ffffff" Geometry="M18,18 A3,3 0 1,1 18.01,18"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Red Marker -->
+    <DrawingImage x:Key="Icon_red_marker">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M24,8 L40,8 L40,44 L32,56 L24,44 Z"/>
+                <GeometryDrawing Brush="#990000" Geometry="M24,8 L40,8 L40,14 L24,14 Z"/>
+                <GeometryDrawing Brush="#660000" Geometry="M28,44 L36,44 L32,56 Z"/>
+                <GeometryDrawing Geometry="M20,20 L12,28 L20,36 M44,20 L52,28 L44,36">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Cork Board -->
+    <DrawingImage x:Key="Icon_cork_board">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#d4a574" Geometry="M8,8 L56,8 L56,56 L8,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#8B4513" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M14,14 L28,14 L28,28 L14,28 Z"/>
+                <GeometryDrawing Brush="#ffe4b5" Geometry="M36,18 L50,18 L50,32 L36,32 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M20,36 L34,36 L34,50 L20,50 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M16,12 A2,2 0 1,1 16.01,12"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M40,16 A2,2 0 1,1 40.01,16"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M24,34 A2,2 0 1,1 24.01,34"/>
+                <GeometryDrawing Geometry="M16,12 L40,16 M40,16 L24,34">
+                    <GeometryDrawing.Pen><Pen Brush="#ff0000" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Night Vision -->
+    <DrawingImage x:Key="Icon_night_vision">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#2a2a3e" Geometry="M8,24 L56,24 L56,40 L8,40 Z"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M12,20 A12,12 0 1,1 12.01,44"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M40,20 A12,12 0 1,1 40.01,44"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M20,32 A6,6 0 1,1 20.01,32"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M44,32 A6,6 0 1,1 44.01,32"/>
+                <GeometryDrawing Brush="#003300" Geometry="M20,32 A2,2 0 1,1 20.01,32"/>
+                <GeometryDrawing Brush="#003300" Geometry="M44,32 A2,2 0 1,1 44.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Mechanical Keyboard -->
+    <DrawingImage x:Key="Icon_mechanical_keyboard">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M4,24 L60,24 L60,52 L4,52 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#444" Geometry="M8,28 L14,28 L14,34 L8,34 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M16,28 L22,28 L22,34 L16,34 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M24,28 L30,28 L30,34 L24,34 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,28 L38,28 L38,34 L32,34 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M40,28 L46,28 L46,34 L40,34 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M48,28 L54,28 L54,34 L48,34 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M8,36 L14,36 L14,42 L8,42 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M16,36 L22,36 L22,42 L16,42 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M24,36 L46,36 L46,42 L24,42 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M48,36 L54,36 L54,42 L48,42 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Third Eye Drops -->
+    <DrawingImage x:Key="Icon_third_eye_drops">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#4169E1" Geometry="M24,12 L32,12 L36,44 L20,44 Z"/>
+                <GeometryDrawing Brush="#1e90ff" Geometry="M24,12 L32,12 L32,8 L24,8 Z"/>
+                <GeometryDrawing Brush="#00bfff" Geometry="M28,48 L28,56 Q28,60 32,60 Q36,60 36,56 L36,48"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M44,32 A8,5 0 1,1 60,32 A8,5 0 1,1 44,32"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M52,32 A3,3 0 1,1 52.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Caffeine IV -->
+    <DrawingImage x:Key="Icon_caffeine_iv">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#8B4513" Geometry="M20,28 L36,28 L36,52 L20,52 Z"/>
+                <GeometryDrawing Brush="#5c3317" Geometry="M22,32 L34,32 L34,50 L22,50 Z"/>
+                <GeometryDrawing Geometry="M36,36 Q44,36 44,44 Q44,50 36,48">
+                    <GeometryDrawing.Pen><Pen Brush="#8B4513" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M24,24 Q26,18 24,14 M28,24 Q30,16 28,10 M32,24 Q34,18 32,14">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M44,20 L56,20 M56,20 L56,44 M56,32 L48,32">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc0000" Geometry="M46,30 L50,30 L50,34 L46,34 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Quantum Fingers -->
+    <DrawingImage x:Key="Icon_quantum_fingers">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M24,20 L28,20 L28,44 L24,44 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M30,16 L34,16 L34,44 L30,44 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M36,18 L40,18 L40,44 L36,44 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M20,44 L44,44 L44,56 L20,56 Z"/>
+                <GeometryDrawing Brush="#999933ff" Geometry="M26,28 A4,4 0 1,1 26.01,28"/>
+                <GeometryDrawing Brush="#999933ff" Geometry="M32,24 A4,4 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#999933ff" Geometry="M38,26 A4,4 0 1,1 38.01,26"/>
+                <GeometryDrawing Geometry="M16,32 Q8,24 16,16 M48,32 Q56,24 48,16">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Momentum Theory -->
+    <DrawingImage x:Key="Icon_momentum_theory">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#00ff41" Geometry="M12,32 L28,20 L28,28 L52,28 L52,36 L28,36 L28,44 Z"/>
+                <GeometryDrawing Brush="#8000aa30" Geometry="M8,32 L20,24 L20,28 L40,28 L40,36 L20,36 L20,40 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Synergy Doctrine -->
+    <DrawingImage x:Key="Icon_synergy_doctrine">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,8 A8,8 0 1,1 32.01,8"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M12,44 A8,8 0 1,1 12.01,44"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M52,44 A8,8 0 1,1 52.01,44"/>
+                <GeometryDrawing Geometry="M32,16 L20,36 M32,16 L44,36 M20,44 L44,44">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Unified Field -->
+    <DrawingImage x:Key="Icon_unified_field">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M32,32 A20,20 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A14,14 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A8,8 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M32,32 A3,3 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Infinite Recursion -->
+    <DrawingImage x:Key="Icon_infinite_recursion">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M16,32 Q16,16 32,16 Q48,16 48,32 Q48,48 32,48 Q16,48 16,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M20,32 Q20,20 32,20 Q44,20 44,32 Q44,44 32,44 Q20,44 20,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00aa30" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Viral Momentum -->
+    <DrawingImage x:Key="Icon_viral_momentum">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,8 A6,6 0 1,1 32.01,8"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M16,28 A5,5 0 1,1 16.01,28"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M48,28 A5,5 0 1,1 48.01,28"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M12,48 A4,4 0 1,1 12.01,48"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M28,48 A4,4 0 1,1 28.01,48"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M44,48 A4,4 0 1,1 44.01,48"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M56,48 A3,3 0 1,1 56.01,48"/>
+                <GeometryDrawing Geometry="M32,14 L20,24 M32,14 L44,24 M16,32 L12,44 M48,32 L52,44 M16,32 L28,44 M48,32 L44,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00aa30" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Mass Awakening -->
+    <DrawingImage x:Key="Icon_mass_awakening">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,16 L48,16 L38,24 L42,36 L32,28 L22,36 L26,24 L16,16 L28,16 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M12,44 A4,4 0 1,1 12.01,44"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M24,52 A4,4 0 1,1 24.01,52"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M40,52 A4,4 0 1,1 40.01,52"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M52,44 A4,4 0 1,1 52.01,44"/>
+                <GeometryDrawing Geometry="M32,36 L24,48 M32,36 L40,48 M32,36 L12,44 M32,36 L52,44">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Truth Singularity -->
+    <DrawingImage x:Key="Icon_truth_singularity">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#4D9933ff" Geometry="M32,32 A20,20 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#809933ff" Geometry="M32,32 A14,14 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#B39933ff" Geometry="M32,32 A8,8 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#fff" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M32,4 L32,12 M32,52 L32,60 M4,32 L12,32 M52,32 L60,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== QUEST ICONS ==================== -->
+
+    <!-- Recon Mission -->
+    <DrawingImage x:Key="Icon_recon_mission">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#88b8d4e8" Geometry="M20,24 A16,16 0 1,1 20.01,24"/>
+                <GeometryDrawing Geometry="M20,24 A16,16 0 1,1 20.01,24">
+                    <GeometryDrawing.Pen><Pen Brush="#333" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,36 L52,56">
+                    <GeometryDrawing.Pen><Pen Brush="#333" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc0000" Geometry="M20,24 A2,2 0 1,1 20.01,24"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Document Recovery -->
+    <DrawingImage x:Key="Icon_document_recovery">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M16,8 L44,8 L52,16 L52,56 L16,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ddd" Geometry="M44,8 L44,16 L52,16 Z"/>
+                <GeometryDrawing Geometry="M20,24 L36,24 M20,32 L44,32 M20,40 L40,40 M20,48 L44,48">
+                    <GeometryDrawing.Pen><Pen Brush="#333" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#CCcc0000" Geometry="M8,40 L20,28 L20,36 L8,48 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Signal Intercept -->
+    <DrawingImage x:Key="Icon_signal_intercept">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M28,48 L36,48 L36,56 L28,56 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M24,44 L40,44 L40,48 L24,48 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M30,28 A14,14 0 0,1 34,28 L36,44 L28,44 Z"/>
+                <GeometryDrawing Geometry="M20,24 Q16,16 20,8">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M16,28 Q10,16 16,4">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M44,24 Q48,16 44,8">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M48,28 Q54,16 48,4">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Facility Infiltration -->
+    <DrawingImage x:Key="Icon_facility_infiltration">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#555" Geometry="M8,24 L56,24 L56,56 L8,56 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M8,24 L32,8 L56,24 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M24,36 L40,36 L40,56 L24,56 Z"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M26,38 L38,38 L38,56 L26,56 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M12,32 L20,32 L20,44 L12,44 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M44,32 L52,32 L52,44 L44,44 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M30,42 A2,2 0 1,1 30.01,42"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Underground Bunker -->
+    <DrawingImage x:Key="Icon_underground_bunker">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#8B4513" Geometry="M4,24 L60,24 L60,60 L4,60 Z"/>
+                <GeometryDrawing Brush="#2a2a3e" Geometry="M16,24 L48,24 L48,48 L16,48 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M24,24 L40,24 L40,40 L24,40 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M30,32 L34,32 L34,36 L30,36 Z"/>
+                <GeometryDrawing Geometry="M4,24 L60,24">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M28,8 L28,24 M36,8 L36,24">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Corporate Mole -->
+    <DrawingImage x:Key="Icon_corporate_mole">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M20,48 L20,32 Q20,24 32,24 Q44,24 44,32 L44,48 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M32,24 A8,8 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#333" Geometry="M20,32 L44,32 L44,36 L20,36 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M28,36 L36,36 L34,44 L30,44 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M44,8 L56,8 L56,20 L44,20 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M48,12 L52,12 L52,16 L48,16 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== SKILL TREE ICONS ==================== -->
+
+    <!-- Researcher Branch -->
+    <DrawingImage x:Key="Icon_skill_researcher">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#16213e" Geometry="M16,8 L48,8 L48,56 L16,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M20,16 L36,16 M20,24 L44,24 M20,32 L40,32 M20,40 L44,40 M20,48 L36,48">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M48,44 A8,8 0 1,1 48.01,44"/>
+                <GeometryDrawing Geometry="M56,52 L60,56">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Influencer Branch -->
+    <DrawingImage x:Key="Icon_skill_influencer">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,8 A10,10 0 1,1 32.01,8"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M20,40 L20,56 L28,56 L28,36 L36,36 L36,56 L44,56 L44,40 Z"/>
+                <GeometryDrawing Geometry="M32,28 L20,40 M32,28 L44,40">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M8,32 A4,4 0 1,1 8.01,32"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M56,32 A4,4 0 1,1 56.01,32"/>
+                <GeometryDrawing Geometry="M16,32 L28,24 M48,32 L36,24">
+                    <GeometryDrawing.Pen><Pen Brush="#00aa30" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Infiltrator Branch -->
+    <DrawingImage x:Key="Icon_skill_infiltrator">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#33cc0000" Geometry="M32,8 A24,24 0 1,1 32.01,8"/>
+                <GeometryDrawing Geometry="M32,8 A24,24 0 1,1 32.01,8">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,16 A16,16 0 1,1 32.01,16">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,24 A8,8 0 1,1 32.01,24">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,32 A2,2 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M28,48 L36,48 L36,56 L34,60 L30,60 L28,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== PRESTIGE ICONS ==================== -->
+
+    <!-- Pyramid Scheme -->
+    <DrawingImage x:Key="Icon_pyramid_scheme">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#4D9933ff" Geometry="M32,4 L8,52 L56,52 Z"/>
+                <GeometryDrawing Geometry="M32,4 L8,52 L56,52 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,20 L20,40 L44,40 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,28 A4,4 0 1,1 32.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Secret Handshake -->
+    <DrawingImage x:Key="Icon_secret_handshake">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M8,28 L24,28 L24,44 L8,44 Z"/>
+                <GeometryDrawing Brush="#c4a775" Geometry="M40,28 L56,28 L56,44 L40,44 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M20,28 L28,36 L36,28 L28,20 Z"/>
+                <GeometryDrawing Brush="#c4a775" Geometry="M28,36 L36,44 L44,36 L36,28 Z"/>
+                <GeometryDrawing Brush="#809933ff" Geometry="M28,28 L36,36 L36,40 L28,32 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- New World Order -->
+    <DrawingImage x:Key="Icon_new_world_order">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1e3a5f" Geometry="M32,32 A24,24 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M32,8 L32,56 M8,32 L56,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A16,8 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A24,24 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,28 A4,4 0 1,1 32.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Reptilian DNA -->
+    <DrawingImage x:Key="Icon_reptilian_dna">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#2d5a27" Geometry="M24,16 L28,16 L28,48 L24,48 Z"/>
+                <GeometryDrawing Brush="#2d5a27" Geometry="M36,16 L40,16 L40,48 L36,48 Z"/>
+                <GeometryDrawing Brush="#3d7a37" Geometry="M28,20 L36,20 L36,24 L28,24 Z"/>
+                <GeometryDrawing Brush="#3d7a37" Geometry="M28,28 L36,28 L36,32 L28,32 Z"/>
+                <GeometryDrawing Brush="#3d7a37" Geometry="M28,36 L36,36 L36,40 L28,40 Z"/>
+                <GeometryDrawing Brush="#3d7a37" Geometry="M28,44 L36,44 L36,48 L28,48 Z"/>
+                <GeometryDrawing Brush="#ffffa0" Geometry="M44,24 A4,3 0 1,1 52,24"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M48,24 A1,2 0 1,1 48.01,24"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Moon Base -->
+    <DrawingImage x:Key="Icon_moon_base">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M32,32 A24,24 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#a0a0a0" Geometry="M24,28 A6,6 0 1,1 24.01,28"/>
+                <GeometryDrawing Brush="#a0a0a0" Geometry="M42,36 A4,4 0 1,1 42.01,36"/>
+                <GeometryDrawing Brush="#a0a0a0" Geometry="M20,42 A3,3 0 1,1 20.01,42"/>
+                <GeometryDrawing Brush="#333" Geometry="M36,44 L44,44 L44,56 Q40,60 36,56 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M38,48 L42,48 L42,52 L38,52 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Time Manipulation -->
+    <DrawingImage x:Key="Icon_time_manipulation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#16213e" Geometry="M32,32 A20,20 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,16 L32,32 L44,40">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,32 A3,3 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M8,24 Q4,32 8,40">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M56,24 Q60,32 56,40">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== ALL-SEEING EYE (Main Clicker) ==================== -->
+
+    <!-- All-Seeing Eye - Detailed Illuminati eye in pyramid -->
+    <DrawingImage x:Key="Icon_all_seeing_eye">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Outer glow ring -->
+                <GeometryDrawing Brush="#2000ff41" Geometry="M32,32 A30,30 0 1,1 32.01,32"/>
+
+                <!-- Pyramid background -->
+                <GeometryDrawing Brush="#160f3460" Geometry="M32,2 L2,60 L62,60 Z"/>
+                <GeometryDrawing Geometry="M32,2 L2,60 L62,60 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Inner pyramid lines -->
+                <GeometryDrawing Geometry="M32,14 L14,50 L50,50 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#4000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Eye socket (dark ellipse) -->
+                <GeometryDrawing Brush="#0f3460" Geometry="M14,32 A18,10 0 1,1 50,32 A18,10 0 1,1 14,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Eye white -->
+                <GeometryDrawing Brush="#e8e8e8" Geometry="M18,32 A14,7 0 1,1 46,32 A14,7 0 1,1 18,32"/>
+
+                <!-- Iris -->
+                <GeometryDrawing Brush="#00cc33" Geometry="M26,32 A6,6 0 1,1 38,32 A6,6 0 1,1 26,32"/>
+
+                <!-- Pupil -->
+                <GeometryDrawing Brush="#001100" Geometry="M29,32 A3,3 0 1,1 35,32 A3,3 0 1,1 29,32"/>
+
+                <!-- Eye highlight -->
+                <GeometryDrawing Brush="#80ffffff" Geometry="M30,29 A2,1.5 0 1,1 30.01,29"/>
+
+                <!-- Radiating lines from eye -->
+                <GeometryDrawing Geometry="M32,20 L32,10 M22,24 L14,16 M42,24 L50,16">
+                    <GeometryDrawing.Pen><Pen Brush="#5000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Eyelid detail lines -->
+                <GeometryDrawing Geometry="M16,32 Q32,22 48,32 M16,32 Q32,42 48,32">
+                    <GeometryDrawing.Pen><Pen Brush="#008822" Thickness="0.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- All-Seeing Eye - Simplified for smaller sizes -->
+    <DrawingImage x:Key="Icon_all_seeing_eye_small">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Triangle -->
+                <GeometryDrawing Geometry="M32,8 L8,56 L56,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Eye -->
+                <GeometryDrawing Brush="#fff" Geometry="M20,36 A12,6 0 1,1 44,36 A12,6 0 1,1 20,36"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M28,36 A4,4 0 1,1 36,36 A4,4 0 1,1 28,36"/>
+                <GeometryDrawing Brush="#001100" Geometry="M30,36 A2,2 0 1,1 34,36 A2,2 0 1,1 30,36"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Golden Eye variant (for Golden Eye power-up state) -->
+    <DrawingImage x:Key="Icon_golden_eye">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Outer golden glow -->
+                <GeometryDrawing Brush="#30ffd700" Geometry="M32,32 A30,30 0 1,1 32.01,32"/>
+
+                <!-- Pyramid background -->
+                <GeometryDrawing Brush="#162a1a00" Geometry="M32,2 L2,60 L62,60 Z"/>
+                <GeometryDrawing Geometry="M32,2 L2,60 L62,60 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Inner pyramid lines -->
+                <GeometryDrawing Geometry="M32,14 L14,50 L50,50 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#40ffd700" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Eye socket -->
+                <GeometryDrawing Brush="#2a1a00" Geometry="M14,32 A18,10 0 1,1 50,32 A18,10 0 1,1 14,32">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Eye white -->
+                <GeometryDrawing Brush="#fff8dc" Geometry="M18,32 A14,7 0 1,1 46,32 A14,7 0 1,1 18,32"/>
+
+                <!-- Golden Iris -->
+                <GeometryDrawing Brush="#ffd700" Geometry="M26,32 A6,6 0 1,1 38,32 A6,6 0 1,1 26,32"/>
+
+                <!-- Pupil -->
+                <GeometryDrawing Brush="#1a0a00" Geometry="M29,32 A3,3 0 1,1 35,32 A3,3 0 1,1 29,32"/>
+
+                <!-- Eye highlight -->
+                <GeometryDrawing Brush="#80ffffff" Geometry="M30,29 A2,1.5 0 1,1 30.01,29"/>
+
+                <!-- Radiating golden lines -->
+                <GeometryDrawing Geometry="M32,20 L32,10 M22,24 L14,16 M42,24 L50,16">
+                    <GeometryDrawing.Pen><Pen Brush="#80ffd700" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== ORBIT ICONS (For generator orbit display) ==================== -->
+
+    <!-- Pin/Pushpin for Red String -->
+    <DrawingImage x:Key="Icon_orbit_pin">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,8 A12,12 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#990000" Geometry="M28,28 L36,28 L32,56 Z"/>
+                <GeometryDrawing Brush="#80ffffff" Geometry="M26,16 A3,3 0 1,1 26.01,16"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Peering Eye for Suspicious Neighbor -->
+    <DrawingImage x:Key="Icon_orbit_eye">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#fff" Geometry="M8,32 A24,12 0 1,1 56,32 A24,12 0 1,1 8,32"/>
+                <GeometryDrawing Brush="#4a3728" Geometry="M26,32 A6,6 0 1,1 38,32 A6,6 0 1,1 26,32"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M29,32 A3,3 0 1,1 35,32 A3,3 0 1,1 29,32"/>
+                <GeometryDrawing Brush="#80ffffff" Geometry="M30,29 A1.5,1.5 0 1,1 30.01,29"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Computer/Monitor for Basement Researcher -->
+    <DrawingImage x:Key="Icon_orbit_computer">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M8,12 L56,12 L56,44 L8,44 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#0f3460" Geometry="M12,16 L52,16 L52,40 L12,40 Z"/>
+                <GeometryDrawing Geometry="M16,24 L40,24 M16,30 L44,30 M16,36 L36,36">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#333" Geometry="M24,44 L40,44 L40,52 L24,52 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M16,52 L48,52 L48,56 L16,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Blog/Browser icon for Blogspot -->
+    <DrawingImage x:Key="Icon_orbit_blog">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#16213e" Geometry="M8,8 L56,8 L56,56 L8,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#0f3460" Geometry="M8,8 L56,8 L56,18 L8,18 Z"/>
+                <GeometryDrawing Brush="#ff5f56" Geometry="M14,13 A2,2 0 1,1 14.01,13"/>
+                <GeometryDrawing Brush="#ffbd2e" Geometry="M20,13 A2,2 0 1,1 20.01,13"/>
+                <GeometryDrawing Brush="#27ca40" Geometry="M26,13 A2,2 0 1,1 26.01,13"/>
+                <GeometryDrawing Geometry="M12,26 L44,26 M12,34 L40,34 M12,42 L48,42">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Play button for YouTube -->
+    <DrawingImage x:Key="Icon_orbit_play">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M8,8 L56,8 Q60,8 60,12 L60,52 Q60,56 56,56 L8,56 Q4,56 4,52 L4,12 Q4,8 8,8"/>
+                <GeometryDrawing Brush="#fff" Geometry="M24,20 L24,44 L44,32 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Chat bubble for Discord -->
+    <DrawingImage x:Key="Icon_orbit_chat">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#5865F2" Geometry="M8,12 L56,12 Q60,12 60,16 L60,44 Q60,48 56,48 L32,48 L20,58 L20,48 L8,48 Q4,48 4,44 L4,16 Q4,12 8,12"/>
+                <GeometryDrawing Brush="#fff" Geometry="M20,28 A4,4 0 1,1 20.01,28"/>
+                <GeometryDrawing Brush="#fff" Geometry="M32,28 A4,4 0 1,1 32.01,28"/>
+                <GeometryDrawing Brush="#fff" Geometry="M44,28 A4,4 0 1,1 44.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Radio tower for AM Radio -->
+    <DrawingImage x:Key="Icon_orbit_radio">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#666" Geometry="M28,16 L36,16 L38,56 L26,56 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M32,4 L32,16">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M20,24 Q12,32 20,40">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M14,20 Q4,32 14,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M44,24 Q52,32 44,40">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M50,20 Q60,32 50,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,8 A3,3 0 1,1 32.01,8"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Microphone for Podcast -->
+    <DrawingImage x:Key="Icon_orbit_microphone">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M24,12 L40,12 A8,8 0 0,1 40,40 L24,40 A8,8 0 0,1 24,12">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M26,20 L38,20 M26,28 L38,28 M26,36 L38,36">
+                    <GeometryDrawing.Pen><Pen Brush="#555" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,16 A3,3 0 1,1 32.01,16"/>
+                <GeometryDrawing Brush="#444" Geometry="M30,40 L34,40 L34,50 L30,50 Z"/>
+                <GeometryDrawing Brush="#555" Geometry="M24,50 L40,50 L40,54 L24,54 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Stage/podium for Truth Conference -->
+    <DrawingImage x:Key="Icon_orbit_stage">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#16213e" Geometry="M4,8 L60,8 L60,36 L4,36 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,14 L22,32 L42,32 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,24 A3,3 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#5c4033" Geometry="M16,40 L48,40 L52,56 L12,56 Z"/>
+                <GeometryDrawing Brush="#8B4513" Geometry="M28,40 L36,40 L36,56 L28,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Film reel for Netflix Doc -->
+    <DrawingImage x:Key="Icon_orbit_film">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,32 A24,24 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,32 A12,12 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#333" Geometry="M32,16 A4,4 0 1,1 32.01,16"/>
+                <GeometryDrawing Brush="#333" Geometry="M32,44 A4,4 0 1,1 32.01,44"/>
+                <GeometryDrawing Brush="#333" Geometry="M18,24 A4,4 0 1,1 18.01,24"/>
+                <GeometryDrawing Brush="#333" Geometry="M46,24 A4,4 0 1,1 46.01,24"/>
+                <GeometryDrawing Brush="#333" Geometry="M18,40 A4,4 0 1,1 18.01,40"/>
+                <GeometryDrawing Brush="#333" Geometry="M46,40 A4,4 0 1,1 46.01,40"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Satellite for Spy Satellite -->
+    <DrawingImage x:Key="Icon_orbit_satellite">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Stars -->
+                <GeometryDrawing Brush="#fff" Geometry="M8,12 A1,1 0 1,1 8.01,12"/>
+                <GeometryDrawing Brush="#fff" Geometry="M52,8 A1,1 0 1,1 52.01,8"/>
+                <GeometryDrawing Brush="#fff" Geometry="M56,48 A1,1 0 1,1 56.01,48"/>
+                <!-- Body -->
+                <GeometryDrawing Brush="#666" Geometry="M24,24 L40,24 L40,40 L24,40 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Solar panels -->
+                <GeometryDrawing Brush="#1e3a5f" Geometry="M4,26 L22,26 L22,38 L4,38 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#1e3a5f" Geometry="M42,26 L60,26 L60,38 L42,38 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Antenna -->
+                <GeometryDrawing Brush="#444" Geometry="M28,20 A6,3 0 1,1 36,20"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,14 A2,2 0 1,1 32.01,14"/>
+                <!-- Beam -->
+                <GeometryDrawing Brush="#4000ff41" Geometry="M28,40 L36,40 L44,58 L20,58 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Capitol building for Shadow Government -->
+    <DrawingImage x:Key="Icon_orbit_capitol">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Dome -->
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M20,24 A12,12 0 0,1 44,24 L44,32 L20,32 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#444" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Eye in dome -->
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,22 A3,3 0 1,1 32.01,22"/>
+                <!-- Base -->
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M8,32 L56,32 L56,52 L8,52 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#333" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Columns -->
+                <GeometryDrawing Brush="#333" Geometry="M16,32 L16,48 M24,32 L24,48 M40,32 L40,48 M48,32 L48,48">
+                    <GeometryDrawing.Pen><Pen Brush="#444" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Steps -->
+                <GeometryDrawing Brush="#222" Geometry="M4,52 L60,52 L60,56 L4,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== TINFOIL SHOP ICONS ==================== -->
+
+    <!-- Basic Tinfoil Hat -->
+    <DrawingImage x:Key="Icon_tinfoil_hat_basic">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M16,48 L32,12 L48,48 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#d8d8d8" Geometry="M24,40 L32,20 L40,40 Z"/>
+                <GeometryDrawing Brush="#a0a0a0" Geometry="M12,48 L52,48 L52,54 L12,54 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Reinforced Tinfoil Hat -->
+    <DrawingImage x:Key="Icon_tinfoil_hat_reinforced">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M16,48 L32,8 L48,48 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M20,40 L32,16 L44,40">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#a0a0a0" Geometry="M10,48 L54,48 L54,56 L10,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Deluxe Tinfoil Crown -->
+    <DrawingImage x:Key="Icon_tinfoil_crown">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M8,48 L8,24 L20,36 L32,16 L44,36 L56,24 L56,48 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#cc8800" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ff4444" Geometry="M32,20 A4,4 0 1,1 32.01,20"/>
+                <GeometryDrawing Brush="#4444ff" Geometry="M16,32 A3,3 0 1,1 16.01,32"/>
+                <GeometryDrawing Brush="#4444ff" Geometry="M48,32 A3,3 0 1,1 48.01,32"/>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M6,48 L58,48 L58,56 L6,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Tinfoil Bodysuit -->
+    <DrawingImage x:Key="Icon_tinfoil_bodysuit">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M24,8 L40,8 L40,20 L48,20 L48,40 L40,40 L40,56 L24,56 L24,40 L16,40 L16,20 L24,20 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#d8d8d8" Geometry="M28,12 L36,12 L36,18 L28,18 Z"/>
+                <GeometryDrawing Geometry="M20,24 L20,36 M44,24 L44,36 M28,44 L28,52 M36,44 L36,52">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Tinfoil Bunker -->
+    <DrawingImage x:Key="Icon_tinfoil_bunker">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M8,28 L56,28 L56,56 L8,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#a0a0a0" Geometry="M8,28 A24,16 0 0,1 56,28"/>
+                <GeometryDrawing Brush="#333" Geometry="M24,36 L40,36 L40,56 L24,56 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M38,46 A2,2 0 1,1 38.01,46"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Deep State Contact -->
+    <DrawingImage x:Key="Icon_deep_state_contact">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,12 A10,10 0 1,1 32.01,12"/>
+                <GeometryDrawing Brush="#333" Geometry="M20,32 L44,32 L48,56 L16,56 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M28,18 L30,18 L30,22 L28,22 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M34,18 L36,18 L36,22 L34,22 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M30,50 L34,50 L34,56 L30,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Deep State Insider -->
+    <DrawingImage x:Key="Icon_deep_state_insider">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,10 A12,12 0 1,1 32.01,10"/>
+                <GeometryDrawing Brush="#333" Geometry="M18,30 L46,30 L50,56 L14,56 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M26,16 L30,16 L30,22 L26,22 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M34,16 L38,16 L38,22 L34,22 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M28,44 L36,44 L36,48 L28,48 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M30,50 L34,50 L34,56 L30,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Deep State Operative -->
+    <DrawingImage x:Key="Icon_deep_state_operative">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#0f3460" Geometry="M32,8 A14,14 0 1,1 32.01,8"/>
+                <GeometryDrawing Brush="#16213e" Geometry="M16,28 L48,28 L52,56 L12,56 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M24,14 L28,14 L28,20 L24,20 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M36,14 L40,14 L40,20 L36,20 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L34,8 L38,8 L35,11 L36,15 L32,12 L28,15 L29,11 L26,8 L30,8 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M28,48 L36,48 L36,56 L28,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Lucky Rabbit Foot -->
+    <DrawingImage x:Key="Icon_rabbit_foot">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#d4a574" Geometry="M28,16 L36,16 L38,48 L26,48 Z"/>
+                <GeometryDrawing Brush="#c4a070" Geometry="M24,48 L40,48 L42,56 L22,56 Z"/>
+                <GeometryDrawing Brush="#e8c090" Geometry="M30,8 L34,8 L35,16 L29,16 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M20,12 A3,3 0 1,1 20.01,12"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M44,12 A3,3 0 1,1 44.01,12"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Four Leaf Clover -->
+    <DrawingImage x:Key="Icon_four_leaf_clover">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#22aa22" Geometry="M32,20 A10,10 0 1,1 32,40 A10,10 0 1,1 32,20"/>
+                <GeometryDrawing Brush="#22aa22" Geometry="M22,30 A10,10 0 1,1 42,30 A10,10 0 1,1 22,30"/>
+                <GeometryDrawing Brush="#006600" Geometry="M30,32 L34,32 L34,56 L30,56 Z"/>
+                <GeometryDrawing Brush="#44cc44" Geometry="M32,28 A4,4 0 1,1 32.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Lucky Horseshoe -->
+    <DrawingImage x:Key="Icon_horseshoe">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M16,12 L16,40 A16,16 0 0,0 48,40 L48,12">
+                    <GeometryDrawing.Pen><Pen Brush="#cc8800" Thickness="8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M14,16 A3,3 0 1,1 14.01,16"/>
+                <GeometryDrawing Brush="#fff" Geometry="M50,16 A3,3 0 1,1 50.01,16"/>
+                <GeometryDrawing Brush="#fff" Geometry="M14,32 A3,3 0 1,1 14.01,32"/>
+                <GeometryDrawing Brush="#fff" Geometry="M50,32 A3,3 0 1,1 50.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Charisma Training -->
+    <DrawingImage x:Key="Icon_charisma">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,8 A14,14 0 1,1 32.01,8"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M26,16 A3,3 0 1,1 26.01,16"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M38,16 A3,3 0 1,1 38.01,16"/>
+                <GeometryDrawing Brush="#ff6666" Geometry="M26,28 Q32,36 38,28"/>
+                <GeometryDrawing Geometry="M8,32 L20,32 M44,32 L56,32 M12,24 L20,28 M44,28 L52,24 M12,40 L20,36 M44,36 L52,40">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Cult Leadership -->
+    <DrawingImage x:Key="Icon_cult_leadership">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#9933ff" Geometry="M16,20 L48,20 L48,56 L16,56 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,8 A10,10 0 1,1 32.01,8"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M28,14 A2,2 0 1,1 28.01,14"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M36,14 A2,2 0 1,1 36.01,14"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,28 L26,40 L38,40 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,34 A2,2 0 1,1 32.01,34"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Mass Hypnosis -->
+    <DrawingImage x:Key="Icon_hypnosis">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M32,32 A20,20 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A14,14 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#cc66ff" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A8,8 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M32,32 A3,3 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Clicking Intern -->
+    <DrawingImage x:Key="Icon_clicking_intern">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M32,8 A10,10 0 1,1 32.01,8"/>
+                <GeometryDrawing Brush="#4169E1" Geometry="M22,24 L42,24 L44,48 L20,48 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M44,32 L56,40 L54,44 L44,38 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M52,38 A4,4 0 1,1 52.01,38"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Clicking Robot -->
+    <DrawingImage x:Key="Icon_clicking_robot">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#666" Geometry="M20,12 L44,12 L44,36 L20,36 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M26,20 A4,4 0 1,1 26.01,20"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M38,20 A4,4 0 1,1 38.01,20"/>
+                <GeometryDrawing Brush="#444" Geometry="M26,28 L38,28 L38,32 L26,32 Z"/>
+                <GeometryDrawing Brush="#888" Geometry="M24,36 L24,56 L28,56 L28,36 Z"/>
+                <GeometryDrawing Brush="#888" Geometry="M36,36 L36,56 L40,56 L40,36 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M8,24 L20,24 L20,32 L8,32 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M30,4 L34,4 L34,12 L30,12 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Quantum Clicker -->
+    <DrawingImage x:Key="Icon_quantum_clicker">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#4D9933ff" Geometry="M32,32 A20,20 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M32,32 A16,8 90 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A16,8 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M16,32 A3,3 0 1,1 16.01,32"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M48,32 A3,3 0 1,1 48.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Lucky Star (Critical Chance) -->
+    <DrawingImage x:Key="Icon_lucky_star">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L38,24 L58,24 L42,38 L48,58 L32,46 L16,58 L22,38 L6,24 L26,24 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#cc8800" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffee88" Geometry="M32,12 L36,24 L32,20 L28,24 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Prophetic Vision -->
+    <DrawingImage x:Key="Icon_prophetic_vision">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,8 L8,56 L56,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#cc66ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M24,40 A8,5 0 1,1 40,40 A8,5 0 1,1 24,40"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M30,40 A4,4 0 1,1 34,40 A4,4 0 1,1 30,40"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M31,40 A2,2 0 1,1 33,40 A2,2 0 1,1 31,40"/>
+                <GeometryDrawing Geometry="M32,24 L32,16 M24,28 L18,22 M40,28 L46,22">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Third Eye Open -->
+    <DrawingImage x:Key="Icon_third_eye_open">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M16,20 L48,20 L48,56 L16,56 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M24,32 A8,5 0 1,1 40,32 A8,5 0 1,1 24,32">
+                    <GeometryDrawing.Pen><Pen Brush="#cc66ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M28,32 A4,4 0 1,1 36,32 A4,4 0 1,1 28,32"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M30,32 A2,2 0 1,1 34,32 A2,2 0 1,1 30,32"/>
+                <GeometryDrawing Geometry="M32,20 L32,8">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,6 A4,4 0 1,1 32.01,6"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Reality Distortion Aura -->
+    <DrawingImage x:Key="Icon_reality_distortion">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#209933ff" Geometry="M32,32 A28,28 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#409933ff" Geometry="M32,32 A20,20 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#609933ff" Geometry="M32,32 A12,12 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M32,24 A8,8 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M30,28 A2,2 0 1,1 30.01,28"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M36,28 A2,2 0 1,1 36.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Mind Control Crown -->
+    <DrawingImage x:Key="Icon_mind_control_crown">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#9933ff" Geometry="M8,40 L8,20 L20,32 L32,12 L44,32 L56,20 L56,40 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#cc66ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,16 A4,4 0 1,1 32.01,16"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M16,28 A3,3 0 1,1 16.01,28"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M48,28 A3,3 0 1,1 48.01,28"/>
+                <GeometryDrawing Geometry="M32,16 L32,4 M32,4 L24,12 M32,4 L40,12">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#666" Geometry="M6,40 L58,40 L58,48 L6,48 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Neural Interface Clicker -->
+    <DrawingImage x:Key="Icon_neural_clicker">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M20,16 L44,16 L48,48 L16,48 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M18,8 L46,8 L48,20 L16,20 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M24,4 L24,8 M32,4 L32,8 M40,4 L40,8">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M26,28 A3,3 0 1,1 26.01,28"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M38,28 A3,3 0 1,1 38.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Fate Weaver -->
+    <DrawingImage x:Key="Icon_fate_weaver">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M8,32 Q32,8 56,32 Q32,56 8,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M16,32 Q32,16 48,32 Q32,48 16,32">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== RANDOM EVENT ICONS ==================== -->
+
+    <!-- Golden Eye Event -->
+    <DrawingImage x:Key="Icon_event_golden_eye">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#30ffd700" Geometry="M32,32 A28,28 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#fff8dc" Geometry="M8,32 A24,12 0 1,1 56,32 A24,12 0 1,1 8,32"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M24,32 A8,8 0 1,1 40,32 A8,8 0 1,1 24,32"/>
+                <GeometryDrawing Brush="#1a0a00" Geometry="M28,32 A4,4 0 1,1 36,32 A4,4 0 1,1 28,32"/>
+                <GeometryDrawing Brush="#80ffffff" Geometry="M30,28 A2,2 0 1,1 30.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Whistle-Blower Event -->
+    <DrawingImage x:Key="Icon_event_whistleblower">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,8 A12,12 0 1,1 32.01,8"/>
+                <GeometryDrawing Brush="#333" Geometry="M20,28 L44,28 L48,56 L16,56 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M28,14 L36,14 L36,20 L28,20 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M48,12 L60,12 L60,24 L48,24 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M52,16 L56,16 L56,20 L52,20 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Mystery Documents Event -->
+    <DrawingImage x:Key="Icon_event_mystery_package">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#8B4513" Geometry="M8,24 L56,24 L56,56 L8,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#5c3317" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#a0522d" Geometry="M8,24 L32,8 L56,24 Z"/>
+                <GeometryDrawing Brush="#5c3317" Geometry="M28,32 L36,32 L36,56 L28,56 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,28 L24,40 L32,38 L40,40 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Tinfoil Rain Event -->
+    <DrawingImage x:Key="Icon_event_tinfoil_rain">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#666" Geometry="M8,16 A20,12 0 0,1 56,16"/>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M16,28 L20,28 L18,40 Z"/>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M28,24 L32,24 L30,38 Z"/>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M40,30 L44,30 L42,44 Z"/>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M22,40 L26,40 L24,54 Z"/>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M36,36 L40,36 L38,50 Z"/>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M48,26 L52,26 L50,40 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Deep State Leak Event -->
+    <DrawingImage x:Key="Icon_event_deep_state_leak">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M12,8 L40,8 L48,16 L48,56 L12,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ddd" Geometry="M40,8 L40,16 L48,16 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M16,20 L44,20 L44,24 L16,24 Z"/>
+                <GeometryDrawing Geometry="M16,32 L36,32 M16,40 L40,40 M16,48 L32,48">
+                    <GeometryDrawing.Pen><Pen Brush="#333" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc0000" Geometry="M44,40 L60,28 L60,52 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Automated Analysis Event (Robot) -->
+    <DrawingImage x:Key="Icon_event_automated">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#444" Geometry="M20,16 L44,16 L44,44 L20,44 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M26,24 A4,4 0 1,1 26.01,24"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M38,24 A4,4 0 1,1 38.01,24"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M26,36 L38,36 L38,40 L26,40 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M8,28 L20,28 L20,36 L8,36 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M44,28 L56,28 L56,36 L44,36 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M30,4 L34,4 L34,16 L30,16 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 A4,4 0 1,1 32.01,4"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Viral Moment Event -->
+    <DrawingImage x:Key="Icon_event_viral">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M16,8 L48,8 Q56,8 56,16 L56,48 Q56,56 48,56 L16,56 Q8,56 8,48 L8,16 Q8,8 16,8">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc0000" Geometry="M20,24 L32,36 L44,24 L44,40 L32,52 L20,40 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M48,4 A6,6 0 1,1 48.01,4"/>
+                <GeometryDrawing Brush="#fff" Geometry="M46,4 L50,4 L50,8 L46,8 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Insider Information Event -->
+    <DrawingImage x:Key="Icon_event_insider">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,4 A14,14 0 1,1 32.01,28"/>
+                <GeometryDrawing Brush="#333" Geometry="M16,28 L48,28 L52,56 L12,56 Z"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M24,8 L40,8 L40,20 L24,20 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M28,12 A2,2 0 1,1 28.01,12"/>
+                <GeometryDrawing Brush="#fff" Geometry="M36,12 A2,2 0 1,1 36.01,12"/>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M52,36 L60,32 L60,48 L52,44 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== MATRIX UPGRADE ICONS ==================== -->
+
+    <!-- Reality Warp -->
+    <DrawingImage x:Key="Icon_matrix_reality_warp">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M8,32 Q24,8 32,32 Q40,56 56,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M8,32 Q24,56 32,32 Q40,8 56,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Neo Clicking -->
+    <DrawingImage x:Key="Icon_matrix_neo_clicking">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M20,16 L28,16 L28,48 L20,48 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M30,12 L38,12 L38,48 L30,48 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M40,14 L48,14 L48,48 L40,48 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M16,48 L52,48 L52,56 L16,56 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M24,28 A3,3 0 1,1 24.01,28"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M34,24 A3,3 0 1,1 34.01,24"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M44,26 A3,3 0 1,1 44.01,26"/>
+                <GeometryDrawing Geometry="M8,20 Q4,32 8,44 M56,20 Q60,32 56,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Agent Infiltration -->
+    <DrawingImage x:Key="Icon_matrix_agent">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,4 A12,12 0 1,1 32.01,28"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M18,28 L46,28 L50,56 L14,56 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M24,8 L40,8 L40,16 L24,16 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M26,10 L30,10 L30,14 L26,14 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M34,10 L38,10 L38,14 L34,14 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M30,40 L34,40 L34,48 L30,48 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Source Code Access -->
+    <DrawingImage x:Key="Icon_matrix_source_code">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M8,8 L56,8 L56,56 L8,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M12,16 L20,24 L12,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M24,32 L40,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M12,40 L48,40 M12,48 L36,48">
+                    <GeometryDrawing.Pen><Pen Brush="#00aa30" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Bullet Time -->
+    <DrawingImage x:Key="Icon_matrix_bullet_time">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M32,32 A20,20 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,16 L32,32 L44,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M48,28 L60,32 L48,36 Z"/>
+                <GeometryDrawing Geometry="M52,24 Q56,32 52,40">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Architect Meeting -->
+    <DrawingImage x:Key="Icon_matrix_architect">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#fff" Geometry="M32,4 A12,12 0 1,1 32.01,28"/>
+                <GeometryDrawing Brush="#fff" Geometry="M18,28 L46,28 L50,56 L14,56 Z"/>
+                <GeometryDrawing Brush="#ddd" Geometry="M24,36 L28,36 L28,44 L24,44 Z"/>
+                <GeometryDrawing Brush="#ddd" Geometry="M36,36 L40,36 L40,44 L36,44 Z"/>
+                <GeometryDrawing Brush="#888" Geometry="M28,8 L36,8 L36,16 L28,16 Z"/>
+                <GeometryDrawing Geometry="M26,20 L32,24 L38,20">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Red Pill Factory -->
+    <DrawingImage x:Key="Icon_matrix_red_pill">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M20,24 A12,8 0 1,1 44,24 L44,40 A12,8 0 1,1 20,40 Z"/>
+                <GeometryDrawing Brush="#ff4444" Geometry="M24,24 A8,4 0 1,1 40,24"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M12,48 A10,6 0 1,1 32,48 L32,56 A10,6 0 1,1 12,56 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,48 A10,6 0 1,1 52,48 L52,56 A10,6 0 1,1 32,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Oracle Vision -->
+    <DrawingImage x:Key="Icon_matrix_oracle">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,8 A24,24 0 1,1 32.01,56">
+                    <GeometryDrawing.Pen><Pen Brush="#cc66ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,16 A16,16 0 1,1 32.01,48"/>
+                <GeometryDrawing Brush="#fff" Geometry="M24,32 A8,5 0 1,1 40,32 A8,5 0 1,1 24,32"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M30,32 A4,4 0 1,1 34,32 A4,4 0 1,1 30,32"/>
+                <GeometryDrawing Geometry="M32,16 L32,8 M20,20 L14,14 M44,20 L50,14">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Zion Mainframe -->
+    <DrawingImage x:Key="Icon_matrix_zion">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#8B4513" Geometry="M8,44 L56,44 L56,56 L8,56 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M12,20 L52,20 L52,44 L12,44 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M20,28 A4,4 0 1,1 20.01,28"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,28 A4,4 0 1,1 32.01,28"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M44,28 A4,4 0 1,1 44.01,28"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M20,38 A2,2 0 1,1 20.01,38"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,38 A2,2 0 1,1 32.01,38"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M44,38 A2,2 0 1,1 44.01,38"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- The One -->
+    <DrawingImage x:Key="Icon_matrix_the_one">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,4 A28,28 0 1,1 32.01,60"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,8 A24,24 0 1,1 32.01,56">
+                    <GeometryDrawing.Pen><Pen Brush="#00aa30" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M28,20 L36,20 L36,44 L28,44 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M24,20 L28,20 L28,28 L24,28 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M24,44 L40,44 L40,48 L24,48 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== DAILY CHALLENGE ICONS ==================== -->
+
+    <!-- Click Count Challenge -->
+    <DrawingImage x:Key="Icon_challenge_clicks">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M24,12 L40,12 L42,44 L22,44 Z"/>
+                <GeometryDrawing Brush="#c4a070" Geometry="M20,44 L44,44 L46,56 L18,56 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,20 A8,8 0 1,1 32.01,20"/>
+                <GeometryDrawing Geometry="M32,8 L32,12 M20,16 L24,20 M44,16 L40,20">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Critical Hits Challenge -->
+    <DrawingImage x:Key="Icon_challenge_crits">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L38,20 L56,20 L42,32 L48,50 L32,40 L16,50 L22,32 L8,20 L26,20 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#cc8800" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,16 L36,28 L32,24 L28,28 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,28 A4,4 0 1,1 32.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Combo Challenge -->
+    <DrawingImage x:Key="Icon_challenge_combos">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ff6600" Geometry="M24,48 Q20,32 32,20 Q44,32 40,48 Z"/>
+                <GeometryDrawing Brush="#ffcc00" Geometry="M28,48 Q26,38 32,28 Q38,38 36,48 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M30,48 Q29,42 32,36 Q35,42 34,48 Z"/>
+                <GeometryDrawing Brush="#ff6600" Geometry="M12,52 Q10,44 16,38 Q22,44 20,52 Z"/>
+                <GeometryDrawing Brush="#ff6600" Geometry="M44,52 Q42,44 48,38 Q54,44 52,52 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Quest Challenge -->
+    <DrawingImage x:Key="Icon_challenge_quests">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M16,4 L48,4 L48,56 L16,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#8B4513" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M20,16 L28,24 L44,8"/>
+                <GeometryDrawing Geometry="M20,16 L28,24 L44,8">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M20,32 L44,32 M20,40 L44,40 M20,48 L36,48">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Evidence Challenge -->
+    <DrawingImage x:Key="Icon_challenge_evidence">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M8,8 L36,8 L44,16 L44,40 L8,40 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ddd" Geometry="M36,8 L36,16 L44,16 Z"/>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M16,20 L44,20 L52,28 L52,56 L16,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ddd" Geometry="M44,20 L44,28 L52,28 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M24,44 A8,8 0 1,1 24.01,44"/>
+                <GeometryDrawing Geometry="M24,44 L24,38 L28,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00aa30" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== ACHIEVEMENT CATEGORY ICONS ==================== -->
+
+    <!-- Evidence Achievement -->
+    <DrawingImage x:Key="Icon_achievement_evidence">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,16 L48,16 L38,24 L42,36 L32,28 L22,36 L26,24 L16,16 L28,16 Z"/>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M24,36 L40,36 L44,56 L20,56 Z"/>
+                <GeometryDrawing Geometry="M26,42 L38,42 M26,48 L38,48">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Click Achievement -->
+    <DrawingImage x:Key="Icon_achievement_clicks">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,16 L48,16 L38,24 L42,36 L32,28 L22,36 L26,24 L16,16 L28,16 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M28,36 L36,36 L38,52 L26,52 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,44 A4,4 0 1,1 32.01,44"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Generator Achievement -->
+    <DrawingImage x:Key="Icon_achievement_generators">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,16 L48,16 L38,24 L42,36 L32,28 L22,36 L26,24 L16,16 L28,16 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M24,40 L40,40 L40,56 L24,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M28,46 A3,3 0 1,1 28.01,46"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M36,46 A3,3 0 1,1 36.01,46"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Conspiracy Achievement -->
+    <DrawingImage x:Key="Icon_achievement_conspiracies">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,16 L48,16 L38,24 L42,36 L32,28 L22,36 L26,24 L16,16 L28,16 Z"/>
+                <GeometryDrawing Geometry="M32,40 L20,56 L44,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M30,50 A3,2 0 1,1 34,50 A3,2 0 1,1 30,50"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M31,50 A1.5,1.5 0 1,1 33,50 A1.5,1.5 0 1,1 31,50"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Playtime Achievement -->
+    <DrawingImage x:Key="Icon_achievement_playtime">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,16 L48,16 L38,24 L42,36 L32,28 L22,36 L26,24 L16,16 L28,16 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M32,48 A12,12 0 1,1 32.01,48">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,42 L32,48 L38,52">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Prestige Achievement -->
+    <DrawingImage x:Key="Icon_achievement_prestige">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,16 L48,16 L38,24 L42,36 L32,28 L22,36 L26,24 L16,16 L28,16 Z"/>
+                <GeometryDrawing Brush="#4D9933ff" Geometry="M32,40 L20,56 L44,56 Z"/>
+                <GeometryDrawing Geometry="M32,40 L20,56 L44,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,48 A3,3 0 1,1 32.01,48"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Quest Achievement -->
+    <DrawingImage x:Key="Icon_achievement_quests">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,16 L48,16 L38,24 L42,36 L32,28 L22,36 L26,24 L16,16 L28,16 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M24,40 L40,40 L42,48 L32,56 L22,48 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M30,44 L34,44 L34,50 L30,50 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Meta/Fourth Wall Achievement -->
+    <DrawingImage x:Key="Icon_achievement_meta">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,16 L48,16 L38,24 L42,36 L32,28 L22,36 L26,24 L16,16 L28,16 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,48 A10,10 0 1,1 32.01,48"/>
+                <GeometryDrawing Brush="#fff" Geometry="M28,46 A2,2 0 1,1 28.01,46"/>
+                <GeometryDrawing Brush="#fff" Geometry="M36,46 A2,2 0 1,1 36.01,46"/>
+                <GeometryDrawing Geometry="M28,52 Q32,56 36,52">
+                    <GeometryDrawing.Pen><Pen Brush="#fff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
 </ResourceDictionary>

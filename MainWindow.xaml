@@ -16,6 +16,62 @@
         <SolidColorBrush x:Key="TextLight" Color="#e0e0e0"/>
         <SolidColorBrush x:Key="TextDim" Color="#888888"/>
 
+        <!-- Eye Ring Rotation Animations -->
+        <Storyboard x:Key="EyeRing1Animation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="EyeRing1Transform"
+                             Storyboard.TargetProperty="Angle"
+                             From="0" To="360" Duration="0:0:20"/>
+        </Storyboard>
+        <Storyboard x:Key="EyeRing2Animation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="EyeRing2Transform"
+                             Storyboard.TargetProperty="Angle"
+                             From="360" To="0" Duration="0:0:15"/>
+        </Storyboard>
+
+        <!-- Eye Pulse Animation (subtle breathing effect) -->
+        <Storyboard x:Key="EyePulseAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="EyeOuterScale"
+                             Storyboard.TargetProperty="ScaleX"
+                             From="1.0" To="1.02" Duration="0:0:2"
+                             AutoReverse="True">
+                <DoubleAnimation.EasingFunction>
+                    <SineEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="EyeOuterScale"
+                             Storyboard.TargetProperty="ScaleY"
+                             From="1.0" To="1.02" Duration="0:0:2"
+                             AutoReverse="True">
+                <DoubleAnimation.EasingFunction>
+                    <SineEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <!-- Ambient Glow Pulse -->
+        <Storyboard x:Key="AmbientGlowAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="EyeAmbientGlow"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.1" To="0.3" Duration="0:0:3"
+                             AutoReverse="True">
+                <DoubleAnimation.EasingFunction>
+                    <SineEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <!-- Ring Scale Pulse -->
+        <Storyboard x:Key="RingPulseAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="EyeRing1"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.3" To="0.5" Duration="0:0:1.5"
+                             AutoReverse="True"/>
+            <DoubleAnimation Storyboard.TargetName="EyeRing2"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.2" To="0.4" Duration="0:0:2"
+                             AutoReverse="True"/>
+        </Storyboard>
+
         <!-- Base button style to prevent white highlight -->
         <Style TargetType="Button">
             <Setter Property="Background" Value="#0f3460"/>
@@ -180,6 +236,16 @@
 
                         <!-- The Eye Button -->
                         <Grid x:Name="EyeContainer" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <!-- Ambient outer glow (animated) -->
+                            <Ellipse x:Name="EyeAmbientGlow" Width="260" Height="260"
+                                     Opacity="0.15" IsHitTestVisible="False">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush>
+                                        <GradientStop Color="#00ff41" Offset="0.3"/>
+                                        <GradientStop Color="Transparent" Offset="1.0"/>
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
                             <Ellipse x:Name="EyeGlow" Width="220" Height="220"
                                      Fill="Transparent" Opacity="0.3">
                                 <Ellipse.Effect>
@@ -187,15 +253,31 @@
                                 </Ellipse.Effect>
                             </Ellipse>
                             <Ellipse x:Name="EyeOuter" Width="180" Height="180"
-                                     Fill="#0f3460" Stroke="{StaticResource AccentGreen}" StrokeThickness="3">
+                                     Fill="#0f3460" Stroke="{StaticResource AccentGreen}" StrokeThickness="3"
+                                     RenderTransformOrigin="0.5,0.5">
                                 <Ellipse.Effect>
                                     <DropShadowEffect Color="#00ff41" BlurRadius="15" ShadowDepth="0" Opacity="0.6"/>
                                 </Ellipse.Effect>
+                                <Ellipse.RenderTransform>
+                                    <ScaleTransform x:Name="EyeOuterScale" ScaleX="1" ScaleY="1"/>
+                                </Ellipse.RenderTransform>
                             </Ellipse>
+                            <!-- Rotating ring 1 with dashed stroke -->
                             <Ellipse x:Name="EyeRing1" Width="140" Height="140"
-                                     Fill="Transparent" Stroke="#00ff41" StrokeThickness="1" Opacity="0.3"/>
+                                     Fill="Transparent" Stroke="#00ff41" StrokeThickness="1" Opacity="0.3"
+                                     StrokeDashArray="4 2" RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform x:Name="EyeRing1Transform" Angle="0"/>
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                            <!-- Rotating ring 2 with different dash pattern (opposite direction) -->
                             <Ellipse x:Name="EyeRing2" Width="100" Height="100"
-                                     Fill="Transparent" Stroke="#00ff41" StrokeThickness="1" Opacity="0.2"/>
+                                     Fill="Transparent" Stroke="#00ff41" StrokeThickness="1" Opacity="0.2"
+                                     StrokeDashArray="2 4" RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform x:Name="EyeRing2Transform" Angle="0"/>
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
                             <Ellipse x:Name="EyePupil" Width="60" Height="60"
                                      Fill="{StaticResource AccentGreen}" Opacity="0.4"/>
                             <Button x:Name="ClickButton" Width="180" Height="180"
@@ -494,6 +576,56 @@
                         </Border>
                     </TabItem>
 
+                    <!-- Challenge Modes Tab -->
+                    <TabItem x:Name="ChallengeModesTab" Header="Challenges">
+                        <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
+                                <StackPanel>
+                                    <!-- Active Challenge Display -->
+                                    <Border x:Name="ActiveChallengePanel" Background="#2a1a0a" BorderBrush="#ffd700"
+                                            BorderThickness="2" CornerRadius="8" Padding="15" Margin="0,0,0,15"
+                                            Visibility="Collapsed">
+                                        <StackPanel>
+                                            <TextBlock x:Name="ActiveChallengeTitle" FontSize="16" FontWeight="Bold"
+                                                       Foreground="#ffd700" HorizontalAlignment="Center"/>
+                                            <TextBlock x:Name="ActiveChallengeRules" TextWrapping="Wrap"
+                                                       FontSize="11" Foreground="{StaticResource TextDim}"
+                                                       HorizontalAlignment="Center" Margin="0,5,0,10"/>
+                                            <Border Background="#1a1a2e" CornerRadius="4" Height="12" Margin="0,5">
+                                                <Border x:Name="ChallengeProgressFill" Background="#ffd700"
+                                                        CornerRadius="4" HorizontalAlignment="Left" Width="0"/>
+                                            </Border>
+                                            <TextBlock x:Name="ChallengeProgressText" FontSize="12"
+                                                       Foreground="#ffd700" HorizontalAlignment="Center"/>
+                                            <TextBlock x:Name="ChallengeTimeText" FontSize="11"
+                                                       Foreground="{StaticResource TextDim}" HorizontalAlignment="Center"/>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                                                <Button x:Name="ClaimChallengeBtn" Click="ClaimChallengeBtn_Click"
+                                                        Content="CLAIM REWARD" FontWeight="Bold"
+                                                        Background="#ffd700" Foreground="Black" Padding="15,6"
+                                                        Margin="5,0" Visibility="Collapsed" Cursor="Hand"/>
+                                                <Button x:Name="AbandonChallengeBtn" Click="AbandonChallengeBtn_Click"
+                                                        Content="ABANDON" FontWeight="Bold"
+                                                        Background="#cc0000" Foreground="White" Padding="15,6"
+                                                        Margin="5,0" Cursor="Hand"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <TextBlock Text="CHALLENGE MODES" FontSize="14" FontWeight="Bold"
+                                               Foreground="#ffd700" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Test your skills! Challenges reset your progress but offer great rewards."
+                                               FontSize="11" Foreground="{StaticResource TextDim}" TextWrapping="Wrap" Margin="0,0,0,15"/>
+                                    <StackPanel x:Name="ChallengeModesPanel"/>
+
+                                    <TextBlock x:Name="CompletedChallengesHeader" Text="COMPLETED CHALLENGES" FontSize="14" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGreen}" Margin="0,15,0,10" Visibility="Collapsed"/>
+                                    <StackPanel x:Name="CompletedChallengesPanel"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Border>
+                    </TabItem>
+
                     <!-- Prestige Tab -->
                     <TabItem x:Name="IlluminatiTab" Header="Illuminati">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
@@ -526,6 +658,33 @@
                                     <TextBlock Text="PURCHASED UPGRADES" FontSize="14" FontWeight="Bold"
                                                Foreground="{StaticResource AccentGold}" Margin="0,0,0,10"/>
                                     <StackPanel x:Name="PurchasedIlluminatiPanel"/>
+
+                                    <!-- Matrix Prestige Section -->
+                                    <Border x:Name="MatrixSection" Background="#1a0a2e" BorderBrush="#00ff41"
+                                            BorderThickness="2" CornerRadius="8" Margin="0,20,0,0" Padding="15"
+                                            Visibility="Collapsed">
+                                        <StackPanel>
+                                            <TextBlock Text="⟁ THE MATRIX ⟁" FontSize="18" FontWeight="Bold"
+                                                       Foreground="#00ff41" HorizontalAlignment="Center"/>
+                                            <TextBlock x:Name="MatrixInfoText" TextWrapping="Wrap"
+                                                       FontSize="11" Foreground="{StaticResource TextDim}"
+                                                       HorizontalAlignment="Center" Margin="0,5,0,10"/>
+                                            <TextBlock x:Name="GlitchTokensText" FontSize="12" FontWeight="Bold"
+                                                       Foreground="#00ff41" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                            <Button x:Name="MatrixBreakButton" Click="MatrixBreakButton_Click"
+                                                    Content="BREAK THE MATRIX" FontWeight="Bold" FontSize="14"
+                                                    Background="#00ff41" Foreground="Black" Padding="20,8"
+                                                    HorizontalAlignment="Center" Cursor="Hand" IsEnabled="False"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <TextBlock x:Name="MatrixUpgradesHeader" Text="MATRIX UPGRADES" FontSize="14" FontWeight="Bold"
+                                               Foreground="#00ff41" Margin="0,15,0,10" Visibility="Collapsed"/>
+                                    <StackPanel x:Name="MatrixUpgradesPanel"/>
+
+                                    <TextBlock x:Name="PurchasedMatrixHeader" Text="UNLOCKED POWERS" FontSize="14" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGold}" Margin="0,15,0,10" Visibility="Collapsed"/>
+                                    <StackPanel x:Name="PurchasedMatrixPanel"/>
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>
