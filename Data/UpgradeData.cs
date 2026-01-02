@@ -709,6 +709,119 @@ public static class UpgradeData
             RequiredEvidence = 500000000000
         },
 
+        // === POST-ASCENSION GENERATOR BOOSTS ===
+        new Upgrade
+        {
+            Id = "mind_amplifier",
+            Name = "Mind Amplifier",
+            Description = "Mind Control Tower production x2",
+            FlavorText = "Stronger signals. Weaker wills.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "mind_control_tower",
+            EvidenceCost = 500000000000000,
+            RequiredGeneratorCount = 5,
+            RequiredGeneratorId = "mind_control_tower"
+        },
+        new Upgrade
+        {
+            Id = "weather_dominance",
+            Name = "Weather Dominance",
+            Description = "Weather Machine production x2",
+            FlavorText = "Sunny with a chance of conspiracy.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "weather_machine",
+            EvidenceCost = 15000000000000000,
+            RequiredGeneratorCount = 5,
+            RequiredGeneratorId = "weather_machine"
+        },
+        new Upgrade
+        {
+            Id = "clone_perfection",
+            Name = "Clone Perfection",
+            Description = "Clone Facility production x2",
+            FlavorText = "Even their mothers can't tell the difference.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "clone_facility",
+            EvidenceCost = 500000000000000000,
+            RequiredGeneratorCount = 3,
+            RequiredGeneratorId = "clone_facility"
+        },
+        new Upgrade
+        {
+            Id = "temporal_mastery",
+            Name = "Temporal Mastery",
+            Description = "Time Machine production x2",
+            FlavorText = "Yesterday's evidence delivered today.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "time_machine",
+            EvidenceCost = 20000000000000000000.0,
+            RequiredGeneratorCount = 3,
+            RequiredGeneratorId = "time_machine"
+        },
+        new Upgrade
+        {
+            Id = "inner_earth_network",
+            Name = "Inner Earth Network",
+            Description = "Hollow Earth Base production x2",
+            FlavorText = "Tunnels to everywhere. And everywhen.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "hollow_earth_base",
+            EvidenceCost = 1000000000000000000000.0,
+            RequiredGeneratorCount = 3,
+            RequiredGeneratorId = "hollow_earth_base"
+        },
+
+        // === ULTRA LATE GAME GLOBAL BOOSTS ===
+        new Upgrade
+        {
+            Id = "cosmic_awareness",
+            Name = "Cosmic Awareness",
+            Description = "All generators x5",
+            FlavorText = "The universe reveals its secrets.",
+            Type = UpgradeType.GlobalBoost,
+            Value = 5.0,
+            EvidenceCost = 100000000000000000000.0,
+            RequiredEvidence = 50000000000000000000.0
+        },
+        new Upgrade
+        {
+            Id = "reality_manipulation",
+            Name = "Reality Manipulation",
+            Description = "All generators x10",
+            FlavorText = "You don't discover truth. You create it.",
+            Type = UpgradeType.GlobalBoost,
+            Value = 10.0,
+            EvidenceCost = 100000000000000000000000.0,
+            RequiredEvidence = 50000000000000000000000.0
+        },
+        new Upgrade
+        {
+            Id = "omnipotent_understanding",
+            Name = "Omnipotent Understanding",
+            Description = "All generators x25",
+            FlavorText = "All knowledge flows through you.",
+            Type = UpgradeType.GlobalBoost,
+            Value = 25.0,
+            EvidenceCost = 100000000000000000000000000.0,
+            RequiredEvidence = 50000000000000000000000000.0
+        },
+        new Upgrade
+        {
+            Id = "universe_mastery",
+            Name = "Universe Mastery",
+            Description = "All generators x100",
+            FlavorText = "Congratulations. You ARE the conspiracy.",
+            Type = UpgradeType.GlobalBoost,
+            Value = 100.0,
+            EvidenceCost = 100000000000000000000000000000.0,
+            RequiredEvidence = 50000000000000000000000000000.0
+        },
+
         // === EARLY GAME FILLERS (small values for ~10% EPS) ===
         new Upgrade
         {

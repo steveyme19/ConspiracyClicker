@@ -234,6 +234,186 @@ public static class TinfoilShopData
             Type = TinfoilUpgradeType.CriticalChance,
             Value = 0.10,
             Icon = "★★★"
+        },
+
+        // === ADVANCED TIER ===
+        new TinfoilUpgrade
+        {
+            Id = "tinfoil_bodysuit",
+            Name = "Tinfoil Bodysuit",
+            Description = "+200% click power permanently",
+            FlavorText = "Full-body protection. Very crinkly.",
+            TinfoilCost = 800,
+            Type = TinfoilUpgradeType.ClickPower,
+            Value = 3.0,
+            Icon = "◠◠◠"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "tinfoil_bunker",
+            Name = "Tinfoil-Lined Bunker",
+            Description = "+400% click power permanently",
+            FlavorText = "The ultimate safe room.",
+            TinfoilCost = 5000,
+            Type = TinfoilUpgradeType.ClickPower,
+            Value = 5.0,
+            Icon = "▣▣▣"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "deep_state_director",
+            Name = "Deep State Director",
+            Description = "x2 evidence per second",
+            FlavorText = "You run the meetings now.",
+            TinfoilCost = 2500,
+            Type = TinfoilUpgradeType.EpsMultiplier,
+            Value = 2.0,
+            Icon = "◉◉◉"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "shadow_council_seat",
+            Name = "Shadow Council Seat",
+            Description = "x3 evidence per second",
+            FlavorText = "Your vote shapes reality.",
+            TinfoilCost = 15000,
+            Type = TinfoilUpgradeType.EpsMultiplier,
+            Value = 3.0,
+            Icon = "◉◉◉◉"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "reality_anchor",
+            Name = "Reality Anchor",
+            Description = "+20% quest success rate",
+            FlavorText = "Some things just go your way.",
+            TinfoilCost = 1500,
+            Type = TinfoilUpgradeType.QuestSuccess,
+            Value = 0.20,
+            Icon = "⚓"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "probability_manipulator",
+            Name = "Probability Manipulator",
+            Description = "+25% quest success rate",
+            FlavorText = "The dice are loaded. In your favor.",
+            TinfoilCost = 8000,
+            Type = TinfoilUpgradeType.QuestSuccess,
+            Value = 0.25,
+            Icon = "⚀⚄⚂"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "mind_control_crown",
+            Name = "Mind Control Crown",
+            Description = "x3 believers from all sources",
+            FlavorText = "They follow because they must.",
+            TinfoilCost = 3000,
+            Type = TinfoilUpgradeType.BelieverBonus,
+            Value = 3.0,
+            Icon = "♕♕♕"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "hivemind_beacon",
+            Name = "Hivemind Beacon",
+            Description = "x5 believers from all sources",
+            FlavorText = "One mind. Billions of bodies.",
+            TinfoilCost = 20000,
+            Type = TinfoilUpgradeType.BelieverBonus,
+            Value = 5.0,
+            Icon = "◎◎◎◎◎"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "neural_auto_clicker",
+            Name = "Neural Interface Clicker",
+            Description = "Auto-clicks 25x per second",
+            FlavorText = "Think clicks. Get clicks.",
+            TinfoilCost = 5000,
+            Type = TinfoilUpgradeType.AutoClicker,
+            Value = 25,
+            Icon = "⚙⚙⚙"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "reality_clicker",
+            Name = "Reality Bending Clicker",
+            Description = "Auto-clicks 50x per second",
+            FlavorText = "Clicks from every possible timeline.",
+            TinfoilCost = 25000,
+            Type = TinfoilUpgradeType.AutoClicker,
+            Value = 50,
+            Icon = "◇◇◇◇◇"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "third_eye_open",
+            Name = "Third Eye Fully Open",
+            Description = "+15% critical chance",
+            FlavorText = "See the matrix. Exploit the matrix.",
+            TinfoilCost = 4000,
+            Type = TinfoilUpgradeType.CriticalChance,
+            Value = 0.15,
+            Icon = "★★★★"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "omniscient_clicking",
+            Name = "Omniscient Clicking",
+            Description = "+20% critical chance (50%+ total)",
+            FlavorText = "Every click is the right click.",
+            TinfoilCost = 30000,
+            Type = TinfoilUpgradeType.CriticalChance,
+            Value = 0.20,
+            Icon = "★★★★★"
+        },
+
+        // === ELITE TIER ===
+        new TinfoilUpgrade
+        {
+            Id = "reality_distortion_aura",
+            Name = "Reality Distortion Aura",
+            Description = "x10 click power permanently",
+            FlavorText = "Truth bends around you.",
+            TinfoilCost = 50000,
+            Type = TinfoilUpgradeType.ClickPower,
+            Value = 10.0,
+            Icon = "☯☯☯"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "illuminati_chairman",
+            Name = "Illuminati Chairman",
+            Description = "x5 evidence per second",
+            FlavorText = "The all-seeing eye sees you... as its leader.",
+            TinfoilCost = 100000,
+            Type = TinfoilUpgradeType.EpsMultiplier,
+            Value = 5.0,
+            Icon = "△△△"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "fate_weaver",
+            Name = "Fate Weaver",
+            Description = "Quests cannot fail",
+            FlavorText = "You don't follow destiny. Destiny follows you.",
+            TinfoilCost = 75000,
+            Type = TinfoilUpgradeType.QuestSuccess,
+            Value = 1.0,
+            Icon = "∞"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "reality_clicker_supreme",
+            Name = "Infinite Click Engine",
+            Description = "Auto-clicks 100x per second",
+            FlavorText = "Clicking transcends time and space.",
+            TinfoilCost = 150000,
+            Type = TinfoilUpgradeType.AutoClicker,
+            Value = 100,
+            Icon = "◇◇◇◇◇◇◇"
         }
     };
 

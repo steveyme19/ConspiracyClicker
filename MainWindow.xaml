@@ -155,13 +155,19 @@
                         </StackPanel>
                     </Grid>
 
-                    <!-- Sound Toggle -->
-                    <Button x:Name="SoundToggleButton" Click="SoundToggle_Click"
-                            HorizontalAlignment="Right" Margin="15,0,15,5"
-                            Background="Transparent" BorderThickness="0" Cursor="Hand"
-                            ToolTip="Toggle Sound">
-                        <TextBlock x:Name="SoundToggleIcon" Text="🔊" FontSize="18"/>
-                    </Button>
+                    <!-- Sound Toggle and Menu -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="15,0,15,5">
+                        <Button x:Name="SoundToggleButton" Click="SoundToggle_Click"
+                                Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                ToolTip="Toggle Sound" Margin="0,0,10,0">
+                            <TextBlock x:Name="SoundToggleIcon" Text="🔊" FontSize="18"/>
+                        </Button>
+                        <Button Click="ReturnToMenu_Click"
+                                Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                ToolTip="Return to Main Menu">
+                            <TextBlock Text="☰" FontSize="18" Foreground="{StaticResource TextDim}"/>
+                        </Button>
+                    </StackPanel>
 
                     <!-- Click Area -->
                     <Grid Grid.Row="2">
@@ -751,6 +757,152 @@
                                     Padding="20,12" Background="#333344" Foreground="{StaticResource TextDim}"
                                     FontWeight="Bold" FontSize="14" Cursor="Hand"/>
                         </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Main Menu Overlay (shown on startup) -->
+        <Border x:Name="MainMenuOverlay" Visibility="Visible" Panel.ZIndex="700"
+                Background="#FF1a1a2e">
+            <Grid>
+                <Border Background="#16213e" BorderBrush="#00ff41"
+                        BorderThickness="3" CornerRadius="15" Padding="40"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        MinWidth="550">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#00ff41" BlurRadius="40" ShadowDepth="0" Opacity="0.4"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <!-- Title -->
+                        <TextBlock Text="👁 CONSPIRACY CLICKER 👁" FontSize="32" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentGreen}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="The Truth Is Out There" FontSize="14" FontStyle="Italic"
+                                   Foreground="{StaticResource TextDim}"
+                                   HorizontalAlignment="Center" Margin="0,5,0,30"/>
+
+                        <!-- Save Slots -->
+                        <TextBlock Text="SELECT SAVE SLOT" FontSize="14" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentGold}" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+                        <!-- Slot 1 -->
+                        <Border x:Name="SaveSlot1Border" Background="#0f1a2e" CornerRadius="8"
+                                Padding="15" Margin="0,0,0,10" Cursor="Hand"
+                                BorderBrush="#333366" BorderThickness="2"
+                                MouseDown="SaveSlot_Click" Tag="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="SLOT 1" FontSize="14" FontWeight="Bold"
+                                           Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Margin="20,0">
+                                    <TextBlock x:Name="Slot1Info" Text="- Empty Slot -"
+                                               Foreground="{StaticResource TextDim}" FontSize="12"/>
+                                    <TextBlock x:Name="Slot1Details" Text=""
+                                               Foreground="{StaticResource TextDim}" FontSize="10" Margin="0,3,0,0"/>
+                                </StackPanel>
+                                <Button x:Name="Slot1DeleteBtn" Grid.Column="2" Content="🗑"
+                                        Click="DeleteSlot_Click" Tag="1"
+                                        Visibility="Collapsed" Width="30" Height="30"
+                                        Background="#442222" BorderBrush="#883333" FontSize="14"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Slot 2 -->
+                        <Border x:Name="SaveSlot2Border" Background="#0f1a2e" CornerRadius="8"
+                                Padding="15" Margin="0,0,0,10" Cursor="Hand"
+                                BorderBrush="#333366" BorderThickness="2"
+                                MouseDown="SaveSlot_Click" Tag="2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="SLOT 2" FontSize="14" FontWeight="Bold"
+                                           Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Margin="20,0">
+                                    <TextBlock x:Name="Slot2Info" Text="- Empty Slot -"
+                                               Foreground="{StaticResource TextDim}" FontSize="12"/>
+                                    <TextBlock x:Name="Slot2Details" Text=""
+                                               Foreground="{StaticResource TextDim}" FontSize="10" Margin="0,3,0,0"/>
+                                </StackPanel>
+                                <Button x:Name="Slot2DeleteBtn" Grid.Column="2" Content="🗑"
+                                        Click="DeleteSlot_Click" Tag="2"
+                                        Visibility="Collapsed" Width="30" Height="30"
+                                        Background="#442222" BorderBrush="#883333" FontSize="14"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Slot 3 -->
+                        <Border x:Name="SaveSlot3Border" Background="#0f1a2e" CornerRadius="8"
+                                Padding="15" Margin="0,0,0,20" Cursor="Hand"
+                                BorderBrush="#333366" BorderThickness="2"
+                                MouseDown="SaveSlot_Click" Tag="3">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="SLOT 3" FontSize="14" FontWeight="Bold"
+                                           Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Margin="20,0">
+                                    <TextBlock x:Name="Slot3Info" Text="- Empty Slot -"
+                                               Foreground="{StaticResource TextDim}" FontSize="12"/>
+                                    <TextBlock x:Name="Slot3Details" Text=""
+                                               Foreground="{StaticResource TextDim}" FontSize="10" Margin="0,3,0,0"/>
+                                </StackPanel>
+                                <Button x:Name="Slot3DeleteBtn" Grid.Column="2" Content="🗑"
+                                        Click="DeleteSlot_Click" Tag="3"
+                                        Visibility="Collapsed" Width="30" Height="30"
+                                        Background="#442222" BorderBrush="#883333" FontSize="14"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Selected Slot Info -->
+                        <Border x:Name="SelectedSlotPanel" Background="#1a2a1a" CornerRadius="8"
+                                Padding="15" Margin="0,0,0,20" Visibility="Collapsed">
+                            <StackPanel>
+                                <TextBlock x:Name="SelectedSlotTitle" Text="SLOT 1 SELECTED" FontSize="12"
+                                           FontWeight="Bold" Foreground="{StaticResource AccentGold}"
+                                           HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button x:Name="ContinueBtn" Grid.Column="0" Content="CONTINUE"
+                                            Click="MenuContinue_Click"
+                                            Padding="15,10" Background="#00aa33" Foreground="White"
+                                            FontWeight="Bold" FontSize="12" Cursor="Hand"/>
+                                    <Button x:Name="NewGameBtn" Grid.Column="2" Content="NEW GAME"
+                                            Click="MenuNewGame_Click"
+                                            Padding="15,10" Background="#336699" Foreground="White"
+                                            FontWeight="Bold" FontSize="12" Cursor="Hand"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Quick Continue (if save exists) -->
+                        <Button x:Name="QuickContinueBtn" Content="▶ QUICK CONTINUE"
+                                Click="MenuQuickContinue_Click" Visibility="Collapsed"
+                                Padding="20,12" Background="#00aa33" Foreground="White"
+                                FontWeight="Bold" FontSize="14" Cursor="Hand" Margin="0,0,0,10"/>
+
+                        <!-- Quit Button -->
+                        <Button Content="QUIT" Click="MenuQuit_Click"
+                                Padding="20,12" Background="#442222" Foreground="#ff9999"
+                                FontWeight="Bold" FontSize="12" Cursor="Hand"/>
+
+                        <!-- Version -->
+                        <TextBlock Text="v1.0 - Click responsibly" FontSize="10"
+                                   Foreground="{StaticResource TextDim}"
+                                   HorizontalAlignment="Center" Margin="0,20,0,0"/>
                     </StackPanel>
                 </Border>
             </Grid>

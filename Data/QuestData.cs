@@ -152,6 +152,190 @@ public static class QuestData
             EvidenceMultiplier = 50000000,
             TinfoilReward = 100000,
             Icon = "🌀"
+        },
+
+        // === POST-ASCENSION QUESTS ===
+        new Quest
+        {
+            Id = "whistleblower_extraction",
+            Name = "Whistleblower Extraction",
+            Description = "Extract a key witness before they're silenced",
+            FlavorText = "They know too much. We need them to know more.",
+            Risk = QuestRisk.Medium,
+            BelieversRequired = 250,
+            DurationSeconds = 300,
+            SuccessChance = 0.70,
+            EvidenceMultiplier = 350,
+            TinfoilReward = 12,
+            Icon = "🏃"
+        },
+        new Quest
+        {
+            Id = "server_farm_hack",
+            Name = "Server Farm Infiltration",
+            Description = "Access classified data centers",
+            FlavorText = "The cloud isn't in the sky. It's underground.",
+            Risk = QuestRisk.Medium,
+            BelieversRequired = 800,
+            DurationSeconds = 600,
+            SuccessChance = 0.60,
+            EvidenceMultiplier = 900,
+            TinfoilReward = 30,
+            Icon = "💾"
+        },
+        new Quest
+        {
+            Id = "chemtrail_sample",
+            Name = "Chemtrail Sample Collection",
+            Description = "Collect air samples from suspicious flight paths",
+            FlavorText = "Those aren't contrails. The proof is in the particles.",
+            Risk = QuestRisk.Low,
+            BelieversRequired = 50,
+            DurationSeconds = 180,
+            SuccessChance = 0.88,
+            EvidenceMultiplier = 150,
+            TinfoilReward = 4,
+            Icon = "✈️"
+        },
+        new Quest
+        {
+            Id = "ancient_archive",
+            Name = "Ancient Archive Discovery",
+            Description = "Explore hidden chambers beneath historical sites",
+            FlavorText = "History is written by winners. The truth is buried by losers.",
+            Risk = QuestRisk.Medium,
+            BelieversRequired = 2500,
+            DurationSeconds = 900,
+            SuccessChance = 0.50,
+            EvidenceMultiplier = 2500,
+            TinfoilReward = 60,
+            Icon = "🏛️"
+        },
+        new Quest
+        {
+            Id = "celebrity_clone_hunt",
+            Name = "Celebrity Clone Investigation",
+            Description = "Document evidence of celebrity replacements",
+            FlavorText = "The ear lobes never lie.",
+            Risk = QuestRisk.Medium,
+            BelieversRequired = 8000,
+            DurationSeconds = 600,
+            SuccessChance = 0.45,
+            EvidenceMultiplier = 4000,
+            TinfoilReward = 80,
+            Icon = "🎭"
+        },
+        new Quest
+        {
+            Id = "haarp_investigation",
+            Name = "HAARP Investigation",
+            Description = "Monitor weather manipulation frequencies",
+            FlavorText = "That hurricane wasn't natural. Neither was that sunny day.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 25000,
+            DurationSeconds = 1200,
+            SuccessChance = 0.35,
+            EvidenceMultiplier = 25000,
+            TinfoilReward = 300,
+            Icon = "🌩️"
+        },
+        new Quest
+        {
+            Id = "bigfoot_alliance",
+            Name = "Cryptid Alliance Formation",
+            Description = "Establish contact with hidden humanoid populations",
+            FlavorText = "They've been hiding for a reason. Now they're ready to talk.",
+            Risk = QuestRisk.Medium,
+            BelieversRequired = 3000,
+            DurationSeconds = 480,
+            SuccessChance = 0.52,
+            EvidenceMultiplier = 1800,
+            TinfoilReward = 50,
+            Icon = "🦶"
+        },
+        new Quest
+        {
+            Id = "time_anomaly",
+            Name = "Time Anomaly Investigation",
+            Description = "Document temporal inconsistencies in historical records",
+            FlavorText = "The Mandela Effect isn't memory. It's evidence.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 100000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.22,
+            EvidenceMultiplier = 200000,
+            TinfoilReward = 2000,
+            Icon = "⏳"
+        },
+        new Quest
+        {
+            Id = "hollow_moon",
+            Name = "Hollow Moon Expedition",
+            Description = "Analyze lunar ringing data for artificial structures",
+            FlavorText = "When Apollo hit it, the moon rang like a bell. Bells are hollow.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 300000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.15,
+            EvidenceMultiplier = 800000,
+            TinfoilReward = 5000,
+            Icon = "🌑"
+        },
+        new Quest
+        {
+            Id = "reptilian_gala",
+            Name = "Reptilian Gala Infiltration",
+            Description = "Attend an elite gathering in disguise",
+            FlavorText = "Remember: act cold-blooded, avoid heat lamps.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 80000,
+            DurationSeconds = 1200,
+            SuccessChance = 0.25,
+            EvidenceMultiplier = 120000,
+            TinfoilReward = 1500,
+            Icon = "🦎"
+        },
+        new Quest
+        {
+            Id = "antarctic_expedition",
+            Name = "Antarctic Expedition",
+            Description = "Explore the restricted zones beyond the ice wall",
+            FlavorText = "They guard it for a reason. Let's find out why.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 10000000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.08,
+            EvidenceMultiplier = 100000000,
+            TinfoilReward = 150000,
+            Icon = "🧊"
+        },
+        new Quest
+        {
+            Id = "alien_embassy",
+            Name = "Alien Embassy Contact",
+            Description = "Establish diplomatic relations with extraterrestrial observers",
+            FlavorText = "They've been watching. Time to start talking.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 50000000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.04,
+            EvidenceMultiplier = 500000000,
+            TinfoilReward = 500000,
+            Icon = "👽"
+        },
+        new Quest
+        {
+            Id = "simulation_glitch",
+            Name = "Simulation Glitch Exploitation",
+            Description = "Find and document cracks in reality's code",
+            FlavorText = "Deja vu isn't a bug. It's a feature we can exploit.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 200000000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.03,
+            EvidenceMultiplier = 2000000000,
+            TinfoilReward = 1000000,
+            Icon = "🔧"
         }
     };
 

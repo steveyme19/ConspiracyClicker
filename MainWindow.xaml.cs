@@ -190,6 +190,37 @@ public partial class MainWindow : Window
     private Debunker? _activeDebunker = null;
     private double _debunkerSpawnTimer = 0;
 
+    // === HOSTILE EVENTS ===
+    // Evidence Thief: Moves around the screen, click to catch (single click but moving target)
+    private class EvidenceThief
+    {
+        public required Border Element { get; init; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double VelocityX { get; set; }
+        public double VelocityY { get; set; }
+        public double TimeLeft { get; set; }
+        public double StealAmount { get; set; }
+        public double Speed { get; set; }
+        public double DirectionChangeTimer { get; set; }
+    }
+    private EvidenceThief? _activeEvidenceThief = null;
+    private double _evidenceThiefTimer = 0;
+
+    // Tinfoil Thief: Progress bar fills up, click to push it back, scales with tinfoil amount
+    private class TinfoilThief
+    {
+        public required Border Element { get; init; }
+        public required Border ProgressBar { get; init; }
+        public double StealProgress { get; set; } // 0 to 1, steals at 1
+        public double ProgressRate { get; set; } // How fast it fills
+        public double PushbackAmount { get; set; } // How much each click reduces progress
+        public int StealAmount { get; set; }
+        public double TimeLeft { get; set; } // Max time before it leaves (even if not full)
+    }
+    private TinfoilThief? _activeTinfoilThief = null;
+    private double _tinfoilThiefTimer = 0;
+
     // === SPECIAL EVENTS ===
     private double _specialEventTimer = 0;
 
@@ -240,6 +271,10 @@ public partial class MainWindow : Window
     private int _memoryIndex = 0;
     private int _memoryDifficulty = 4; // Number of cells to remember (4-12)
 
+    // Main menu state
+    private int _selectedSlot = 0;
+    private bool _gameStarted = false;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -269,8 +304,9 @@ public partial class MainWindow : Window
         SoundManager.Initialize();
 
         InitializeGeneratorButtons();
-        UpdateUI();
-        _engine.Start();
+
+        // Show main menu on startup
+        RefreshMainMenu();
     }
 
     private void OnRendering(object? sender, EventArgs e)
@@ -287,6 +323,8 @@ public partial class MainWindow : Window
         UpdateNewsTicker(deltaTime);
         UpdateLuckyDrops(deltaTime);
         UpdateDebunker(deltaTime);
+        UpdateEvidenceThief(deltaTime);
+        UpdateTinfoilThief(deltaTime);
         UpdateSpecialEvents(deltaTime);
         UpdateMinigame(deltaTime);
 
@@ -652,6 +690,389 @@ public partial class MainWindow : Window
 
             InteractiveCanvas.Children.Remove(_activeDebunker.Element);
             _activeDebunker = null;
+        }
+    }
+
+    // === EVIDENCE THIEF (Moving target - chase and click!) ===
+    private void UpdateEvidenceThief(double deltaTime)
+    {
+        if (_activeEvidenceThief != null)
+        {
+            _activeEvidenceThief.TimeLeft -= deltaTime;
+            _activeEvidenceThief.DirectionChangeTimer -= deltaTime;
+
+            // Change direction randomly
+            if (_activeEvidenceThief.DirectionChangeTimer <= 0)
+            {
+                _activeEvidenceThief.DirectionChangeTimer = 0.5 + _random.NextDouble() * 0.5;
+                double angle = _random.NextDouble() * Math.PI * 2;
+                _activeEvidenceThief.VelocityX = Math.Cos(angle) * _activeEvidenceThief.Speed;
+                _activeEvidenceThief.VelocityY = Math.Sin(angle) * _activeEvidenceThief.Speed;
+            }
+
+            // Move the thief
+            double width = InteractiveCanvas.ActualWidth;
+            double height = InteractiveCanvas.ActualHeight;
+            _activeEvidenceThief.X += _activeEvidenceThief.VelocityX * deltaTime;
+            _activeEvidenceThief.Y += _activeEvidenceThief.VelocityY * deltaTime;
+
+            // Bounce off edges
+            if (_activeEvidenceThief.X < 10)
+            {
+                _activeEvidenceThief.X = 10;
+                _activeEvidenceThief.VelocityX = Math.Abs(_activeEvidenceThief.VelocityX);
+            }
+            if (_activeEvidenceThief.X > width - 90)
+            {
+                _activeEvidenceThief.X = width - 90;
+                _activeEvidenceThief.VelocityX = -Math.Abs(_activeEvidenceThief.VelocityX);
+            }
+            if (_activeEvidenceThief.Y < 10)
+            {
+                _activeEvidenceThief.Y = 10;
+                _activeEvidenceThief.VelocityY = Math.Abs(_activeEvidenceThief.VelocityY);
+            }
+            if (_activeEvidenceThief.Y > height - 70)
+            {
+                _activeEvidenceThief.Y = height - 70;
+                _activeEvidenceThief.VelocityY = -Math.Abs(_activeEvidenceThief.VelocityY);
+            }
+
+            Canvas.SetLeft(_activeEvidenceThief.Element, _activeEvidenceThief.X);
+            Canvas.SetTop(_activeEvidenceThief.Element, _activeEvidenceThief.Y);
+
+            // Update timer display
+            var timerText = _activeEvidenceThief.Element.Child as StackPanel;
+            if (timerText?.Children.Count > 1 && timerText.Children[1] is TextBlock tb)
+            {
+                tb.Text = $"⏱️ {_activeEvidenceThief.TimeLeft:F1}s - CATCH ME!";
+            }
+
+            if (_activeEvidenceThief.TimeLeft <= 0)
+            {
+                // Thief escaped - steal evidence
+                double stolen = Math.Min(_engine.State.Evidence, _activeEvidenceThief.StealAmount);
+                _engine.State.Evidence -= stolen;
+                ShowToast("💸", $"Evidence stolen! Lost {NumberFormatter.Format(stolen)}!");
+                AddNotification($"🦹 Evidence Thief escaped with {NumberFormatter.Format(stolen)} evidence!", RedBrush);
+                SoundManager.Play("error");
+                InteractiveCanvas.Children.Remove(_activeEvidenceThief.Element);
+                _activeEvidenceThief = null;
+            }
+        }
+        else
+        {
+            // Maybe spawn a new evidence thief
+            if (!_minigameActive && MinigameOverlay.Visibility != Visibility.Visible && _activeDebunker == null)
+            {
+                _evidenceThiefTimer += deltaTime;
+                if (_evidenceThiefTimer > 60 + _random.NextDouble() * 45 && _engine.State.Evidence > 1000)
+                {
+                    _evidenceThiefTimer = 0;
+                    SpawnEvidenceThief();
+                }
+            }
+        }
+    }
+
+    private void SpawnEvidenceThief()
+    {
+        double width = InteractiveCanvas.ActualWidth;
+        double height = InteractiveCanvas.ActualHeight;
+
+        // Start from a random edge
+        double startX, startY;
+        int edge = _random.Next(4);
+        switch (edge)
+        {
+            case 0: startX = 10; startY = _random.NextDouble() * (height - 80); break;
+            case 1: startX = width - 90; startY = _random.NextDouble() * (height - 80); break;
+            case 2: startX = _random.NextDouble() * (width - 100); startY = 10; break;
+            default: startX = _random.NextDouble() * (width - 100); startY = height - 70; break;
+        }
+
+        // Calculate steal amount (15-25% of current evidence)
+        double stealPercent = 0.15 + _random.NextDouble() * 0.10;
+        double stealAmount = _engine.State.Evidence * stealPercent;
+
+        var border = new Border
+        {
+            Background = new SolidColorBrush(Color.FromArgb(230, 100, 50, 20)),
+            BorderBrush = OrangeBrush,
+            BorderThickness = new Thickness(3),
+            CornerRadius = new CornerRadius(25),
+            Padding = new Thickness(10),
+            Cursor = Cursors.Hand,
+            Width = 80,
+            Height = 60
+        };
+
+        var stack = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+        stack.Children.Add(new TextBlock
+        {
+            Text = "🦹",
+            FontSize = 24,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            FontFamily = EmojiFont
+        });
+        stack.Children.Add(new TextBlock
+        {
+            Text = $"⏱️ 6.0s - CATCH ME!",
+            FontSize = 9,
+            Foreground = LightBrush,
+            HorizontalAlignment = HorizontalAlignment.Center
+        });
+
+        border.Child = stack;
+        border.MouseDown += EvidenceThief_Click;
+
+        Canvas.SetLeft(border, startX);
+        Canvas.SetTop(border, startY);
+        InteractiveCanvas.Children.Add(border);
+
+        double speed = 120 + _random.NextDouble() * 60; // 120-180 pixels per second
+        double angle = _random.NextDouble() * Math.PI * 2;
+
+        _activeEvidenceThief = new EvidenceThief
+        {
+            Element = border,
+            X = startX,
+            Y = startY,
+            VelocityX = Math.Cos(angle) * speed,
+            VelocityY = Math.Sin(angle) * speed,
+            TimeLeft = 6.0,
+            StealAmount = stealAmount,
+            Speed = speed,
+            DirectionChangeTimer = 0.5
+        };
+
+        ShowToast("🚨", "EVIDENCE THIEF! Chase and click to catch!");
+        AddNotification($"🦹 Evidence Thief appeared! Chase and click before time runs out!", OrangeBrush);
+        SoundManager.Play("debunker");
+    }
+
+    private void EvidenceThief_Click(object sender, MouseButtonEventArgs e)
+    {
+        if (_activeEvidenceThief == null) return;
+
+        // Single click catches the thief!
+        SoundManager.Play("achievement");
+        double reward = _engine.CalculateEvidencePerSecond() * 45;
+        _engine.State.Evidence += reward;
+        _engine.State.TotalEvidenceEarned += reward;
+        _engine.State.Tinfoil += 3;
+        ShowToast("🎉", $"Thief caught! +{NumberFormatter.Format(reward)} evidence +3 tinfoil!");
+        AddNotification($"🎉 Evidence Thief caught! +{NumberFormatter.Format(reward)} evidence +3 tinfoil!", GreenBrush);
+
+        // Victory particles
+        double posX = _activeEvidenceThief.X + 40;
+        double posY = _activeEvidenceThief.Y + 30;
+        SpawnLuckyDropParticles(posX, posY);
+
+        InteractiveCanvas.Children.Remove(_activeEvidenceThief.Element);
+        _activeEvidenceThief = null;
+    }
+
+    // === TINFOIL THIEF (Progress bar - click to push back!) ===
+    private void UpdateTinfoilThief(double deltaTime)
+    {
+        if (_activeTinfoilThief != null)
+        {
+            _activeTinfoilThief.TimeLeft -= deltaTime;
+
+            // Progress fills up over time
+            _activeTinfoilThief.StealProgress += _activeTinfoilThief.ProgressRate * deltaTime;
+            _activeTinfoilThief.StealProgress = Math.Min(1.0, _activeTinfoilThief.StealProgress);
+
+            // Update progress bar visual
+            _activeTinfoilThief.ProgressBar.Width = 140 * _activeTinfoilThief.StealProgress;
+
+            // Update text
+            var stack = _activeTinfoilThief.Element.Child as StackPanel;
+            if (stack?.Children.Count > 2 && stack.Children[2] is TextBlock tb)
+            {
+                int percent = (int)(_activeTinfoilThief.StealProgress * 100);
+                tb.Text = $"Stealing: {percent}% ({_activeTinfoilThief.StealAmount} tinfoil)";
+            }
+
+            if (_activeTinfoilThief.StealProgress >= 1.0)
+            {
+                // Thief succeeded - steal tinfoil
+                int stolen = Math.Min(_engine.State.Tinfoil, _activeTinfoilThief.StealAmount);
+                _engine.State.Tinfoil -= stolen;
+                ShowToast("💎", $"Tinfoil stolen! Lost {stolen}!");
+                AddNotification($"🎭 Tinfoil Thief stole {stolen} tinfoil!", RedBrush);
+                SoundManager.Play("error");
+                InteractiveCanvas.Children.Remove(_activeTinfoilThief.Element);
+                _activeTinfoilThief = null;
+            }
+            else if (_activeTinfoilThief.TimeLeft <= 0)
+            {
+                // Time ran out but didn't steal - thief gives up
+                ShowToast("😅", "Tinfoil Thief gave up!");
+                AddNotification($"🎭 Tinfoil Thief fled empty-handed!", GreenBrush);
+                InteractiveCanvas.Children.Remove(_activeTinfoilThief.Element);
+                _activeTinfoilThief = null;
+            }
+        }
+        else
+        {
+            // Maybe spawn a new tinfoil thief (rarer than evidence thief)
+            if (!_minigameActive && MinigameOverlay.Visibility != Visibility.Visible &&
+                _activeDebunker == null && _activeEvidenceThief == null)
+            {
+                _tinfoilThiefTimer += deltaTime;
+                if (_tinfoilThiefTimer > 90 + _random.NextDouble() * 60 && _engine.State.Tinfoil >= 5)
+                {
+                    _tinfoilThiefTimer = 0;
+                    SpawnTinfoilThief();
+                }
+            }
+        }
+    }
+
+    private void SpawnTinfoilThief()
+    {
+        double centerX = InteractiveCanvas.ActualWidth / 2;
+        double centerY = InteractiveCanvas.ActualHeight / 2;
+
+        // Scale with tinfoil amount
+        int tinfoil = _engine.State.Tinfoil;
+
+        // Steal amount scales: 10-30% of current tinfoil, minimum 1, max 100
+        double stealPercent = 0.10 + Math.Min(0.20, tinfoil / 500.0 * 0.20);
+        int stealAmount = Math.Max(1, Math.Min(100, (int)(tinfoil * stealPercent)));
+
+        // Progress rate scales: more tinfoil = faster steal (but also more time)
+        double baseRate = 0.15; // Base: fills in ~6.7 seconds
+        double scaledRate = baseRate + Math.Min(0.10, tinfoil / 1000.0 * 0.10); // Up to 0.25 (4 seconds)
+
+        // Pushback scales: harder to push back with more tinfoil
+        double pushback = 0.20 - Math.Min(0.12, tinfoil / 500.0 * 0.12); // 0.20 down to 0.08
+        pushback = Math.Max(0.05, pushback);
+
+        // Time limit scales up slightly with tinfoil
+        double timeLimit = 8.0 + Math.Min(4.0, tinfoil / 200.0);
+
+        var border = new Border
+        {
+            Background = new SolidColorBrush(Color.FromArgb(230, 50, 30, 80)),
+            BorderBrush = PurpleBrush,
+            BorderThickness = new Thickness(3),
+            CornerRadius = new CornerRadius(10),
+            Padding = new Thickness(12),
+            Cursor = Cursors.Hand,
+            Width = 180
+        };
+
+        var stack = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
+        stack.Children.Add(new TextBlock
+        {
+            Text = "🎭 TINFOIL THIEF!",
+            FontSize = 14,
+            FontWeight = FontWeights.Bold,
+            Foreground = PurpleBrush,
+            HorizontalAlignment = HorizontalAlignment.Center
+        });
+
+        // Progress bar container
+        var progressContainer = new Border
+        {
+            Background = new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)),
+            BorderBrush = SilverBrush,
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(3),
+            Height = 16,
+            Width = 140,
+            Margin = new Thickness(0, 8, 0, 0),
+            HorizontalAlignment = HorizontalAlignment.Center
+        };
+
+        var progressBar = new Border
+        {
+            Background = PurpleBrush,
+            CornerRadius = new CornerRadius(2),
+            Height = 12,
+            Width = 0,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            Margin = new Thickness(2)
+        };
+        progressContainer.Child = progressBar;
+        stack.Children.Add(progressContainer);
+
+        stack.Children.Add(new TextBlock
+        {
+            Text = $"Stealing: 0% ({stealAmount} tinfoil)",
+            FontSize = 10,
+            Foreground = LightBrush,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 5, 0, 0)
+        });
+
+        stack.Children.Add(new TextBlock
+        {
+            Text = "CLICK TO PUSH BACK!",
+            FontSize = 9,
+            FontWeight = FontWeights.Bold,
+            Foreground = GoldBrush,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 3, 0, 0)
+        });
+
+        border.Child = stack;
+        border.MouseDown += TinfoilThief_Click;
+
+        double offsetX = (_random.NextDouble() - 0.5) * 100;
+        double offsetY = (_random.NextDouble() - 0.5) * 80;
+        Canvas.SetLeft(border, centerX - 90 + offsetX);
+        Canvas.SetTop(border, centerY - 50 + offsetY);
+        InteractiveCanvas.Children.Add(border);
+
+        _activeTinfoilThief = new TinfoilThief
+        {
+            Element = border,
+            ProgressBar = progressBar,
+            StealProgress = 0,
+            ProgressRate = scaledRate,
+            PushbackAmount = pushback,
+            StealAmount = stealAmount,
+            TimeLeft = timeLimit
+        };
+
+        ShowToast("🚨", "TINFOIL THIEF! Click to push back the steal meter!");
+        AddNotification($"🎭 Tinfoil Thief appeared! Click rapidly to prevent the steal!", PurpleBrush);
+        SoundManager.Play("debunker");
+    }
+
+    private void TinfoilThief_Click(object sender, MouseButtonEventArgs e)
+    {
+        if (_activeTinfoilThief == null) return;
+
+        // Push back the progress
+        _activeTinfoilThief.StealProgress -= _activeTinfoilThief.PushbackAmount;
+        _activeTinfoilThief.StealProgress = Math.Max(0, _activeTinfoilThief.StealProgress);
+
+        // Shake effect
+        var transform = _activeTinfoilThief.Element.RenderTransform as TranslateTransform ?? new TranslateTransform();
+        _activeTinfoilThief.Element.RenderTransform = transform;
+        var shake = new DoubleAnimation { From = -3, To = 3, Duration = TimeSpan.FromMilliseconds(30), AutoReverse = true };
+        transform.BeginAnimation(TranslateTransform.XProperty, shake);
+
+        // If pushed all the way back, thief flees
+        if (_activeTinfoilThief.StealProgress <= 0)
+        {
+            SoundManager.Play("achievement");
+            int reward = 2 + _random.Next(4); // 2-5 tinfoil
+            _engine.State.Tinfoil += reward;
+            ShowToast("🎉", $"Thief defeated! +{reward} tinfoil!");
+            AddNotification($"🎉 Tinfoil Thief defeated! +{reward} tinfoil!", GreenBrush);
+
+            double posX = Canvas.GetLeft(_activeTinfoilThief.Element) + 90;
+            double posY = Canvas.GetTop(_activeTinfoilThief.Element) + 40;
+            SpawnLuckyDropParticles(posX, posY);
+
+            InteractiveCanvas.Children.Remove(_activeTinfoilThief.Element);
+            _activeTinfoilThief = null;
         }
     }
 
@@ -2361,7 +2782,7 @@ public partial class MainWindow : Window
             {
                 var gen = GeneratorData.GetById(genId);
                 if (gen != null)
-                    OwnedGeneratorsPanel.Children.Add(new TextBlock { Text = $"{gen.Name}: +{believers}", Foreground = DimBrush, FontSize = 11, Margin = new Thickness(0, 1, 0, 1) });
+                    OwnedGeneratorsPanel.Children.Add(new TextBlock { Text = $"{gen.Name}: +{NumberFormatter.Format(believers)}", Foreground = DimBrush, FontSize = 11, Margin = new Thickness(0, 1, 0, 1) });
             }
 
             double tinfoilMultiplier = _engine.GetTinfoilBelieverMultiplier();
@@ -2411,6 +2832,141 @@ public partial class MainWindow : Window
     private void AscendCancel_Click(object sender, RoutedEventArgs e)
     {
         AscendOverlay.Visibility = Visibility.Collapsed;
+    }
+
+    // === MAIN MENU ===
+    private void RefreshMainMenu()
+    {
+        var slots = _engine.SaveManager.GetAllSlotInfo();
+
+        // Update slot 1
+        UpdateSlotDisplay(1, slots[0], Slot1Info, Slot1Details, Slot1DeleteBtn, SaveSlot1Border);
+        UpdateSlotDisplay(2, slots[1], Slot2Info, Slot2Details, Slot2DeleteBtn, SaveSlot2Border);
+        UpdateSlotDisplay(3, slots[2], Slot3Info, Slot3Details, Slot3DeleteBtn, SaveSlot3Border);
+
+        // Show quick continue if any save exists
+        int? lastSlot = _engine.SaveManager.GetLastUsedSlot();
+        QuickContinueBtn.Visibility = lastSlot.HasValue ? Visibility.Visible : Visibility.Collapsed;
+
+        // Hide selected panel until slot is clicked
+        SelectedSlotPanel.Visibility = Visibility.Collapsed;
+        _selectedSlot = 0;
+    }
+
+    private void UpdateSlotDisplay(int slot, SaveSlotInfo info, TextBlock infoText, TextBlock detailsText,
+                                    Button deleteBtn, Border border)
+    {
+        if (info.Exists)
+        {
+            infoText.Text = $"Evidence: {NumberFormatter.Format(info.TotalEvidence)} | Ascensions: {info.AscensionCount}";
+            infoText.Foreground = LightBrush;
+
+            var playTimeSpan = TimeSpan.FromSeconds(info.PlayTimeSeconds);
+            string playTime = playTimeSpan.TotalHours >= 1
+                ? $"{(int)playTimeSpan.TotalHours}h {playTimeSpan.Minutes}m"
+                : $"{playTimeSpan.Minutes}m";
+            string lastPlayed = info.LastPlayed.Date == DateTime.Today
+                ? $"Today {info.LastPlayed:HH:mm}"
+                : info.LastPlayed.ToString("MMM d, yyyy");
+            detailsText.Text = $"Playtime: {playTime} | Last: {lastPlayed}";
+            deleteBtn.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            infoText.Text = "- Empty Slot -";
+            infoText.Foreground = DimBrush;
+            detailsText.Text = "Click to start a new game";
+            deleteBtn.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void SaveSlot_Click(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is Border border && border.Tag is string slotStr && int.TryParse(slotStr, out int slot))
+        {
+            _selectedSlot = slot;
+
+            // Update visual selection
+            SaveSlot1Border.BorderBrush = slot == 1 ? GreenBrush : new SolidColorBrush(Color.FromRgb(51, 51, 102));
+            SaveSlot2Border.BorderBrush = slot == 2 ? GreenBrush : new SolidColorBrush(Color.FromRgb(51, 51, 102));
+            SaveSlot3Border.BorderBrush = slot == 3 ? GreenBrush : new SolidColorBrush(Color.FromRgb(51, 51, 102));
+
+            // Show action panel
+            SelectedSlotPanel.Visibility = Visibility.Visible;
+            SelectedSlotTitle.Text = $"SLOT {slot} SELECTED";
+
+            var info = _engine.SaveManager.GetSlotInfo(slot);
+            ContinueBtn.Visibility = info.Exists ? Visibility.Visible : Visibility.Collapsed;
+            NewGameBtn.Content = info.Exists ? "OVERWRITE" : "NEW GAME";
+        }
+    }
+
+    private void DeleteSlot_Click(object sender, RoutedEventArgs e)
+    {
+        e.Handled = true; // Prevent bubbling to border click
+        if (sender is Button btn && btn.Tag is string slotStr && int.TryParse(slotStr, out int slot))
+        {
+            // Simple confirmation - delete immediately
+            _engine.SaveManager.DeleteSlot(slot);
+            RefreshMainMenu();
+            SoundManager.Play("error");
+        }
+    }
+
+    private void MenuContinue_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedSlot > 0)
+        {
+            StartGameWithSlot(_selectedSlot, false);
+        }
+    }
+
+    private void MenuNewGame_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedSlot > 0)
+        {
+            StartGameWithSlot(_selectedSlot, true);
+        }
+    }
+
+    private void MenuQuickContinue_Click(object sender, RoutedEventArgs e)
+    {
+        int? lastSlot = _engine.SaveManager.GetLastUsedSlot();
+        if (lastSlot.HasValue)
+        {
+            StartGameWithSlot(lastSlot.Value, false);
+        }
+    }
+
+    private void MenuQuit_Click(object sender, RoutedEventArgs e)
+    {
+        Application.Current.Shutdown();
+    }
+
+    private void ReturnToMenu_Click(object sender, RoutedEventArgs e)
+    {
+        // Save current game and return to main menu
+        _engine.Stop();
+        MainMenuOverlay.Visibility = Visibility.Visible;
+        RefreshMainMenu();
+    }
+
+    private void StartGameWithSlot(int slot, bool isNewGame)
+    {
+        if (isNewGame)
+        {
+            _engine.NewGame(slot);
+        }
+        else
+        {
+            _engine.LoadSlot(slot);
+        }
+
+        MainMenuOverlay.Visibility = Visibility.Collapsed;
+        _gameStarted = true;
+        UpdateUI();
+        _engine.Start();
+        SoundManager.Play("achievement");
     }
 
     private void SkillButton_Click(object sender, RoutedEventArgs e)

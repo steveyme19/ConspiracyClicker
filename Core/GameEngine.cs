@@ -39,17 +39,107 @@ public class GameEngine
     private DateTime _lastDailyCheck = DateTime.MinValue;
 
     public GameState State => _state;
+    public SaveManager SaveManager => _saveManager;
 
     public GameEngine()
     {
         _saveManager = new SaveManager();
-        _state = _saveManager.Load();
+        _state = new GameState(); // Start with empty state, load via menu
 
         _gameLoop = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(TICK_RATE_MS) };
         _gameLoop.Tick += GameLoop_Tick;
 
         _autoSaveTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(AUTO_SAVE_INTERVAL_MS) };
         _autoSaveTimer.Tick += (s, e) => Save();
+    }
+
+    public void LoadSlot(int slot)
+    {
+        Stop();
+        var loadedState = _saveManager.LoadFromSlot(slot);
+        CopyState(loadedState);
+    }
+
+    public void NewGame(int slot)
+    {
+        Stop();
+        _saveManager.SetCurrentSlot(slot);
+        var newState = new GameState();
+        CopyState(newState);
+        Save(); // Save the new empty state
+    }
+
+    private void CopyState(GameState source)
+    {
+        // Copy all properties from source to current state
+        _state.Evidence = source.Evidence;
+        _state.TotalEvidenceEarned = source.TotalEvidenceEarned;
+        _state.Believers = source.Believers;
+        _state.BusyBelievers = source.BusyBelievers;
+        _state.Tinfoil = source.Tinfoil;
+        _state.IlluminatiTokens = source.IlluminatiTokens;
+        _state.GlitchTokens = source.GlitchTokens;
+        _state.TimesAscended = source.TimesAscended;
+        _state.TimesMatrixBroken = source.TimesMatrixBroken;
+        _state.TotalIlluminatiTokensEarned = source.TotalIlluminatiTokensEarned;
+        _state.TotalPlayTimeSeconds = source.TotalPlayTimeSeconds;
+        _state.LastSaveTime = source.LastSaveTime;
+        _state.ComboMeter = source.ComboMeter;
+        _state.ComboClicks = source.ComboClicks;
+        _state.TotalClicks = source.TotalClicks;
+        _state.CriticalClicks = source.CriticalClicks;
+        _state.QuestsCompleted = source.QuestsCompleted;
+        _state.QuestsFailed = source.QuestsFailed;
+        _state.BelieversLost = source.BelieversLost;
+        _state.SkillPoints = source.SkillPoints;
+
+        // Daily challenge tracking
+        _state.LastDailyChallengeDate = source.LastDailyChallengeDate;
+        _state.TodayClicks = source.TodayClicks;
+        _state.TodayEvidence = source.TodayEvidence;
+        _state.TodayQuestsCompleted = source.TodayQuestsCompleted;
+        _state.TodayCriticalHits = source.TodayCriticalHits;
+        _state.TodayCombos = source.TodayCombos;
+
+        // Active events
+        _state.GoldenEyeActive = source.GoldenEyeActive;
+        _state.GoldenEyeEndTime = source.GoldenEyeEndTime;
+        _state.WhistleBlowerActive = source.WhistleBlowerActive;
+        _state.WhistleBlowerEndTime = source.WhistleBlowerEndTime;
+        _state.WhistleBlowerX = source.WhistleBlowerX;
+        _state.WhistleBlowerY = source.WhistleBlowerY;
+
+        _state.Generators.Clear();
+        foreach (var (k, v) in source.Generators) _state.Generators[k] = v;
+
+        _state.PurchasedUpgrades.Clear();
+        foreach (var u in source.PurchasedUpgrades) _state.PurchasedUpgrades.Add(u);
+
+        _state.ProvenConspiracies.Clear();
+        foreach (var c in source.ProvenConspiracies) _state.ProvenConspiracies.Add(c);
+
+        _state.UnlockedAchievements.Clear();
+        foreach (var a in source.UnlockedAchievements) _state.UnlockedAchievements.Add(a);
+
+        _state.TinfoilShopPurchases.Clear();
+        foreach (var t in source.TinfoilShopPurchases) _state.TinfoilShopPurchases.Add(t);
+
+        _state.ActiveQuests.Clear();
+        foreach (var q in source.ActiveQuests) _state.ActiveQuests.Add(q);
+
+        _state.MatrixUpgrades.Clear();
+        foreach (var m in source.MatrixUpgrades) _state.MatrixUpgrades.Add(m);
+
+        _state.IlluminatiUpgrades.Clear();
+        foreach (var i in source.IlluminatiUpgrades) _state.IlluminatiUpgrades.Add(i);
+
+        _state.UnlockedSkills.Clear();
+        foreach (var s in source.UnlockedSkills) _state.UnlockedSkills.Add(s);
+
+        _state.DailyChallenges.Clear();
+        foreach (var d in source.DailyChallenges) _state.DailyChallenges.Add(d);
+
+        _prestigeNotified = false;
     }
 
     public void Start()
@@ -616,9 +706,9 @@ public class GameEngine
     public bool CanPrestige() => _state.TotalEvidenceEarned >= PRESTIGE_THRESHOLD;
 
     // === BELIEVER INFO ===
-    public Dictionary<string, int> GetBelieverBreakdown()
+    public Dictionary<string, double> GetBelieverBreakdown()
     {
-        var breakdown = new Dictionary<string, int>();
+        var breakdown = new Dictionary<string, double>();
         foreach (var (genId, count) in _state.Generators)
         {
             var generator = GeneratorData.GetById(genId);

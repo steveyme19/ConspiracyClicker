@@ -8,7 +8,7 @@ public class Generator
     public required double BaseCost { get; init; }
     public double CostMultiplier { get; init; } = 1.15;
     public required double BaseProduction { get; init; }
-    public int BelieverBonus { get; init; }
+    public double BelieverBonus { get; init; }
 
     public double GetCost(int owned)
     {

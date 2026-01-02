@@ -3,11 +3,22 @@ using System.Text.Json;
 
 namespace ConspiracyClicker.Core;
 
+public class SaveSlotInfo
+{
+    public int Slot { get; init; }
+    public bool Exists { get; init; }
+    public DateTime LastPlayed { get; init; }
+    public double TotalEvidence { get; init; }
+    public int AscensionCount { get; init; }
+    public double PlayTimeSeconds { get; init; }
+}
+
 public class SaveManager
 {
     private readonly string _saveDirectory;
-    private readonly string _saveFile;
-    private readonly string _backupFile;
+    private int _currentSlot = 1;
+
+    public int CurrentSlot => _currentSlot;
 
     public SaveManager()
     {
@@ -15,26 +26,40 @@ public class SaveManager
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "ConspiracyClicker"
         );
-        _saveFile = Path.Combine(_saveDirectory, "save.json");
-        _backupFile = Path.Combine(_saveDirectory, "save.backup.json");
 
         Directory.CreateDirectory(_saveDirectory);
     }
 
+    private string GetSaveFile(int slot) => Path.Combine(_saveDirectory, $"save{slot}.json");
+    private string GetBackupFile(int slot) => Path.Combine(_saveDirectory, $"save{slot}.backup.json");
+
+    public void SetCurrentSlot(int slot)
+    {
+        if (slot >= 1 && slot <= 3)
+            _currentSlot = slot;
+    }
+
     public void Save(GameState state)
+    {
+        SaveToSlot(_currentSlot, state);
+    }
+
+    public void SaveToSlot(int slot, GameState state)
     {
         try
         {
             state.LastSaveTime = DateTime.Now;
+            string saveFile = GetSaveFile(slot);
+            string backupFile = GetBackupFile(slot);
 
-            if (File.Exists(_saveFile))
+            if (File.Exists(saveFile))
             {
-                File.Copy(_saveFile, _backupFile, true);
+                File.Copy(saveFile, backupFile, true);
             }
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(state, options);
-            File.WriteAllText(_saveFile, json);
+            File.WriteAllText(saveFile, json);
         }
         catch (Exception ex)
         {
@@ -44,14 +69,21 @@ public class SaveManager
 
     public GameState Load()
     {
+        return LoadFromSlot(_currentSlot);
+    }
+
+    public GameState LoadFromSlot(int slot)
+    {
         try
         {
-            if (File.Exists(_saveFile))
+            string saveFile = GetSaveFile(slot);
+            if (File.Exists(saveFile))
             {
-                string json = File.ReadAllText(_saveFile);
+                string json = File.ReadAllText(saveFile);
                 var state = JsonSerializer.Deserialize<GameState>(json);
                 if (state != null)
                 {
+                    _currentSlot = slot;
                     return state;
                 }
             }
@@ -59,19 +91,25 @@ public class SaveManager
         catch (Exception ex)
         {
             Console.WriteLine($"Load failed: {ex.Message}");
-            TryLoadBackup();
+            var backup = TryLoadBackup(slot);
+            if (backup != null)
+            {
+                _currentSlot = slot;
+                return backup;
+            }
         }
 
         return new GameState();
     }
 
-    private GameState? TryLoadBackup()
+    private GameState? TryLoadBackup(int slot)
     {
         try
         {
-            if (File.Exists(_backupFile))
+            string backupFile = GetBackupFile(slot);
+            if (File.Exists(backupFile))
             {
-                string json = File.ReadAllText(_backupFile);
+                string json = File.ReadAllText(backupFile);
                 return JsonSerializer.Deserialize<GameState>(json);
             }
         }
@@ -81,6 +119,97 @@ public class SaveManager
         }
 
         return null;
+    }
+
+    public bool SlotExists(int slot)
+    {
+        return File.Exists(GetSaveFile(slot));
+    }
+
+    public SaveSlotInfo GetSlotInfo(int slot)
+    {
+        string saveFile = GetSaveFile(slot);
+        if (!File.Exists(saveFile))
+        {
+            return new SaveSlotInfo { Slot = slot, Exists = false };
+        }
+
+        try
+        {
+            string json = File.ReadAllText(saveFile);
+            var state = JsonSerializer.Deserialize<GameState>(json);
+            if (state != null)
+            {
+                return new SaveSlotInfo
+                {
+                    Slot = slot,
+                    Exists = true,
+                    LastPlayed = state.LastSaveTime,
+                    TotalEvidence = state.TotalEvidenceEarned,
+                    AscensionCount = state.TimesAscended,
+                    PlayTimeSeconds = state.TotalPlayTimeSeconds
+                };
+            }
+        }
+        catch
+        {
+            // Corrupted save
+        }
+
+        return new SaveSlotInfo { Slot = slot, Exists = false };
+    }
+
+    public List<SaveSlotInfo> GetAllSlotInfo()
+    {
+        var slots = new List<SaveSlotInfo>();
+        for (int i = 1; i <= 3; i++)
+        {
+            slots.Add(GetSlotInfo(i));
+        }
+        return slots;
+    }
+
+    public void DeleteSlot(int slot)
+    {
+        try
+        {
+            string saveFile = GetSaveFile(slot);
+            string backupFile = GetBackupFile(slot);
+
+            if (File.Exists(saveFile))
+                File.Delete(saveFile);
+            if (File.Exists(backupFile))
+                File.Delete(backupFile);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Delete failed: {ex.Message}");
+        }
+    }
+
+    public bool HasAnySave()
+    {
+        for (int i = 1; i <= 3; i++)
+        {
+            if (SlotExists(i)) return true;
+        }
+        return false;
+    }
+
+    public int? GetLastUsedSlot()
+    {
+        SaveSlotInfo? mostRecent = null;
+        foreach (var info in GetAllSlotInfo())
+        {
+            if (info.Exists)
+            {
+                if (mostRecent == null || info.LastPlayed > mostRecent.LastPlayed)
+                {
+                    mostRecent = info;
+                }
+            }
+        }
+        return mostRecent?.Slot;
     }
 
     public (double offlineEvidence, TimeSpan offlineTime) CalculateOfflineProgress(GameState state, double currentEps)
