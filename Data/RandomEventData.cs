@@ -1,3 +1,5 @@
+using ConspiracyClicker.Utils;
+
 namespace ConspiracyClicker.Data;
 
 public enum RandomEventType
@@ -35,7 +37,7 @@ public static class RandomEventData
             FlavorText = "The all-seeing eye turns to gold!",
             Duration = 10,
             Value = 10,
-            Icon = "👁"
+            Icon = IconHelper.Events.GoldenEye
         },
         new RandomEvent
         {
@@ -45,7 +47,7 @@ public static class RandomEventData
             FlavorText = "They know too much to stay silent.",
             Duration = 5,
             Value = 120, // seconds of EPS + 5 tinfoil
-            Icon = "!"
+            Icon = IconHelper.Events.WhistleBlower
         },
         new RandomEvent
         {
@@ -55,7 +57,7 @@ public static class RandomEventData
             FlavorText = "No return address. Just 'A Friend'.",
             Duration = 0,
             Value = 300, // 5 minutes of EPS
-            Icon = "📦"
+            Icon = IconHelper.Events.MysteryPackage
         },
         new RandomEvent
         {
@@ -65,7 +67,7 @@ public static class RandomEventData
             FlavorText = "The chemtrails finally gave us something useful.",
             Duration = 0,
             Value = 3, // 1-5 tinfoil
-            Icon = "🔻"
+            Icon = IconHelper.Events.TinfoilRain
         },
         new RandomEvent
         {
@@ -75,7 +77,7 @@ public static class RandomEventData
             FlavorText = "Someone left the classified server unlocked.",
             Duration = 20,
             Value = 2,
-            Icon = "📁"
+            Icon = IconHelper.Events.DeepStateLeak
         },
         new RandomEvent
         {
@@ -85,7 +87,7 @@ public static class RandomEventData
             FlavorText = "AI doing the conspiracy work. How meta.",
             Duration = 15,
             Value = 5, // clicks per second
-            Icon = "🤖"
+            Icon = IconHelper.Events.Automated
         },
         new RandomEvent
         {
@@ -95,7 +97,7 @@ public static class RandomEventData
             FlavorText = "#ConspiracyConfirmed is trending.",
             Duration = 30,
             Value = 2, // 2x believers
-            Icon = "📱"
+            Icon = IconHelper.Events.Viral
         },
         new RandomEvent
         {
@@ -105,7 +107,7 @@ public static class RandomEventData
             FlavorText = "A shadowy figure slides you an envelope.",
             Duration = 60,
             Value = 0.5,
-            Icon = "🕵"
+            Icon = IconHelper.Events.Insider
         }
     };
 

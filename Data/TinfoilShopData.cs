@@ -1,3 +1,5 @@
+using ConspiracyClicker.Utils;
+
 namespace ConspiracyClicker.Data;
 
 public enum TinfoilUpgradeType
@@ -36,7 +38,7 @@ public static class TinfoilShopData
             TinfoilCost = 10,
             Type = TinfoilUpgradeType.ClickPower,
             Value = 1.25,
-            Icon = "◠"
+            Icon = IconHelper.TinfoilShop.HatBasic
         },
         new TinfoilUpgrade
         {
@@ -47,7 +49,7 @@ public static class TinfoilShopData
             TinfoilCost = 50,
             Type = TinfoilUpgradeType.ClickPower,
             Value = 1.50,
-            Icon = "◠◠"
+            Icon = IconHelper.TinfoilShop.HatReinforced
         },
         new TinfoilUpgrade
         {
@@ -58,7 +60,7 @@ public static class TinfoilShopData
             TinfoilCost = 200,
             Type = TinfoilUpgradeType.ClickPower,
             Value = 2.0,
-            Icon = "♔"
+            Icon = IconHelper.TinfoilShop.Crown
         },
 
         // EPS Multiplier
@@ -71,7 +73,7 @@ public static class TinfoilShopData
             TinfoilCost = 25,
             Type = TinfoilUpgradeType.EpsMultiplier,
             Value = 1.15,
-            Icon = "◬"
+            Icon = IconHelper.TinfoilShop.DeepStateContact
         },
         new TinfoilUpgrade
         {
@@ -82,7 +84,7 @@ public static class TinfoilShopData
             TinfoilCost = 100,
             Type = TinfoilUpgradeType.EpsMultiplier,
             Value = 1.35,
-            Icon = "◬◬"
+            Icon = IconHelper.TinfoilShop.DeepStateInsider
         },
         new TinfoilUpgrade
         {
@@ -93,7 +95,7 @@ public static class TinfoilShopData
             TinfoilCost = 500,
             Type = TinfoilUpgradeType.EpsMultiplier,
             Value = 1.75,
-            Icon = "◬◉◬"
+            Icon = IconHelper.TinfoilShop.DeepStateOperative
         },
 
         // Quest Success
@@ -106,7 +108,7 @@ public static class TinfoilShopData
             TinfoilCost = 15,
             Type = TinfoilUpgradeType.QuestSuccess,
             Value = 0.05,
-            Icon = "♣"
+            Icon = IconHelper.TinfoilShop.RabbitFoot
         },
         new TinfoilUpgrade
         {
@@ -117,7 +119,7 @@ public static class TinfoilShopData
             TinfoilCost = 75,
             Type = TinfoilUpgradeType.QuestSuccess,
             Value = 0.10,
-            Icon = "♧"
+            Icon = IconHelper.TinfoilShop.FourLeafClover
         },
         new TinfoilUpgrade
         {
@@ -128,7 +130,7 @@ public static class TinfoilShopData
             TinfoilCost = 250,
             Type = TinfoilUpgradeType.QuestSuccess,
             Value = 0.15,
-            Icon = "Ω"
+            Icon = IconHelper.TinfoilShop.Horseshoe
         },
 
         // Believer Multiplier (percentage bonus)
@@ -141,7 +143,7 @@ public static class TinfoilShopData
             TinfoilCost = 30,
             Type = TinfoilUpgradeType.BelieverBonus,
             Value = 1.20,
-            Icon = "☺"
+            Icon = IconHelper.TinfoilShop.Charisma
         },
         new TinfoilUpgrade
         {
@@ -152,7 +154,7 @@ public static class TinfoilShopData
             TinfoilCost = 150,
             Type = TinfoilUpgradeType.BelieverBonus,
             Value = 1.40,
-            Icon = "☺☺"
+            Icon = IconHelper.TinfoilShop.CultLeadership
         },
         new TinfoilUpgrade
         {
@@ -163,7 +165,7 @@ public static class TinfoilShopData
             TinfoilCost = 600,
             Type = TinfoilUpgradeType.BelieverBonus,
             Value = 2.0,
-            Icon = "◎◎◎"
+            Icon = IconHelper.TinfoilShop.Hypnosis
         },
 
         // Auto Clicker
@@ -176,7 +178,7 @@ public static class TinfoilShopData
             TinfoilCost = 50,
             Type = TinfoilUpgradeType.AutoClicker,
             Value = 1,
-            Icon = "☝"
+            Icon = IconHelper.TinfoilShop.ClickingIntern
         },
         new TinfoilUpgrade
         {
@@ -187,7 +189,7 @@ public static class TinfoilShopData
             TinfoilCost = 200,
             Type = TinfoilUpgradeType.AutoClicker,
             Value = 3,
-            Icon = "⚙"
+            Icon = IconHelper.TinfoilShop.ClickingRobot
         },
         new TinfoilUpgrade
         {
@@ -198,7 +200,7 @@ public static class TinfoilShopData
             TinfoilCost = 1000,
             Type = TinfoilUpgradeType.AutoClicker,
             Value = 10,
-            Icon = "◇◇◇"
+            Icon = IconHelper.TinfoilShop.QuantumClicker
         },
 
         // Critical Chance
@@ -211,7 +213,7 @@ public static class TinfoilShopData
             TinfoilCost = 40,
             Type = TinfoilUpgradeType.CriticalChance,
             Value = 0.05,
-            Icon = "★"
+            Icon = IconHelper.TinfoilShop.LuckyStar
         },
         new TinfoilUpgrade
         {
@@ -222,7 +224,7 @@ public static class TinfoilShopData
             TinfoilCost = 175,
             Type = TinfoilUpgradeType.CriticalChance,
             Value = 0.05,
-            Icon = "★★"
+            Icon = IconHelper.TinfoilShop.LuckyStar
         },
         new TinfoilUpgrade
         {
@@ -233,7 +235,7 @@ public static class TinfoilShopData
             TinfoilCost = 750,
             Type = TinfoilUpgradeType.CriticalChance,
             Value = 0.10,
-            Icon = "★★★"
+            Icon = IconHelper.TinfoilShop.PropheticVision
         },
 
         // === ADVANCED TIER ===
@@ -246,7 +248,7 @@ public static class TinfoilShopData
             TinfoilCost = 800,
             Type = TinfoilUpgradeType.ClickPower,
             Value = 3.0,
-            Icon = "◠◠◠"
+            Icon = IconHelper.TinfoilShop.Bodysuit
         },
         new TinfoilUpgrade
         {
@@ -257,7 +259,7 @@ public static class TinfoilShopData
             TinfoilCost = 5000,
             Type = TinfoilUpgradeType.ClickPower,
             Value = 5.0,
-            Icon = "▣▣▣"
+            Icon = IconHelper.TinfoilShop.Bunker
         },
         new TinfoilUpgrade
         {
@@ -268,7 +270,7 @@ public static class TinfoilShopData
             TinfoilCost = 2500,
             Type = TinfoilUpgradeType.EpsMultiplier,
             Value = 2.0,
-            Icon = "◉◉◉"
+            Icon = IconHelper.TinfoilShop.DeepStateOperative
         },
         new TinfoilUpgrade
         {
@@ -279,7 +281,7 @@ public static class TinfoilShopData
             TinfoilCost = 15000,
             Type = TinfoilUpgradeType.EpsMultiplier,
             Value = 3.0,
-            Icon = "◉◉◉◉"
+            Icon = IconHelper.TinfoilShop.DeepStateOperative
         },
         new TinfoilUpgrade
         {
@@ -290,7 +292,7 @@ public static class TinfoilShopData
             TinfoilCost = 1500,
             Type = TinfoilUpgradeType.QuestSuccess,
             Value = 0.20,
-            Icon = "⚓"
+            Icon = IconHelper.TinfoilShop.Horseshoe
         },
         new TinfoilUpgrade
         {
@@ -301,7 +303,7 @@ public static class TinfoilShopData
             TinfoilCost = 8000,
             Type = TinfoilUpgradeType.QuestSuccess,
             Value = 0.25,
-            Icon = "⚀⚄⚂"
+            Icon = IconHelper.TinfoilShop.FateWeaver
         },
         new TinfoilUpgrade
         {
@@ -312,7 +314,7 @@ public static class TinfoilShopData
             TinfoilCost = 3000,
             Type = TinfoilUpgradeType.BelieverBonus,
             Value = 3.0,
-            Icon = "♕♕♕"
+            Icon = IconHelper.TinfoilShop.MindControlCrown
         },
         new TinfoilUpgrade
         {
@@ -323,7 +325,7 @@ public static class TinfoilShopData
             TinfoilCost = 20000,
             Type = TinfoilUpgradeType.BelieverBonus,
             Value = 5.0,
-            Icon = "◎◎◎◎◎"
+            Icon = IconHelper.TinfoilShop.MindControlCrown
         },
         new TinfoilUpgrade
         {
@@ -334,7 +336,7 @@ public static class TinfoilShopData
             TinfoilCost = 5000,
             Type = TinfoilUpgradeType.AutoClicker,
             Value = 25,
-            Icon = "⚙⚙⚙"
+            Icon = IconHelper.TinfoilShop.NeuralClicker
         },
         new TinfoilUpgrade
         {
@@ -345,7 +347,7 @@ public static class TinfoilShopData
             TinfoilCost = 25000,
             Type = TinfoilUpgradeType.AutoClicker,
             Value = 50,
-            Icon = "◇◇◇◇◇"
+            Icon = IconHelper.TinfoilShop.QuantumClicker
         },
         new TinfoilUpgrade
         {
@@ -356,7 +358,7 @@ public static class TinfoilShopData
             TinfoilCost = 4000,
             Type = TinfoilUpgradeType.CriticalChance,
             Value = 0.15,
-            Icon = "★★★★"
+            Icon = IconHelper.TinfoilShop.ThirdEyeOpen
         },
         new TinfoilUpgrade
         {
@@ -367,7 +369,7 @@ public static class TinfoilShopData
             TinfoilCost = 30000,
             Type = TinfoilUpgradeType.CriticalChance,
             Value = 0.20,
-            Icon = "★★★★★"
+            Icon = IconHelper.TinfoilShop.ThirdEyeOpen
         },
 
         // === ELITE TIER ===
@@ -380,7 +382,7 @@ public static class TinfoilShopData
             TinfoilCost = 50000,
             Type = TinfoilUpgradeType.ClickPower,
             Value = 10.0,
-            Icon = "☯☯☯"
+            Icon = IconHelper.TinfoilShop.RealityDistortion
         },
         new TinfoilUpgrade
         {
@@ -391,7 +393,7 @@ public static class TinfoilShopData
             TinfoilCost = 100000,
             Type = TinfoilUpgradeType.EpsMultiplier,
             Value = 5.0,
-            Icon = "△△△"
+            Icon = IconHelper.TinfoilShop.DeepStateOperative
         },
         new TinfoilUpgrade
         {
@@ -402,7 +404,7 @@ public static class TinfoilShopData
             TinfoilCost = 75000,
             Type = TinfoilUpgradeType.QuestSuccess,
             Value = 0.5,
-            Icon = "∞"
+            Icon = IconHelper.TinfoilShop.FateWeaver
         },
         new TinfoilUpgrade
         {
@@ -413,7 +415,7 @@ public static class TinfoilShopData
             TinfoilCost = 150000,
             Type = TinfoilUpgradeType.AutoClicker,
             Value = 100,
-            Icon = "◇◇◇◇◇◇◇"
+            Icon = IconHelper.TinfoilShop.QuantumClicker
         }
     };
 

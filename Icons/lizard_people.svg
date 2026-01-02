@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Human face outline (mask) -->
+  <ellipse cx="32" cy="32" rx="20" ry="24" fill="#deb887" stroke="#c4a775" stroke-width="1"/>
+  <!-- Mask peeling away -->
+  <path d="M44 12 Q56 16 52 32 Q48 40 44 36 Q40 28 44 20 Z" fill="#deb887" stroke="#c4a775" stroke-width="1"/>
+  <!-- Reptilian underneath -->
+  <path d="M46 14 Q58 20 54 34 Q52 42 46 38 Q42 30 46 22 Z" fill="#2d5a27" stroke="#1e4620" stroke-width="1"/>
+  <!-- Scales pattern -->
+  <ellipse cx="50" cy="24" rx="2" ry="1.5" fill="#3d7a37"/>
+  <ellipse cx="48" cy="28" rx="2" ry="1.5" fill="#3d7a37"/>
+  <ellipse cx="52" cy="30" rx="2" ry="1.5" fill="#3d7a37"/>
+  <ellipse cx="48" cy="34" rx="2" ry="1.5" fill="#3d7a37"/>
+  <!-- Human eye (left) -->
+  <ellipse cx="24" cy="28" rx="5" ry="3" fill="#fff"/>
+  <circle cx="24" cy="28" r="2" fill="#4a3728"/>
+  <!-- Reptilian eye (right, revealed) -->
+  <ellipse cx="40" cy="28" rx="5" ry="4" fill="#ffffa0"/>
+  <ellipse cx="40" cy="28" rx="1.5" ry="3" fill="#1a1a2e"/>
+  <line x1="38" y1="25" x2="42" y2="25" stroke="#cc0000" stroke-width="0.5"/>
+  <!-- Human features -->
+  <path d="M30 36 Q32 40 34 36" stroke="#c4a775" stroke-width="1" fill="none"/>
+  <path d="M26 44 Q32 48 38 44" stroke="#b8967a" stroke-width="1.5" fill="none"/>
+  <!-- Suit collar -->
+  <path d="M16 54 L24 48 L32 52 L40 48 L48 54" fill="#1a1a2e" stroke="#333" stroke-width="1"/>
+  <!-- Forked tongue hint -->
+  <path d="M36 46 L40 50 M36 46 L40 54" stroke="#cc0000" stroke-width="1"/>
+  <!-- Glowing eye effect -->
+  <circle cx="40" cy="28" r="5" fill="none" stroke="#00ff41" stroke-width="0.5" opacity="0.5" filter="url(#glow)"/>
+</svg>

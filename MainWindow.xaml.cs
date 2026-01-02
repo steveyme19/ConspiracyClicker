@@ -42,6 +42,7 @@ public partial class MainWindow : Window
     private string _lastOwnedGenState = "";
     private string _lastSkillTreeState = "";
     private string _lastPrestigeState = "";
+    private bool _challengeComboPopulated = false;
 
     // Frozen brushes for performance
     private static readonly SolidColorBrush GreenBrush;
@@ -142,7 +143,7 @@ public partial class MainWindow : Window
 
     private readonly List<AmbientParticle> _ambientParticles = new();
     private double _ambientSpawnTimer = 0;
-    private static readonly string[] AmbientSymbols = { "📄", "🔺", "👁", "❓", "📎", "🔗" };
+    private static readonly string[] AmbientIconKeys = { "Icon_document", "Icon_triangle", "Icon_all_seeing_eye_small", "Icon_question", "Icon_pin", "Icon_link" };
 
     // === NEWS TICKER ===
     private double _newsTickerX = 0;
@@ -437,7 +438,8 @@ public partial class MainWindow : Window
 
     private void UpdateSoundIcon()
     {
-        SoundToggleIcon.Text = SoundManager.IsMuted ? "🔇" : "🔊";
+        var iconKey = SoundManager.IsMuted ? "Icon_sound_off" : "Icon_sound_on";
+        SoundToggleIcon.Source = (System.Windows.Media.ImageSource)Application.Current.FindResource(iconKey);
     }
 
     private void OnRendering(object? sender, EventArgs e)
@@ -847,15 +849,15 @@ public partial class MainWindow : Window
             _activeEvidenceThief.X += _activeEvidenceThief.VelocityX * deltaTime;
             _activeEvidenceThief.Y += _activeEvidenceThief.VelocityY * deltaTime;
 
-            // Bounce off edges
+            // Bounce off edges (element is 140x80)
             if (_activeEvidenceThief.X < 10)
             {
                 _activeEvidenceThief.X = 10;
                 _activeEvidenceThief.VelocityX = Math.Abs(_activeEvidenceThief.VelocityX);
             }
-            if (_activeEvidenceThief.X > width - 90)
+            if (_activeEvidenceThief.X > width - 150)
             {
-                _activeEvidenceThief.X = width - 90;
+                _activeEvidenceThief.X = width - 150;
                 _activeEvidenceThief.VelocityX = -Math.Abs(_activeEvidenceThief.VelocityX);
             }
             if (_activeEvidenceThief.Y < 10)
@@ -863,9 +865,9 @@ public partial class MainWindow : Window
                 _activeEvidenceThief.Y = 10;
                 _activeEvidenceThief.VelocityY = Math.Abs(_activeEvidenceThief.VelocityY);
             }
-            if (_activeEvidenceThief.Y > height - 70)
+            if (_activeEvidenceThief.Y > height - 90)
             {
-                _activeEvidenceThief.Y = height - 70;
+                _activeEvidenceThief.Y = height - 90;
                 _activeEvidenceThief.VelocityY = -Math.Abs(_activeEvidenceThief.VelocityY);
             }
 
@@ -876,7 +878,7 @@ public partial class MainWindow : Window
             var timerText = _activeEvidenceThief.Element.Child as StackPanel;
             if (timerText?.Children.Count > 1 && timerText.Children[1] is TextBlock tb)
             {
-                tb.Text = $"⏱️ {_activeEvidenceThief.TimeLeft:F1}s - CATCH ME!";
+                tb.Text = $"⏱️ {_activeEvidenceThief.TimeLeft:F1}s";
             }
 
             if (_activeEvidenceThief.TimeLeft <= 0)
@@ -911,15 +913,15 @@ public partial class MainWindow : Window
         double width = InteractiveCanvas.ActualWidth;
         double height = InteractiveCanvas.ActualHeight;
 
-        // Start from a random edge
+        // Start from a random edge (element is 140x80)
         double startX, startY;
         int edge = _random.Next(4);
         switch (edge)
         {
-            case 0: startX = 10; startY = _random.NextDouble() * (height - 80); break;
-            case 1: startX = width - 90; startY = _random.NextDouble() * (height - 80); break;
-            case 2: startX = _random.NextDouble() * (width - 100); startY = 10; break;
-            default: startX = _random.NextDouble() * (width - 100); startY = height - 70; break;
+            case 0: startX = 10; startY = _random.NextDouble() * (height - 90); break;
+            case 1: startX = width - 150; startY = _random.NextDouble() * (height - 90); break;
+            case 2: startX = _random.NextDouble() * (width - 150); startY = 10; break;
+            default: startX = _random.NextDouble() * (width - 150); startY = height - 90; break;
         }
 
         // Calculate steal amount (15-25% of current evidence)
@@ -931,27 +933,36 @@ public partial class MainWindow : Window
             Background = new SolidColorBrush(Color.FromArgb(230, 100, 50, 20)),
             BorderBrush = OrangeBrush,
             BorderThickness = new Thickness(3),
-            CornerRadius = new CornerRadius(25),
-            Padding = new Thickness(10),
+            CornerRadius = new CornerRadius(30),
+            Padding = new Thickness(12),
             Cursor = Cursors.Hand,
-            Width = 80,
-            Height = 60
+            Width = 140,
+            Height = 80
         };
 
         var stack = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
         stack.Children.Add(new TextBlock
         {
             Text = "🦹",
-            FontSize = 24,
+            FontSize = 28,
             HorizontalAlignment = HorizontalAlignment.Center,
             FontFamily = EmojiFont
         });
         stack.Children.Add(new TextBlock
         {
-            Text = $"⏱️ 6.0s - CATCH ME!",
-            FontSize = 9,
+            Text = $"⏱️ 6.0s",
+            FontSize = 12,
             Foreground = LightBrush,
-            HorizontalAlignment = HorizontalAlignment.Center
+            HorizontalAlignment = HorizontalAlignment.Center,
+            FontWeight = FontWeights.Bold
+        });
+        stack.Children.Add(new TextBlock
+        {
+            Text = "CATCH ME!",
+            FontSize = 11,
+            Foreground = OrangeBrush,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            FontWeight = FontWeights.Bold
         });
 
         border.Child = stack;
@@ -1437,10 +1448,12 @@ public partial class MainWindow : Window
         double centerX = width / 2;
         double centerY = height / 2;
 
-        // Create 3 pins at random positions
+        // Create 3 pins at evenly spaced angles to prevent overlap
+        double baseAngle = _random.NextDouble() * Math.PI * 2;
         for (int i = 1; i <= 3; i++)
         {
-            double angle = _random.NextDouble() * Math.PI * 2;
+            // Space pins 120 degrees apart with small random offset
+            double angle = baseAngle + (i - 1) * (Math.PI * 2 / 3) + (_random.NextDouble() - 0.5) * 0.5;
             double radius = 80 + _random.NextDouble() * 100;
             double x = centerX + Math.Cos(angle) * radius;
             double y = centerY + Math.Sin(angle) * radius;
@@ -1736,15 +1749,16 @@ public partial class MainWindow : Window
 
     private void SpawnAmbientParticle(double width, double height)
     {
-        string symbol = AmbientSymbols[_random.Next(AmbientSymbols.Length)];
+        string iconKey = AmbientIconKeys[_random.Next(AmbientIconKeys.Length)];
         var rotateTransform = new RotateTransform();
+        double size = 14 + _random.Next(8);
 
-        var element = new TextBlock
+        var element = new System.Windows.Controls.Image
         {
-            Text = symbol,
-            FontSize = 14 + _random.Next(8),
-            Foreground = AmbientBrush,
-            FontFamily = EmojiFont,
+            Source = (System.Windows.Media.ImageSource)Application.Current.FindResource(iconKey),
+            Width = size,
+            Height = size,
+            Opacity = 0.3,
             RenderTransformOrigin = new Point(0.5, 0.5),
             RenderTransform = rotateTransform
         };
@@ -2355,6 +2369,7 @@ public partial class MainWindow : Window
         UpdatePrestigePanel();
         UpdateMatrixPanel();
         UpdateChallengeModePanel();
+        UpdateStatisticsPanel();
         UpdateTabVisibility();
         UpdateTabHighlights();
     }
@@ -3197,6 +3212,7 @@ public partial class MainWindow : Window
         if (activeChallenge != null)
         {
             ActiveChallengePanel.Visibility = Visibility.Visible;
+            NoChallengeText.Visibility = Visibility.Collapsed;
             ActiveChallengeTitle.Text = $"{activeChallenge.Icon} {activeChallenge.Name}";
             ActiveChallengeRules.Text = activeChallenge.Rules;
 
@@ -3228,52 +3244,13 @@ public partial class MainWindow : Window
         else
         {
             ActiveChallengePanel.Visibility = Visibility.Collapsed;
+            NoChallengeText.Visibility = Visibility.Visible;
         }
 
         // Check if state changed for panel rebuild
         string currentState = $"{state.CompletedChallenges.Count}:{(activeChallenge?.Id ?? "none")}";
         if (currentState == _lastChallengeState) return;
         _lastChallengeState = currentState;
-
-        var buttonStyle = (Style)FindResource("GeneratorButton");
-
-        // Available challenges
-        ChallengeModesPanel.Children.Clear();
-        foreach (var challenge in ChallengeModeData.AllChallenges)
-        {
-            if (state.CompletedChallenges.Contains(challenge.Id)) continue;
-            if (_engine.IsInChallenge) continue; // Don't show other challenges while in one
-
-            var button = new Button { Style = buttonStyle, Tag = challenge.Id, HorizontalContentAlignment = HorizontalAlignment.Stretch };
-            button.Click += StartChallengeBtn_Click;
-
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-            var iconBlock = new TextBlock { Text = challenge.Icon, FontSize = 24, Foreground = GoldBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
-
-            var stack = new StackPanel();
-            stack.Children.Add(new TextBlock { Text = challenge.Name, FontWeight = FontWeights.Bold, Foreground = GoldBrush });
-            stack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 11, Foreground = LightBrush });
-            stack.Children.Add(new TextBlock { Text = challenge.Rules, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic });
-
-            var rewardStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
-            rewardStack.Children.Add(new TextBlock { Text = $"+{challenge.TinfoilReward} Tinfoil", FontWeight = FontWeights.Bold, Foreground = SilverBrush, HorizontalAlignment = HorizontalAlignment.Right });
-            if (challenge.IlluminatiTokenReward > 0)
-                rewardStack.Children.Add(new TextBlock { Text = $"+{challenge.IlluminatiTokenReward} Token", FontSize = 10, Foreground = PurpleBrush, HorizontalAlignment = HorizontalAlignment.Right });
-
-            Grid.SetColumn(iconBlock, 0);
-            Grid.SetColumn(stack, 1);
-            Grid.SetColumn(rewardStack, 2);
-            grid.Children.Add(iconBlock);
-            grid.Children.Add(stack);
-            grid.Children.Add(rewardStack);
-
-            button.Content = grid;
-            ChallengeModesPanel.Children.Add(button);
-        }
 
         // Completed challenges
         CompletedChallengesPanel.Children.Clear();
@@ -3311,6 +3288,149 @@ public partial class MainWindow : Window
         }
     }
 
+    // === STATISTICS PANEL ===
+    private string _lastStatsState = "";
+
+    private void UpdateStatisticsPanel()
+    {
+        var state = _engine.State;
+
+        // Only update if stats tab is selected or periodically (every few updates)
+        string currentState = $"{state.TotalClicks}:{state.QuestsCompleted}:{state.UnlockedAchievements.Count}";
+        if (currentState == _lastStatsState) return;
+        _lastStatsState = currentState;
+
+        // General Stats
+        var playTime = TimeSpan.FromSeconds(state.TotalPlayTimeSeconds);
+        StatPlaytime.Text = playTime.TotalHours >= 1
+            ? $"{(int)playTime.TotalHours}h {playTime.Minutes}m"
+            : $"{playTime.Minutes}m {playTime.Seconds}s";
+        StatClicks.Text = state.TotalClicks.ToString("N0");
+        StatCritClicks.Text = state.CriticalClicks.ToString("N0");
+        StatTotalEvidence.Text = NumberFormatter.Format(state.TotalEvidenceEarned);
+        StatCurrentEPS.Text = NumberFormatter.FormatPerSecond(_engine.CalculateEvidencePerSecond());
+        StatAscensions.Text = state.TimesAscended.ToString();
+
+        // Production Breakdown
+        double totalEps = _engine.CalculateEvidencePerSecond();
+        StatProductionTotal.Text = $"Total: {NumberFormatter.FormatPerSecond(totalEps)}";
+
+        ProductionBarsPanel.Children.Clear();
+        var productions = new List<(string name, double eps, Color color)>();
+
+        // Calculate per-generator production (base production, owned count determines tier color by index)
+        int genIndex = 0;
+        foreach (var gen in GeneratorData.AllGenerators)
+        {
+            int owned = state.GetGeneratorCount(gen.Id);
+            if (owned > 0)
+            {
+                // Simple production calculation (base * count)
+                double genEps = gen.BaseProduction * owned;
+                int tier = genIndex / 4; // Roughly 4 generators per tier
+                productions.Add((gen.Name, genEps, GetGeneratorColor(tier)));
+            }
+            genIndex++;
+        }
+
+        // Sort by production descending
+        productions = productions.OrderByDescending(p => p.eps).ToList();
+
+        foreach (var (name, eps, color) in productions)
+        {
+            double percentage = totalEps > 0 ? eps / totalEps : 0;
+
+            var barContainer = new Grid { Margin = new Thickness(0, 4, 0, 4) };
+            barContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
+            barContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            barContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(140) });
+
+            var nameBlock = new TextBlock
+            {
+                Text = name,
+                FontSize = 16,
+                Foreground = LightBrush,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            var barBg = new Border
+            {
+                Background = new SolidColorBrush(Color.FromRgb(30, 30, 50)),
+                CornerRadius = new CornerRadius(4),
+                Height = 24,
+                Margin = new Thickness(10, 0, 10, 0)
+            };
+
+            var barFill = new Border
+            {
+                Background = new SolidColorBrush(color),
+                CornerRadius = new CornerRadius(4),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Width = Math.Max(2, percentage * 200)
+            };
+            barBg.Child = barFill;
+
+            var valueBlock = new TextBlock
+            {
+                Text = $"{percentage:P0} ({NumberFormatter.FormatPerSecond(eps)})",
+                FontSize = 14,
+                Foreground = DimBrush,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+
+            Grid.SetColumn(nameBlock, 0);
+            Grid.SetColumn(barBg, 1);
+            Grid.SetColumn(valueBlock, 2);
+            barContainer.Children.Add(nameBlock);
+            barContainer.Children.Add(barBg);
+            barContainer.Children.Add(valueBlock);
+
+            ProductionBarsPanel.Children.Add(barContainer);
+        }
+
+        // Quest Statistics
+        StatQuestsCompleted.Text = state.QuestsCompleted.ToString();
+        StatQuestsFailed.Text = state.QuestsFailed.ToString();
+        int totalQuests = state.QuestsCompleted + state.QuestsFailed;
+        double successRate = totalQuests > 0 ? (double)state.QuestsCompleted / totalQuests : 0;
+        StatQuestSuccessRate.Text = $"{successRate:P0}";
+
+        // Quest success/fail bar
+        double barWidth = 300; // Approximate width
+        QuestSuccessBar.Width = totalQuests > 0 ? successRate * barWidth : 0;
+        QuestFailBar.Width = totalQuests > 0 ? (1 - successRate) * barWidth : 0;
+
+        // Believer Stats
+        StatCurrentBelievers.Text = NumberFormatter.Format(state.Believers);
+        StatBelieversLost.Text = NumberFormatter.Format(state.BelieversLost);
+
+        // Achievement Progress
+        int unlockedAchievements = state.UnlockedAchievements.Count;
+        int totalAchievements = AchievementData.AllAchievements.Count;
+        double achievementPercent = totalAchievements > 0 ? (double)unlockedAchievements / totalAchievements : 0;
+        StatAchievementProgress.Text = $"{unlockedAchievements}/{totalAchievements}";
+        StatAchievementPercent.Text = $"{achievementPercent:P0} Complete";
+        AchievementProgressBar.Width = achievementPercent * 300; // Approximate width
+
+        // Prestige Stats
+        StatIlluminatiTokens.Text = state.IlluminatiTokens.ToString();
+        StatTotalTokensEarned.Text = NumberFormatter.Format(state.TotalIlluminatiTokensEarned);
+        StatMatrixBreaks.Text = state.TimesMatrixBroken.ToString();
+    }
+
+    private static Color GetGeneratorColor(int tier)
+    {
+        return tier switch
+        {
+            1 => Color.FromRgb(100, 200, 100), // Green
+            2 => Color.FromRgb(100, 150, 255), // Blue
+            3 => Color.FromRgb(200, 100, 255), // Purple
+            4 => Color.FromRgb(255, 200, 100), // Gold
+            _ => Color.FromRgb(150, 150, 150)  // Gray
+        };
+    }
+
     // === MAIN MENU ===
     private void RefreshMainMenu()
     {
@@ -3328,6 +3448,60 @@ public partial class MainWindow : Window
         // Hide selected panel until slot is clicked
         SelectedSlotPanel.Visibility = Visibility.Collapsed;
         _selectedSlot = 0;
+
+        // Populate challenge modes combo (only once)
+        if (!_challengeComboPopulated)
+        {
+            PopulateChallengeCombo();
+            _challengeComboPopulated = true;
+        }
+    }
+
+    private void PopulateChallengeCombo()
+    {
+        ChallengeModeCombo.Items.Clear();
+
+        // Add Normal Mode option
+        var normalItem = new ComboBoxItem
+        {
+            Content = "🎮 Normal Mode",
+            Tag = "",
+            IsSelected = true
+        };
+        ChallengeModeCombo.Items.Add(normalItem);
+
+        // Add all challenge modes
+        foreach (var challenge in ChallengeModeData.AllChallenges)
+        {
+            var item = new ComboBoxItem
+            {
+                Content = $"{challenge.Icon} {challenge.Name}",
+                Tag = challenge.Id
+            };
+            ChallengeModeCombo.Items.Add(item);
+        }
+    }
+
+    private void ChallengeModeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        // Guard against event firing during XAML initialization
+        if (ChallengeDescriptionText == null) return;
+
+        if (ChallengeModeCombo.SelectedItem is ComboBoxItem item && item.Tag is string challengeId)
+        {
+            if (string.IsNullOrEmpty(challengeId))
+            {
+                ChallengeDescriptionText.Text = "Standard gameplay - no restrictions or time limits.";
+            }
+            else
+            {
+                var challenge = ChallengeModeData.GetById(challengeId);
+                if (challenge != null)
+                {
+                    ChallengeDescriptionText.Text = $"{challenge.Description}\n{challenge.Rules}\nReward: {challenge.TinfoilReward} Tinfoil";
+                }
+            }
+        }
     }
 
     private void UpdateSlotDisplay(int slot, SaveSlotInfo info, TextBlock infoText, TextBlock detailsText,
@@ -3335,7 +3509,17 @@ public partial class MainWindow : Window
     {
         if (info.Exists)
         {
-            infoText.Text = $"Evidence: {NumberFormatter.Format(info.TotalEvidence)} | Ascensions: {info.AscensionCount}";
+            string challengeText = "";
+            if (!string.IsNullOrEmpty(info.ActiveChallengeId))
+            {
+                var challenge = ChallengeModeData.GetById(info.ActiveChallengeId);
+                if (challenge != null)
+                {
+                    challengeText = $" | {challenge.Icon} {challenge.Name}";
+                }
+            }
+
+            infoText.Text = $"Evidence: {NumberFormatter.Format(info.TotalEvidence)} | Ascensions: {info.AscensionCount}{challengeText}";
             infoText.Foreground = LightBrush;
 
             var playTimeSpan = TimeSpan.FromSeconds(info.PlayTimeSeconds);
@@ -3375,6 +3559,16 @@ public partial class MainWindow : Window
             var info = _engine.SaveManager.GetSlotInfo(slot);
             ContinueBtn.Visibility = info.Exists ? Visibility.Visible : Visibility.Collapsed;
             NewGameBtn.Content = info.Exists ? "OVERWRITE" : "NEW GAME";
+
+            // Show challenge selection for empty slots or when overwriting
+            bool showChallengeSelection = !info.Exists;
+            ChallengeSelectionPanel.Visibility = showChallengeSelection ? Visibility.Visible : Visibility.Collapsed;
+
+            // Reset challenge selection to Normal Mode
+            if (ChallengeModeCombo.Items.Count > 0)
+            {
+                ChallengeModeCombo.SelectedIndex = 0;
+            }
         }
     }
 
@@ -3433,6 +3627,17 @@ public partial class MainWindow : Window
         if (isNewGame)
         {
             _engine.NewGame(slot);
+
+            // Start selected challenge mode if one was chosen
+            if (ChallengeModeCombo.SelectedItem is ComboBoxItem item && item.Tag is string challengeId && !string.IsNullOrEmpty(challengeId))
+            {
+                _engine.StartChallenge(challengeId);
+                var challenge = ChallengeModeData.GetById(challengeId);
+                if (challenge != null)
+                {
+                    AddNotification($"Challenge started: {challenge.Name}!", GoldBrush);
+                }
+            }
         }
         else
         {
@@ -3777,7 +3982,7 @@ public partial class MainWindow : Window
     private void SoundToggle_Click(object sender, RoutedEventArgs e)
     {
         SoundManager.Enabled = !SoundManager.Enabled;
-        SoundToggleIcon.Text = SoundManager.Enabled ? "🔊" : "🔇";
+        UpdateSoundIcon();
     }
 
     // === MINIGAMES ===

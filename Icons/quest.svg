@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Scroll/map background -->
+  <path d="M12,8 Q8,8 8,14 L8,50 Q8,56 12,56 L52,56 Q56,56 56,50 L56,14 Q56,8 52,8 Z" fill="#d4b896" stroke="#8B4513" stroke-width="2"/>
+  <!-- Scroll curls -->
+  <ellipse cx="8" cy="12" rx="4" ry="6" fill="#d4b896" stroke="#8B4513" stroke-width="1"/>
+  <ellipse cx="8" cy="52" rx="4" ry="6" fill="#d4b896" stroke="#8B4513" stroke-width="1"/>
+  <ellipse cx="56" cy="12" rx="4" ry="6" fill="#d4b896" stroke="#8B4513" stroke-width="1"/>
+  <ellipse cx="56" cy="52" rx="4" ry="6" fill="#d4b896" stroke="#8B4513" stroke-width="1"/>
+  <!-- Map content - dotted path -->
+  <path d="M16,20 Q24,24 28,32 Q32,40 44,36 Q52,32 48,44" fill="none" stroke="#cc0000" stroke-width="2" stroke-dasharray="4,2"/>
+  <!-- X marks the spot -->
+  <line x1="44" y1="40" x2="52" y2="48" stroke="#cc0000" stroke-width="3"/>
+  <line x1="52" y1="40" x2="44" y2="48" stroke="#cc0000" stroke-width="3"/>
+  <!-- Start point -->
+  <circle cx="16" cy="20" r="4" fill="#00ff41" filter="url(#glow)"/>
+  <!-- Landmarks -->
+  <polygon points="28,24 26,30 30,30" fill="#666"/>
+  <rect x="36" y="28" width="6" height="8" fill="#16213e"/>
+  <!-- Compass rose -->
+  <circle cx="22" cy="46" r="6" fill="none" stroke="#8B4513" stroke-width="1"/>
+  <polygon points="22,40 20,46 22,44 24,46" fill="#8B4513"/>
+  <text x="20" y="52" font-family="serif" font-size="4" fill="#8B4513">N</text>
+</svg>

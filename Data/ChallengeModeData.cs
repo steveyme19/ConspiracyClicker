@@ -1,3 +1,5 @@
+using ConspiracyClicker.Utils;
+
 namespace ConspiracyClicker.Data;
 
 public enum ChallengeModeType
@@ -38,7 +40,7 @@ public static class ChallengeModeData
             TargetValue = 1_000_000,
             TimeLimit = 600,
             TinfoilReward = 25,
-            Icon = "⏱️"
+            Icon = IconHelper.ChallengeModes.Speedrun
         },
         new ChallengeMode
         {
@@ -50,7 +52,7 @@ public static class ChallengeModeData
             TargetValue = 1_000_000_000,
             TimeLimit = 1800,
             TinfoilReward = 75,
-            Icon = "⚡"
+            Icon = IconHelper.ChallengeModes.Lightning
         },
         new ChallengeMode
         {
@@ -61,7 +63,7 @@ public static class ChallengeModeData
             Type = ChallengeModeType.NoClick,
             TargetValue = 100_000_000,
             TinfoilReward = 50,
-            Icon = "👁️"
+            Icon = IconHelper.ChallengeModes.Observer
         },
         new ChallengeMode
         {
@@ -72,7 +74,7 @@ public static class ChallengeModeData
             Type = ChallengeModeType.Minimalist,
             TargetValue = 1_000_000_000,
             TinfoilReward = 100,
-            Icon = "📎"
+            Icon = IconHelper.ChallengeModes.Minimalist
         },
         new ChallengeMode
         {
@@ -84,7 +86,7 @@ public static class ChallengeModeData
             TargetValue = 1_000_000_000_000,
             TinfoilReward = 150,
             IlluminatiTokenReward = 5,
-            Icon = "🔒"
+            Icon = IconHelper.ChallengeModes.NoPrestige
         },
         new ChallengeMode
         {
@@ -95,7 +97,7 @@ public static class ChallengeModeData
             Type = ChallengeModeType.RiskyBusiness,
             TargetValue = 10,
             TinfoilReward = 80,
-            Icon = "🎲"
+            Icon = IconHelper.ChallengeModes.Risky
         },
         new ChallengeMode
         {
@@ -107,7 +109,7 @@ public static class ChallengeModeData
             TargetValue = 500,
             TimeLimit = 60,
             TinfoilReward = 30,
-            Icon = "👆"
+            Icon = IconHelper.ChallengeModes.ClickMaster
         }
     };
 

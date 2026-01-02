@@ -1,3 +1,5 @@
+using ConspiracyClicker.Utils;
+
 namespace ConspiracyClicker.Data;
 
 public class MatrixUpgrade
@@ -26,7 +28,7 @@ public static class MatrixData
             Description = "x3 evidence per second permanently",
             FlavorText = "The code bends to your will.",
             GlitchCost = 1,
-            Icon = "🌀"
+            Icon = IconHelper.Matrix.RealityWarp
         },
         new MatrixUpgrade
         {
@@ -35,7 +37,7 @@ public static class MatrixData
             Description = "Clicks scale with 2% of EPS instead of 1%",
             FlavorText = "I know kung fu... clicking.",
             GlitchCost = 1,
-            Icon = "👊"
+            Icon = IconHelper.Matrix.NeoClicking
         },
         new MatrixUpgrade
         {
@@ -44,7 +46,7 @@ public static class MatrixData
             Description = "+100% quest success rate (before cap)",
             FlavorText = "You've turned their agents into your agents.",
             GlitchCost = 2,
-            Icon = "🕴️"
+            Icon = IconHelper.Matrix.Agent
         },
         new MatrixUpgrade
         {
@@ -53,7 +55,7 @@ public static class MatrixData
             Description = "x2 believers from all sources",
             FlavorText = "You can see the strings that control them.",
             GlitchCost = 2,
-            Icon = "💻"
+            Icon = IconHelper.Matrix.SourceCode
         },
         new MatrixUpgrade
         {
@@ -62,7 +64,7 @@ public static class MatrixData
             Description = "x5 critical hit multiplier",
             FlavorText = "Dodge this.",
             GlitchCost = 3,
-            Icon = "⏱️"
+            Icon = IconHelper.Matrix.BulletTime
         },
         new MatrixUpgrade
         {
@@ -71,7 +73,7 @@ public static class MatrixData
             Description = "-50% all generator costs",
             FlavorText = "The one who built the Matrix owes you a favor.",
             GlitchCost = 4,
-            Icon = "👴"
+            Icon = IconHelper.Matrix.Architect
         },
         new MatrixUpgrade
         {
@@ -80,7 +82,7 @@ public static class MatrixData
             Description = "+5 Tinfoil per minute passively",
             FlavorText = "Mass awakening, one pill at a time.",
             GlitchCost = 5,
-            Icon = "💊"
+            Icon = IconHelper.Matrix.RedPill
         },
         new MatrixUpgrade
         {
@@ -89,7 +91,7 @@ public static class MatrixData
             Description = "Quests show exact success chance",
             FlavorText = "You've already seen the outcome.",
             GlitchCost = 3,
-            Icon = "🔮"
+            Icon = IconHelper.Matrix.Oracle
         },
         new MatrixUpgrade
         {
@@ -98,7 +100,7 @@ public static class MatrixData
             Description = "Keep 10% of evidence after Illuminati prestige",
             FlavorText = "A backup in the last human city.",
             GlitchCost = 8,
-            Icon = "🏛️"
+            Icon = IconHelper.Matrix.Zion
         },
         new MatrixUpgrade
         {
@@ -107,7 +109,7 @@ public static class MatrixData
             Description = "x10 all production permanently",
             FlavorText = "You are The One. The prophecy is fulfilled.",
             GlitchCost = 15,
-            Icon = "∞"
+            Icon = IconHelper.Matrix.TheOne
         }
     };
 

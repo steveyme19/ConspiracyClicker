@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700"/>
+      <stop offset="50%" style="stop-color:#ffaa00"/>
+      <stop offset="100%" style="stop-color:#ffd700"/>
+    </linearGradient>
+  </defs>
+  <!-- Trophy cup -->
+  <path d="M20,20 L20,36 Q20,48 32,52 Q44,48 44,36 L44,20 Z" fill="url(#goldGrad)" stroke="#cc8800" stroke-width="2"/>
+  <!-- Trophy shine -->
+  <path d="M24,24 L24,32 Q26,36 28,32 L28,24 Z" fill="#fff" opacity="0.3"/>
+  <!-- Handles -->
+  <path d="M20,24 Q12,24 12,32 Q12,40 20,40" fill="none" stroke="url(#goldGrad)" stroke-width="3"/>
+  <path d="M44,24 Q52,24 52,32 Q52,40 44,40" fill="none" stroke="url(#goldGrad)" stroke-width="3"/>
+  <!-- Base -->
+  <rect x="26" y="52" width="12" height="4" fill="#cc8800"/>
+  <rect x="22" y="56" width="20" height="4" fill="url(#goldGrad)" stroke="#cc8800" stroke-width="1"/>
+  <!-- Star on trophy -->
+  <polygon points="32,28 34,34 40,34 35,38 37,44 32,40 27,44 29,38 24,34 30,34"
+           fill="#fff" opacity="0.9" filter="url(#glow)"/>
+  <!-- Sparkles -->
+  <circle cx="10" cy="16" r="2" fill="#ffd700" opacity="0.8"/>
+  <circle cx="54" cy="16" r="2" fill="#ffd700" opacity="0.8"/>
+  <circle cx="8" cy="48" r="1.5" fill="#ffd700" opacity="0.6"/>
+  <circle cx="56" cy="48" r="1.5" fill="#ffd700" opacity="0.6"/>
+  <!-- Ribbon hints at top -->
+  <path d="M16,8 L20,16 L24,8" fill="#cc0000"/>
+  <path d="M40,8 L44,16 L48,8" fill="#cc0000"/>
+</svg>

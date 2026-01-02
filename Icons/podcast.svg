@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Microphone body -->
+  <rect x="24" y="16" width="16" height="28" rx="8" fill="#2a2a3e" stroke="#00ff41" stroke-width="2"/>
+  <!-- Mic grille lines -->
+  <line x1="26" y1="22" x2="38" y2="22" stroke="#444" stroke-width="1"/>
+  <line x1="26" y1="26" x2="38" y2="26" stroke="#444" stroke-width="1"/>
+  <line x1="26" y1="30" x2="38" y2="30" stroke="#444" stroke-width="1"/>
+  <line x1="26" y1="34" x2="38" y2="34" stroke="#444" stroke-width="1"/>
+  <line x1="26" y1="38" x2="38" y2="38" stroke="#444" stroke-width="1"/>
+  <!-- Recording indicator -->
+  <circle cx="32" cy="20" r="2" fill="#ff0000" filter="url(#glow)">
+    <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <!-- Mic stand -->
+  <rect x="30" y="44" width="4" height="8" fill="#333"/>
+  <rect x="22" y="52" width="20" height="4" rx="2" fill="#333"/>
+  <!-- Sound waves -->
+  <path d="M18 26 Q14 30 18 34" stroke="#00ff41" stroke-width="1.5" fill="none" opacity="0.8" filter="url(#glow)"/>
+  <path d="M14 22 Q8 30 14 38" stroke="#00ff41" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <path d="M46 26 Q50 30 46 34" stroke="#00ff41" stroke-width="1.5" fill="none" opacity="0.8" filter="url(#glow)"/>
+  <path d="M50 22 Q56 30 50 38" stroke="#00ff41" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <!-- Tinfoil hat above mic -->
+  <polygon points="32,8 26,14 38,14" fill="#c0c0c0" stroke="#888" stroke-width="0.5"/>
+</svg>

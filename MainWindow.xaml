@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Conspiracy Clicker - The Truth Is Out There"
-        Height="700" Width="1100"
-        MinHeight="600" MinWidth="900"
+        Height="900" Width="1400"
+        MinHeight="700" MinWidth="1100"
         Background="#1a1a2e"
         Icon="app.ico"
         Closing="Window_Closing">
@@ -72,13 +72,19 @@
                              AutoReverse="True"/>
         </Storyboard>
 
-        <!-- Base button style to prevent white highlight -->
+        <!-- Base button style with enhanced hover effects -->
         <Style TargetType="Button">
             <Setter Property="Background" Value="#0f3460"/>
             <Setter Property="Foreground" Value="#e0e0e0"/>
             <Setter Property="BorderBrush" Value="#00ff41"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -92,10 +98,26 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#1a5a7e"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#33ff66"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#66ff99"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#00ff41" BlurRadius="15" ShadowDepth="0" Opacity="0.6"/>
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#0a3a4e"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#00ff41" BlurRadius="8" ShadowDepth="0" Opacity="0.8"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="border" Property="Background" Value="#2a2a3e"/>
@@ -113,32 +135,58 @@
             <Setter Property="Foreground" Value="#e0e0e0"/>
             <Setter Property="BorderBrush" Value="#00ff41"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Padding" Value="12,10"/>
             <Setter Property="Margin" Value="5"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="4"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1a5a7e"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#66ff99"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#00ff41" BlurRadius="12" ShadowDepth="0" Opacity="0.5"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#0a3a4e"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#2a2a3e"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#444444"/>
+                                <Setter Property="Foreground" Value="#666666"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#1a4a6e"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="#2a2a3e"/>
-                    <Setter Property="BorderBrush" Value="#444444"/>
-                    <Setter Property="Foreground" Value="#666666"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
     </Window.Resources>
 
@@ -150,9 +198,9 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="600"/>
+                <ColumnDefinition Width="700"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="300"/>
             </Grid.ColumnDefinitions>
 
             <!-- Left Panel: Click Area -->
@@ -169,7 +217,7 @@
 
                     <StackPanel Grid.Row="0" Margin="15,15,15,5">
                         <TextBlock x:Name="EvidenceDisplay"
-                                   FontSize="26" FontWeight="Bold"
+                                   FontSize="48" FontWeight="Bold"
                                    Foreground="{StaticResource AccentGreen}"
                                    Text="0 Evidence">
                             <TextBlock.Effect>
@@ -177,7 +225,7 @@
                             </TextBlock.Effect>
                         </TextBlock>
                         <TextBlock x:Name="EpsDisplay"
-                                   FontSize="13"
+                                   FontSize="24"
                                    Foreground="{StaticResource TextDim}"
                                    Text="0/sec"/>
                     </StackPanel>
@@ -190,23 +238,23 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Tinfoil" FontSize="10" Foreground="{StaticResource TextDim}"/>
-                            <TextBlock x:Name="TinfoilDisplay" FontSize="14" FontWeight="Bold"
+                            <TextBlock Text="Tinfoil" FontSize="18" Foreground="{StaticResource TextDim}"/>
+                            <TextBlock x:Name="TinfoilDisplay" FontSize="27" FontWeight="Bold"
                                        Foreground="#C0C0C0" Text="0"/>
                         </StackPanel>
                         <StackPanel x:Name="TokensPanel" Grid.Column="1" Visibility="Collapsed">
-                            <TextBlock Text="Tokens" FontSize="10" Foreground="{StaticResource TextDim}"/>
-                            <TextBlock x:Name="IlluminatiTokenDisplay" FontSize="14" FontWeight="Bold"
+                            <TextBlock Text="Tokens" FontSize="18" Foreground="{StaticResource TextDim}"/>
+                            <TextBlock x:Name="IlluminatiTokenDisplay" FontSize="27" FontWeight="Bold"
                                        Foreground="#9933ff" Text="0"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="Believers" FontSize="10" Foreground="{StaticResource TextDim}"/>
-                            <TextBlock x:Name="BelieversDisplay" FontSize="14" FontWeight="Bold"
+                            <TextBlock Text="Believers" FontSize="18" Foreground="{StaticResource TextDim}"/>
+                            <TextBlock x:Name="BelieversDisplay" FontSize="27" FontWeight="Bold"
                                        Foreground="{StaticResource AccentGold}" Text="0"/>
                         </StackPanel>
                         <StackPanel Grid.Column="3">
-                            <TextBlock Text="Available" FontSize="10" Foreground="{StaticResource TextDim}"/>
-                            <TextBlock x:Name="AvailableBelieversDisplay" FontSize="14" FontWeight="Bold"
+                            <TextBlock Text="Available" FontSize="18" Foreground="{StaticResource TextDim}"/>
+                            <TextBlock x:Name="AvailableBelieversDisplay" FontSize="27" FontWeight="Bold"
                                        Foreground="{StaticResource AccentGold}" Text="0"/>
                         </StackPanel>
                     </Grid>
@@ -216,12 +264,13 @@
                         <Button x:Name="SoundToggleButton" Click="SoundToggle_Click"
                                 Background="Transparent" BorderThickness="0" Cursor="Hand"
                                 ToolTip="Toggle Sound" Margin="0,0,10,0">
-                            <TextBlock x:Name="SoundToggleIcon" Text="🔊" FontSize="18"/>
+                            <Image x:Name="SoundToggleIcon" Source="{DynamicResource Icon_sound_on}"
+                                   Width="28" Height="28" Stretch="Uniform"/>
                         </Button>
                         <Button Click="ReturnToMenu_Click"
                                 Background="Transparent" BorderThickness="0" Cursor="Hand"
                                 ToolTip="Return to Main Menu">
-                            <TextBlock Text="☰" FontSize="18" Foreground="{StaticResource TextDim}"/>
+                            <Image Source="{DynamicResource Icon_menu}" Width="28" Height="28" Stretch="Uniform"/>
                         </Button>
                     </StackPanel>
 
@@ -286,29 +335,50 @@
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Grid Background="Transparent">
-                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                <TextBlock Text="ALL-SEEING"
-                                                           FontSize="14" FontWeight="Bold"
-                                                           Foreground="{StaticResource AccentGreen}"
-                                                           HorizontalAlignment="Center"/>
-                                                <TextBlock Text="EYE"
-                                                           FontSize="28" FontWeight="Bold"
-                                                           Foreground="{StaticResource AccentGreen}"
-                                                           HorizontalAlignment="Center"/>
-                                            </StackPanel>
+                                            <Image x:Name="EyeIcon"
+                                                   Source="{DynamicResource Icon_all_seeing_eye}"
+                                                   Width="160" Height="160"
+                                                   Stretch="Uniform"
+                                                   RenderTransformOrigin="0.5,0.5">
+                                                <Image.RenderTransform>
+                                                    <ScaleTransform x:Name="EyeIconScale" ScaleX="1" ScaleY="1"/>
+                                                </Image.RenderTransform>
+                                                <Image.Triggers>
+                                                    <EventTrigger RoutedEvent="Loaded">
+                                                        <BeginStoryboard>
+                                                            <Storyboard RepeatBehavior="Forever">
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetName="EyeIconScale"
+                                                                    Storyboard.TargetProperty="ScaleX"
+                                                                    From="1.0" To="1.08" Duration="0:0:1.5"
+                                                                    AutoReverse="True">
+                                                                    <DoubleAnimation.EasingFunction>
+                                                                        <SineEase EasingMode="EaseInOut"/>
+                                                                    </DoubleAnimation.EasingFunction>
+                                                                </DoubleAnimation>
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetName="EyeIconScale"
+                                                                    Storyboard.TargetProperty="ScaleY"
+                                                                    From="1.0" To="1.08" Duration="0:0:1.5"
+                                                                    AutoReverse="True">
+                                                                    <DoubleAnimation.EasingFunction>
+                                                                        <SineEase EasingMode="EaseInOut"/>
+                                                                    </DoubleAnimation.EasingFunction>
+                                                                </DoubleAnimation>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                </Image.Triggers>
+                                            </Image>
                                         </Grid>
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
                         </Grid>
 
-                        <!-- Click Power Label (outside template so it updates) -->
+                        <!-- Click Power Label (hidden - kept for code compatibility) -->
                         <TextBlock x:Name="ClickPowerLabel"
-                                   FontSize="11"
-                                   Foreground="{StaticResource TextDim}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Margin="0,75,0,0"
+                                   Visibility="Collapsed"
                                    Text="+1/click"/>
 
                         <!-- Canvas for animations (on top) -->
@@ -320,13 +390,13 @@
 
                     <!-- Combo Label -->
                     <StackPanel Grid.Row="3" Margin="15,5,15,5" Panel.ZIndex="100" HorizontalAlignment="Center">
-                        <TextBlock x:Name="ComboLabel" Text="" FontSize="12" FontWeight="Bold"
+                        <TextBlock x:Name="ComboLabel" Text="" FontSize="21" FontWeight="Bold"
                                    Foreground="{StaticResource AccentGold}" HorizontalAlignment="Center"/>
                     </StackPanel>
 
                     <TextBlock x:Name="FlavorTextDisplay" Grid.Row="4"
                                Margin="15,5,15,15" TextWrapping="Wrap"
-                               FontStyle="Italic" FontSize="11"
+                               FontStyle="Italic" FontSize="20"
                                Foreground="{StaticResource TextDim}"
                                HorizontalAlignment="Center"
                                Text="Click to gather evidence..."/>
@@ -340,18 +410,19 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TabControl Grid.Row="0" Background="Transparent" BorderThickness="0">
+                <TabControl x:Name="MainTabControl" Grid.Row="0" Background="Transparent" BorderThickness="0">
                     <TabControl.Resources>
                         <Style TargetType="TabItem">
                             <Setter Property="Background" Value="#0f3460"/>
                             <Setter Property="Foreground" Value="#888888"/>
-                            <Setter Property="Padding" Value="8,4"/>
+                            <Setter Property="Padding" Value="18,9"/>
+                            <Setter Property="FontSize" Value="21"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="TabItem">
                                         <Border x:Name="Border" Background="#0f3460" CornerRadius="4,4,0,0" Margin="1,0">
                                             <ContentPresenter x:Name="Content" ContentSource="Header"
-                                                              Margin="8,4" HorizontalAlignment="Center"/>
+                                                              Margin="18,9" HorizontalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsSelected" Value="True">
@@ -378,18 +449,18 @@
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,0">
-                                    <TextBlock Text="Buy Mode: " Foreground="{StaticResource TextDim}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Buy Mode: " Foreground="{StaticResource TextDim}" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="21"/>
                                     <Button x:Name="BuyMode1" Content="1x" Click="BuyMode_Click" Tag="1"
-                                            Padding="8,4" Margin="2" Background="#0f3460" Foreground="{StaticResource AccentGreen}"
+                                            Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource AccentGreen}"
                                             BorderBrush="{StaticResource AccentGreen}" BorderThickness="1"/>
                                     <Button x:Name="BuyMode10" Content="10x" Click="BuyMode_Click" Tag="10"
-                                            Padding="8,4" Margin="2" Background="#0f3460" Foreground="{StaticResource TextDim}"
+                                            Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource TextDim}"
                                             BorderBrush="{StaticResource TextDim}" BorderThickness="1"/>
                                     <Button x:Name="BuyMode100" Content="100x" Click="BuyMode_Click" Tag="100"
-                                            Padding="8,4" Margin="2" Background="#0f3460" Foreground="{StaticResource TextDim}"
+                                            Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource TextDim}"
                                             BorderBrush="{StaticResource TextDim}" BorderThickness="1"/>
                                     <Button x:Name="BuyModeMax" Content="MAX" Click="BuyMode_Click" Tag="max"
-                                            Padding="8,4" Margin="2" Background="#0f3460" Foreground="{StaticResource TextDim}"
+                                            Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource TextDim}"
                                             BorderBrush="{StaticResource TextDim}" BorderThickness="1"/>
                                 </StackPanel>
 
@@ -586,39 +657,40 @@
                                             BorderThickness="2" CornerRadius="8" Padding="15" Margin="0,0,0,15"
                                             Visibility="Collapsed">
                                         <StackPanel>
-                                            <TextBlock x:Name="ActiveChallengeTitle" FontSize="16" FontWeight="Bold"
+                                            <TextBlock x:Name="ActiveChallengeTitle" FontSize="24" FontWeight="Bold"
                                                        Foreground="#ffd700" HorizontalAlignment="Center"/>
                                             <TextBlock x:Name="ActiveChallengeRules" TextWrapping="Wrap"
-                                                       FontSize="11" Foreground="{StaticResource TextDim}"
+                                                       FontSize="17" Foreground="{StaticResource TextDim}"
                                                        HorizontalAlignment="Center" Margin="0,5,0,10"/>
-                                            <Border Background="#1a1a2e" CornerRadius="4" Height="12" Margin="0,5">
+                                            <Border Background="#1a1a2e" CornerRadius="4" Height="18" Margin="0,5">
                                                 <Border x:Name="ChallengeProgressFill" Background="#ffd700"
                                                         CornerRadius="4" HorizontalAlignment="Left" Width="0"/>
                                             </Border>
-                                            <TextBlock x:Name="ChallengeProgressText" FontSize="12"
+                                            <TextBlock x:Name="ChallengeProgressText" FontSize="18"
                                                        Foreground="#ffd700" HorizontalAlignment="Center"/>
-                                            <TextBlock x:Name="ChallengeTimeText" FontSize="11"
+                                            <TextBlock x:Name="ChallengeTimeText" FontSize="17"
                                                        Foreground="{StaticResource TextDim}" HorizontalAlignment="Center"/>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                                                 <Button x:Name="ClaimChallengeBtn" Click="ClaimChallengeBtn_Click"
-                                                        Content="CLAIM REWARD" FontWeight="Bold"
-                                                        Background="#ffd700" Foreground="Black" Padding="15,6"
+                                                        Content="CLAIM REWARD" FontWeight="Bold" FontSize="18"
+                                                        Background="#ffd700" Foreground="Black" Padding="20,10"
                                                         Margin="5,0" Visibility="Collapsed" Cursor="Hand"/>
                                                 <Button x:Name="AbandonChallengeBtn" Click="AbandonChallengeBtn_Click"
-                                                        Content="ABANDON" FontWeight="Bold"
-                                                        Background="#cc0000" Foreground="White" Padding="15,6"
+                                                        Content="ABANDON" FontWeight="Bold" FontSize="18"
+                                                        Background="#cc0000" Foreground="White" Padding="20,10"
                                                         Margin="5,0" Cursor="Hand"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Border>
 
-                                    <TextBlock Text="CHALLENGE MODES" FontSize="14" FontWeight="Bold"
-                                               Foreground="#ffd700" Margin="0,0,0,5"/>
-                                    <TextBlock Text="Test your skills! Challenges reset your progress but offer great rewards."
-                                               FontSize="11" Foreground="{StaticResource TextDim}" TextWrapping="Wrap" Margin="0,0,0,15"/>
-                                    <StackPanel x:Name="ChallengeModesPanel"/>
+                                    <TextBlock x:Name="NoChallengeText" Text="NO ACTIVE CHALLENGE" FontSize="24" FontWeight="Bold"
+                                               Foreground="{StaticResource TextDim}" Margin="0,0,0,5" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Start a challenge from the main menu when creating a new save slot!"
+                                               FontSize="18" Foreground="{StaticResource TextDim}" TextWrapping="Wrap"
+                                               Margin="0,0,0,15" HorizontalAlignment="Center" TextAlignment="Center"/>
+                                    <StackPanel x:Name="ChallengeModesPanel" Visibility="Collapsed"/>
 
-                                    <TextBlock x:Name="CompletedChallengesHeader" Text="COMPLETED CHALLENGES" FontSize="14" FontWeight="Bold"
+                                    <TextBlock x:Name="CompletedChallengesHeader" Text="COMPLETED CHALLENGES" FontSize="24" FontWeight="Bold"
                                                Foreground="{StaticResource AccentGreen}" Margin="0,15,0,10" Visibility="Collapsed"/>
                                     <StackPanel x:Name="CompletedChallengesPanel"/>
                                 </StackPanel>
@@ -685,6 +757,140 @@
                                     <TextBlock x:Name="PurchasedMatrixHeader" Text="UNLOCKED POWERS" FontSize="14" FontWeight="Bold"
                                                Foreground="{StaticResource AccentGold}" Margin="0,15,0,10" Visibility="Collapsed"/>
                                     <StackPanel x:Name="PurchasedMatrixPanel"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Border>
+                    </TabItem>
+
+                    <!-- Statistics Tab -->
+                    <TabItem x:Name="StatisticsTab" Header="Stats">
+                        <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
+                                <StackPanel>
+                                    <!-- General Stats -->
+                                    <TextBlock Text="GENERAL STATISTICS" FontSize="21" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGreen}" Margin="0,0,0,15"/>
+                                    <Grid Margin="0,0,0,20">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Total Playtime" FontSize="15" Foreground="{StaticResource TextDim}"/>
+                                            <TextBlock x:Name="StatPlaytime" Text="0h 0m" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextLight}"/>
+                                            <TextBlock Text="Total Clicks" FontSize="15" Foreground="{StaticResource TextDim}" Margin="0,10,0,0"/>
+                                            <TextBlock x:Name="StatClicks" Text="0" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextLight}"/>
+                                            <TextBlock Text="Critical Clicks" FontSize="15" Foreground="{StaticResource TextDim}" Margin="0,10,0,0"/>
+                                            <TextBlock x:Name="StatCritClicks" Text="0" FontSize="24" FontWeight="Bold" Foreground="#ff6600"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Total Evidence Earned" FontSize="15" Foreground="{StaticResource TextDim}"/>
+                                            <TextBlock x:Name="StatTotalEvidence" Text="0" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AccentGreen}"/>
+                                            <TextBlock Text="Current EPS" FontSize="15" Foreground="{StaticResource TextDim}" Margin="0,10,0,0"/>
+                                            <TextBlock x:Name="StatCurrentEPS" Text="0/sec" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AccentGreen}"/>
+                                            <TextBlock Text="Times Ascended" FontSize="15" Foreground="{StaticResource TextDim}" Margin="0,10,0,0"/>
+                                            <TextBlock x:Name="StatAscensions" Text="0" FontSize="24" FontWeight="Bold" Foreground="#9933ff"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Production Breakdown -->
+                                    <TextBlock Text="PRODUCTION BREAKDOWN" FontSize="21" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGold}" Margin="0,10,0,15"/>
+                                    <TextBlock x:Name="StatProductionTotal" Text="Total: 0/sec" FontSize="18"
+                                               Foreground="{StaticResource TextLight}" Margin="0,0,0,10"/>
+                                    <StackPanel x:Name="ProductionBarsPanel" Margin="0,0,0,20"/>
+
+                                    <!-- Quest Statistics -->
+                                    <TextBlock Text="QUEST STATISTICS" FontSize="21" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGold}" Margin="0,10,0,15"/>
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                            <TextBlock Text="Completed" FontSize="15" Foreground="{StaticResource TextDim}" HorizontalAlignment="Center"/>
+                                            <TextBlock x:Name="StatQuestsCompleted" Text="0" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentGreen}" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                            <TextBlock Text="Failed" FontSize="15" Foreground="{StaticResource TextDim}" HorizontalAlignment="Center"/>
+                                            <TextBlock x:Name="StatQuestsFailed" Text="0" FontSize="30" FontWeight="Bold" Foreground="#cc3333" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                            <TextBlock Text="Success Rate" FontSize="15" Foreground="{StaticResource TextDim}" HorizontalAlignment="Center"/>
+                                            <TextBlock x:Name="StatQuestSuccessRate" Text="0%" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentGold}" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <!-- Quest Success Bar -->
+                                    <Border Background="#331111" CornerRadius="6" Height="24" Margin="0,5,0,20">
+                                        <Grid>
+                                            <Border x:Name="QuestSuccessBar" Background="{StaticResource AccentGreen}"
+                                                    CornerRadius="6" HorizontalAlignment="Left" Width="0"/>
+                                            <Border x:Name="QuestFailBar" Background="#cc3333"
+                                                    CornerRadius="0,6,6,0" HorizontalAlignment="Right" Width="0"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Believer Stats -->
+                                    <TextBlock Text="BELIEVER STATISTICS" FontSize="21" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGold}" Margin="0,10,0,15"/>
+                                    <Grid Margin="0,0,0,20">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Current Believers" FontSize="15" Foreground="{StaticResource TextDim}"/>
+                                            <TextBlock x:Name="StatCurrentBelievers" Text="0" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AccentGold}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Believers Lost" FontSize="15" Foreground="{StaticResource TextDim}"/>
+                                            <TextBlock x:Name="StatBelieversLost" Text="0" FontSize="24" FontWeight="Bold" Foreground="#cc3333"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Achievement Progress -->
+                                    <TextBlock Text="ACHIEVEMENT PROGRESS" FontSize="21" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGold}" Margin="0,10,0,15"/>
+                                    <Grid Margin="0,0,0,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Background="#222233" CornerRadius="6" Height="30">
+                                            <Border x:Name="AchievementProgressBar" Background="{StaticResource AccentGold}"
+                                                    CornerRadius="6" HorizontalAlignment="Left" Width="0"/>
+                                        </Border>
+                                        <TextBlock x:Name="StatAchievementProgress" Grid.Column="1" Text="0/0"
+                                                   FontSize="21" FontWeight="Bold" Foreground="{StaticResource AccentGold}"
+                                                   VerticalAlignment="Center" Margin="15,0,0,0"/>
+                                    </Grid>
+                                    <TextBlock x:Name="StatAchievementPercent" Text="0% Complete" FontSize="15"
+                                               Foreground="{StaticResource TextDim}" Margin="0,5,0,20"/>
+
+                                    <!-- Prestige Stats -->
+                                    <TextBlock Text="PRESTIGE STATISTICS" FontSize="21" FontWeight="Bold"
+                                               Foreground="#9933ff" Margin="0,10,0,15"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Illuminati Tokens" FontSize="15" Foreground="{StaticResource TextDim}"/>
+                                            <TextBlock x:Name="StatIlluminatiTokens" Text="0" FontSize="24" FontWeight="Bold" Foreground="#9933ff"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Total Earned" FontSize="15" Foreground="{StaticResource TextDim}"/>
+                                            <TextBlock x:Name="StatTotalTokensEarned" Text="0" FontSize="24" FontWeight="Bold" Foreground="#9933ff"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Matrix Breaks" FontSize="15" Foreground="{StaticResource TextDim}"/>
+                                            <TextBlock x:Name="StatMatrixBreaks" Text="0" FontSize="24" FontWeight="Bold" Foreground="#00ffff"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>
@@ -783,8 +989,10 @@
             <Border Grid.Row="1" Grid.ColumnSpan="3" Background="#0a0f1a"
                     Margin="10,0,10,10" Padding="8,4" CornerRadius="4">
                 <Grid ClipToBounds="True">
-                    <TextBlock Text="📺 BREAKING:" FontWeight="Bold" Foreground="{StaticResource AccentGold}"
-                               VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <Image Source="{DynamicResource Icon_broadcast}" Width="20" Height="20" Margin="0,0,6,0"/>
+                        <TextBlock Text="BREAKING:" FontWeight="Bold" Foreground="{StaticResource AccentGold}"/>
+                    </StackPanel>
                     <Canvas x:Name="NewsTickerCanvas" Margin="100,0,0,0" ClipToBounds="True">
                         <TextBlock x:Name="NewsTickerText" Foreground="{StaticResource TextLight}" FontSize="12"
                                    Canvas.Top="2"/>
@@ -934,14 +1142,18 @@
                     </Border.Effect>
                     <StackPanel>
                         <!-- Title -->
-                        <TextBlock Text="👁 CONSPIRACY CLICKER 👁" FontSize="32" FontWeight="Bold"
-                                   Foreground="{StaticResource AccentGreen}" HorizontalAlignment="Center"/>
-                        <TextBlock Text="The Truth Is Out There" FontSize="14" FontStyle="Italic"
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Image Source="{DynamicResource Icon_all_seeing_eye_small}" Width="48" Height="48" Margin="0,0,12,0"/>
+                            <TextBlock Text="CONSPIRACY CLICKER" FontSize="48" FontWeight="Bold"
+                                       Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
+                            <Image Source="{DynamicResource Icon_all_seeing_eye_small}" Width="48" Height="48" Margin="12,0,0,0"/>
+                        </StackPanel>
+                        <TextBlock Text="The Truth Is Out There" FontSize="21" FontStyle="Italic"
                                    Foreground="{StaticResource TextDim}"
                                    HorizontalAlignment="Center" Margin="0,5,0,30"/>
 
                         <!-- Save Slots -->
-                        <TextBlock Text="SELECT SAVE SLOT" FontSize="14" FontWeight="Bold"
+                        <TextBlock Text="SELECT SAVE SLOT" FontSize="21" FontWeight="Bold"
                                    Foreground="{StaticResource AccentGold}" HorizontalAlignment="Center" Margin="0,0,0,15"/>
 
                         <!-- Slot 1 -->
@@ -955,18 +1167,20 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="SLOT 1" FontSize="14" FontWeight="Bold"
+                                <TextBlock Text="SLOT 1" FontSize="21" FontWeight="Bold"
                                            Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
                                 <StackPanel Grid.Column="1" Margin="20,0">
                                     <TextBlock x:Name="Slot1Info" Text="- Empty Slot -"
-                                               Foreground="{StaticResource TextDim}" FontSize="12"/>
+                                               Foreground="{StaticResource TextDim}" FontSize="18"/>
                                     <TextBlock x:Name="Slot1Details" Text=""
-                                               Foreground="{StaticResource TextDim}" FontSize="10" Margin="0,3,0,0"/>
+                                               Foreground="{StaticResource TextDim}" FontSize="15" Margin="0,3,0,0"/>
                                 </StackPanel>
-                                <Button x:Name="Slot1DeleteBtn" Grid.Column="2" Content="🗑"
+                                <Button x:Name="Slot1DeleteBtn" Grid.Column="2"
                                         Click="DeleteSlot_Click" Tag="1"
-                                        Visibility="Collapsed" Width="30" Height="30"
-                                        Background="#442222" BorderBrush="#883333" FontSize="14"/>
+                                        Visibility="Collapsed" Width="45" Height="45"
+                                        Background="#442222" BorderBrush="#883333">
+                                    <Image Source="{DynamicResource Icon_trash}" Width="24" Height="24"/>
+                                </Button>
                             </Grid>
                         </Border>
 
@@ -981,18 +1195,20 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="SLOT 2" FontSize="14" FontWeight="Bold"
+                                <TextBlock Text="SLOT 2" FontSize="21" FontWeight="Bold"
                                            Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
                                 <StackPanel Grid.Column="1" Margin="20,0">
                                     <TextBlock x:Name="Slot2Info" Text="- Empty Slot -"
-                                               Foreground="{StaticResource TextDim}" FontSize="12"/>
+                                               Foreground="{StaticResource TextDim}" FontSize="18"/>
                                     <TextBlock x:Name="Slot2Details" Text=""
-                                               Foreground="{StaticResource TextDim}" FontSize="10" Margin="0,3,0,0"/>
+                                               Foreground="{StaticResource TextDim}" FontSize="15" Margin="0,3,0,0"/>
                                 </StackPanel>
-                                <Button x:Name="Slot2DeleteBtn" Grid.Column="2" Content="🗑"
+                                <Button x:Name="Slot2DeleteBtn" Grid.Column="2"
                                         Click="DeleteSlot_Click" Tag="2"
-                                        Visibility="Collapsed" Width="30" Height="30"
-                                        Background="#442222" BorderBrush="#883333" FontSize="14"/>
+                                        Visibility="Collapsed" Width="45" Height="45"
+                                        Background="#442222" BorderBrush="#883333">
+                                    <Image Source="{DynamicResource Icon_trash}" Width="24" Height="24"/>
+                                </Button>
                             </Grid>
                         </Border>
 
@@ -1007,18 +1223,20 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="SLOT 3" FontSize="14" FontWeight="Bold"
+                                <TextBlock Text="SLOT 3" FontSize="21" FontWeight="Bold"
                                            Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
                                 <StackPanel Grid.Column="1" Margin="20,0">
                                     <TextBlock x:Name="Slot3Info" Text="- Empty Slot -"
-                                               Foreground="{StaticResource TextDim}" FontSize="12"/>
+                                               Foreground="{StaticResource TextDim}" FontSize="18"/>
                                     <TextBlock x:Name="Slot3Details" Text=""
-                                               Foreground="{StaticResource TextDim}" FontSize="10" Margin="0,3,0,0"/>
+                                               Foreground="{StaticResource TextDim}" FontSize="15" Margin="0,3,0,0"/>
                                 </StackPanel>
-                                <Button x:Name="Slot3DeleteBtn" Grid.Column="2" Content="🗑"
+                                <Button x:Name="Slot3DeleteBtn" Grid.Column="2"
                                         Click="DeleteSlot_Click" Tag="3"
-                                        Visibility="Collapsed" Width="30" Height="30"
-                                        Background="#442222" BorderBrush="#883333" FontSize="14"/>
+                                        Visibility="Collapsed" Width="45" Height="45"
+                                        Background="#442222" BorderBrush="#883333">
+                                    <Image Source="{DynamicResource Icon_trash}" Width="24" Height="24"/>
+                                </Button>
                             </Grid>
                         </Border>
 
@@ -1026,9 +1244,25 @@
                         <Border x:Name="SelectedSlotPanel" Background="#1a2a1a" CornerRadius="8"
                                 Padding="15" Margin="0,0,0,20" Visibility="Collapsed">
                             <StackPanel>
-                                <TextBlock x:Name="SelectedSlotTitle" Text="SLOT 1 SELECTED" FontSize="12"
+                                <TextBlock x:Name="SelectedSlotTitle" Text="SLOT 1 SELECTED" FontSize="21"
                                            FontWeight="Bold" Foreground="{StaticResource AccentGold}"
                                            HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+                                <!-- Challenge Mode Selection (only for new games) -->
+                                <StackPanel x:Name="ChallengeSelectionPanel" Visibility="Collapsed" Margin="0,0,0,15">
+                                    <TextBlock Text="CHALLENGE MODE" FontSize="18" FontWeight="Bold"
+                                               Foreground="{StaticResource TextLight}" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                    <ComboBox x:Name="ChallengeModeCombo" SelectionChanged="ChallengeModeCombo_SelectionChanged"
+                                              Background="#0f1a2e" Foreground="{StaticResource TextLight}"
+                                              BorderBrush="#333366" Padding="12,8" FontSize="20"
+                                              HorizontalAlignment="Stretch">
+                                        <ComboBoxItem Content="🎮 Normal Mode" Tag="" IsSelected="True"/>
+                                    </ComboBox>
+                                    <TextBlock x:Name="ChallengeDescriptionText" Text="" FontSize="17"
+                                               Foreground="{StaticResource TextDim}" TextWrapping="Wrap"
+                                               Margin="0,8,0,0" HorizontalAlignment="Center"/>
+                                </StackPanel>
+
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -1037,12 +1271,12 @@
                                     </Grid.ColumnDefinitions>
                                     <Button x:Name="ContinueBtn" Grid.Column="0" Content="CONTINUE"
                                             Click="MenuContinue_Click"
-                                            Padding="15,10" Background="#00aa33" Foreground="White"
-                                            FontWeight="Bold" FontSize="12" Cursor="Hand"/>
+                                            Padding="20,12" Background="#00aa33" Foreground="White"
+                                            FontWeight="Bold" FontSize="21" Cursor="Hand"/>
                                     <Button x:Name="NewGameBtn" Grid.Column="2" Content="NEW GAME"
                                             Click="MenuNewGame_Click"
-                                            Padding="15,10" Background="#336699" Foreground="White"
-                                            FontWeight="Bold" FontSize="12" Cursor="Hand"/>
+                                            Padding="20,12" Background="#336699" Foreground="White"
+                                            FontWeight="Bold" FontSize="21" Cursor="Hand"/>
                                 </Grid>
                             </StackPanel>
                         </Border>
@@ -1050,16 +1284,16 @@
                         <!-- Quick Continue (if save exists) -->
                         <Button x:Name="QuickContinueBtn" Content="▶ QUICK CONTINUE"
                                 Click="MenuQuickContinue_Click" Visibility="Collapsed"
-                                Padding="20,12" Background="#00aa33" Foreground="White"
-                                FontWeight="Bold" FontSize="14" Cursor="Hand" Margin="0,0,0,10"/>
+                                Padding="25,15" Background="#00aa33" Foreground="White"
+                                FontWeight="Bold" FontSize="21" Cursor="Hand" Margin="0,0,0,10"/>
 
                         <!-- Quit Button -->
                         <Button Content="QUIT" Click="MenuQuit_Click"
-                                Padding="20,12" Background="#442222" Foreground="#ff9999"
-                                FontWeight="Bold" FontSize="12" Cursor="Hand"/>
+                                Padding="25,15" Background="#442222" Foreground="#ff9999"
+                                FontWeight="Bold" FontSize="18" Cursor="Hand"/>
 
                         <!-- Version -->
-                        <TextBlock Text="v1.0 - Click responsibly" FontSize="10"
+                        <TextBlock Text="v1.0 - Click responsibly" FontSize="15"
                                    Foreground="{StaticResource TextDim}"
                                    HorizontalAlignment="Center" Margin="0,20,0,0"/>
                     </StackPanel>
@@ -1070,14 +1304,14 @@
         <!-- Toast Notification Overlay -->
         <Border x:Name="ToastNotification"
                 HorizontalAlignment="Center" VerticalAlignment="Top"
-                Margin="0,20,0,0" Padding="20,10"
+                Margin="0,20,0,0" Padding="25,12"
                 Background="#0f3460" BorderBrush="{StaticResource AccentGold}"
                 BorderThickness="2" CornerRadius="8"
                 Visibility="Collapsed" Panel.ZIndex="1000">
             <StackPanel Orientation="Horizontal">
-                <TextBlock x:Name="ToastIcon" Text="!" FontSize="18" FontWeight="Bold"
+                <TextBlock x:Name="ToastIcon" Text="!" FontSize="27" FontWeight="Bold"
                            Foreground="{StaticResource AccentGold}" Margin="0,0,10,0"/>
-                <TextBlock x:Name="ToastMessage" Text="" FontSize="14"
+                <TextBlock x:Name="ToastMessage" Text="" FontSize="21"
                            Foreground="{StaticResource TextLight}"/>
             </StackPanel>
         </Border>

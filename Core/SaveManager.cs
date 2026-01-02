@@ -11,6 +11,7 @@ public class SaveSlotInfo
     public double TotalEvidence { get; init; }
     public int AscensionCount { get; init; }
     public double PlayTimeSeconds { get; init; }
+    public string? ActiveChallengeId { get; init; }
 }
 
 public class SaveManager
@@ -147,7 +148,8 @@ public class SaveManager
                     LastPlayed = state.LastSaveTime,
                     TotalEvidence = state.TotalEvidenceEarned,
                     AscensionCount = state.TimesAscended,
-                    PlayTimeSeconds = state.TotalPlayTimeSeconds
+                    PlayTimeSeconds = state.TotalPlayTimeSeconds,
+                    ActiveChallengeId = state.ActiveChallengeId
                 };
             }
         }

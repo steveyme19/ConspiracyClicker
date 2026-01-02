@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Folder back -->
+  <path d="M4,16 L4,56 L60,56 L60,16 L30,16 L26,10 L4,10 Z" fill="#16213e" stroke="#00ff41" stroke-width="1"/>
+  <!-- Folder tab -->
+  <path d="M4,10 L26,10 L30,16 L4,16 Z" fill="#0f3460"/>
+  <!-- Documents inside -->
+  <rect x="10" y="22" width="28" height="28" fill="#1a1a2e" stroke="#333" stroke-width="1"/>
+  <!-- Document lines -->
+  <line x1="14" y1="28" x2="32" y2="28" stroke="#00ff41" stroke-width="1" opacity="0.6"/>
+  <line x1="14" y1="34" x2="34" y2="34" stroke="#00ff41" stroke-width="1" opacity="0.6"/>
+  <line x1="14" y1="40" x2="30" y2="40" stroke="#00ff41" stroke-width="1" opacity="0.6"/>
+  <!-- TOP SECRET stamp -->
+  <rect x="30" y="32" width="24" height="12" fill="none" stroke="#cc0000" stroke-width="2" transform="rotate(-15 42 38)"/>
+  <text x="32" y="41" font-family="sans-serif" font-size="5" fill="#cc0000" font-weight="bold" transform="rotate(-15 42 38)">SECRET</text>
+  <!-- Magnifying glass -->
+  <circle cx="50" cy="18" r="8" fill="none" stroke="#ffd700" stroke-width="2"/>
+  <line x1="55" y1="24" x2="60" y2="30" stroke="#ffd700" stroke-width="3"/>
+  <circle cx="50" cy="18" r="4" fill="#00ff41" opacity="0.2" filter="url(#glow)"/>
+  <!-- Photo peeking out -->
+  <rect x="36" y="44" width="16" height="12" fill="#333" stroke="#444" stroke-width="1"/>
+  <circle cx="44" cy="48" r="2" fill="#666"/>
+</svg>

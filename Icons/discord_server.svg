@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Discord-like shape -->
+  <path d="M16 12 C8 12 8 20 8 24 L8 44 C8 52 16 52 16 52 L48 52 C56 52 56 44 56 44 L56 20 C56 12 48 12 48 12 Z"
+        fill="#5865F2" opacity="0.8"/>
+  <!-- Controller/gamepad eyes (discord logo hint) -->
+  <circle cx="24" cy="28" r="6" fill="#1a1a2e"/>
+  <circle cx="40" cy="28" r="6" fill="#1a1a2e"/>
+  <!-- Glowing pupils -->
+  <circle cx="24" cy="28" r="3" fill="#00ff41" filter="url(#glow)"/>
+  <circle cx="40" cy="28" r="3" fill="#00ff41" filter="url(#glow)"/>
+  <!-- Smile/mouth -->
+  <path d="M22 38 Q32 46 42 38" stroke="#1a1a2e" stroke-width="3" fill="none"/>
+  <!-- Secret channel indicator -->
+  <rect x="44" y="8" width="14" height="10" rx="2" fill="#1a1a2e" stroke="#00ff41" stroke-width="1"/>
+  <text x="47" y="15" font-family="monospace" font-size="6" fill="#00ff41">#?</text>
+  <!-- Member count -->
+  <circle cx="12" cy="56" r="3" fill="#43b581"/>
+  <text x="16" y="58" font-family="monospace" font-size="5" fill="#888">2,847</text>
+</svg>
