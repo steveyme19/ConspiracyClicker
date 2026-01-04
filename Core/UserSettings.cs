@@ -6,6 +6,7 @@ namespace ConspiracyClicker.Core;
 public class UserSettings
 {
     public bool SoundEnabled { get; set; } = true;
+    public double SoundVolume { get; set; } = 0.7; // 0.0 to 1.0
     public double WindowWidth { get; set; } = 1400;
     public double WindowHeight { get; set; } = 900;
     public double WindowLeft { get; set; } = -1; // -1 means center

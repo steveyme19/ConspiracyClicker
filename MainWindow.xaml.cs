@@ -383,6 +383,7 @@ public partial class MainWindow : Window
         CompositionTarget.Rendering += OnRendering;
 
         // Initialize sound system
+        SoundManager.Volume = _settings.SoundVolume; // Set volume before Initialize to apply to generated sounds
         SoundManager.Initialize();
         SoundManager.Enabled = _settings.SoundEnabled;
         UpdateSoundIcon();
@@ -4914,9 +4915,16 @@ public partial class MainWindow : Window
 
         MainMenuOverlay.Visibility = Visibility.Collapsed;
         InitializeZenMode(); // Restore zen mode from saved state
+        UpdateSettingsPanel(); // Sync settings UI with current state
         UpdateUI();
         _engine.Start();
         SoundManager.Play("achievement");
+
+        // Show tutorial for new players who haven't seen it
+        if (!_engine.State.HasSeenTutorial)
+        {
+            TutorialOverlay.Visibility = Visibility.Visible;
+        }
     }
 
     private void SkillButton_Click(object sender, RoutedEventArgs e)
@@ -5206,7 +5214,8 @@ public partial class MainWindow : Window
         if (canPrestige)
         {
             PrestigeInfoText.Text = $"You have earned {NumberFormatter.Format(state.TotalEvidenceEarned)} total evidence.\n" +
-                                    $"Ascending will grant you {tokensFromPrestige} Illuminati Token(s).";
+                                    $"Ascending will grant you {tokensFromPrestige} Illuminati Token(s).\n" +
+                                    $"Tokens unlock upgrades with MASSIVE permanent multipliers (100x-500x EPS)!";
             PrestigeButton.IsEnabled = true;
         }
         else
@@ -5214,7 +5223,7 @@ public partial class MainWindow : Window
             double threshold = PrestigeData.PRESTIGE_THRESHOLD;
             double progress = state.TotalEvidenceEarned / threshold;
             PrestigeInfoText.Text = $"Progress: {NumberFormatter.Format(state.TotalEvidenceEarned)} / {NumberFormatter.Format(threshold)} ({progress:P1})\n" +
-                                    $"Reach 1 trillion total evidence to unlock prestige.";
+                                    $"Ascending grants Illuminati Tokens for MASSIVE permanent multipliers!";
             PrestigeButton.IsEnabled = false;
         }
 
@@ -5308,6 +5317,66 @@ public partial class MainWindow : Window
         _settings.SoundEnabled = SoundManager.Enabled;
         _settings.Save();
         UpdateSoundIcon();
+        UpdateSettingsPanel();
+    }
+
+    // === SETTINGS TAB ===
+    private void SettingsSoundToggle_Click(object sender, RoutedEventArgs e)
+    {
+        SoundManager.Enabled = !SoundManager.Enabled;
+        _settings.SoundEnabled = SoundManager.Enabled;
+        _settings.Save();
+        UpdateSoundIcon();
+        UpdateSettingsPanel();
+    }
+
+    private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (!IsLoaded) return;
+        double volume = e.NewValue / 100.0;
+        SoundManager.Volume = volume;
+        _settings.SoundVolume = volume;
+        _settings.Save();
+        VolumePercentText.Text = $"{(int)e.NewValue}%";
+    }
+
+    private void SettingsZenToggle_Click(object sender, RoutedEventArgs e)
+    {
+        _engine.State.ZenMode = !_engine.State.ZenMode;
+        InitializeZenMode();
+        UpdateSettingsPanel();
+    }
+
+    private void ShowTutorial_Click(object sender, RoutedEventArgs e)
+    {
+        TutorialOverlay.Visibility = Visibility.Visible;
+    }
+
+    private void TutorialClose_Click(object sender, RoutedEventArgs e)
+    {
+        TutorialOverlay.Visibility = Visibility.Collapsed;
+        _engine.State.HasSeenTutorial = true;
+    }
+
+    private void UpdateSettingsPanel()
+    {
+        // Sound toggle
+        bool soundOn = SoundManager.Enabled;
+        SettingsSoundToggle.Content = soundOn ? "ON" : "OFF";
+        SettingsSoundToggle.Background = soundOn ? new SolidColorBrush(Color.FromRgb(34, 85, 34)) : new SolidColorBrush(Color.FromRgb(85, 34, 34));
+        SettingsSoundToggle.Foreground = soundOn ? GreenBrush : RedBrush;
+        SettingsSoundToggle.BorderBrush = soundOn ? GreenBrush : RedBrush;
+
+        // Volume slider
+        VolumeSlider.Value = SoundManager.Volume * 100;
+        VolumePercentText.Text = $"{(int)(SoundManager.Volume * 100)}%";
+
+        // Zen mode toggle
+        bool zenOn = _engine.State.ZenMode;
+        SettingsZenToggle.Content = zenOn ? "ON" : "OFF";
+        SettingsZenToggle.Background = zenOn ? new SolidColorBrush(Color.FromRgb(34, 85, 34)) : new SolidColorBrush(Color.FromRgb(85, 34, 34));
+        SettingsZenToggle.Foreground = zenOn ? GreenBrush : RedBrush;
+        SettingsZenToggle.BorderBrush = zenOn ? GreenBrush : RedBrush;
     }
 
     // === FULLSCREEN ===

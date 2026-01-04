@@ -94,13 +94,15 @@ public class SaveManager
         }
         catch (Exception ex)
         {
-            OnError?.Invoke($"Load failed: {ex.Message}");
+            OnError?.Invoke($"Save file corrupted: {ex.Message}. Trying backup...");
             var backup = TryLoadBackup(slot);
             if (backup != null)
             {
+                OnError?.Invoke("Backup loaded successfully! You may have lost up to 15 seconds of progress.");
                 _currentSlot = slot;
                 return backup;
             }
+            OnError?.Invoke("Both save and backup files are corrupted. Starting fresh game.");
         }
 
         return null; // Return null instead of empty state on failure

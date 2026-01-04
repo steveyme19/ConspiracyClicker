@@ -7,10 +7,29 @@ namespace ConspiracyClicker.Utils;
 public static class SoundManager
 {
     private static bool _enabled = true;
+    private static double _volume = 0.7; // 0.0 to 1.0
+
     public static bool Enabled
     {
         get => _enabled;
         set => _enabled = value;
+    }
+
+    public static double Volume
+    {
+        get => _volume;
+        set
+        {
+            double newVolume = Math.Clamp(value, 0.0, 1.0);
+            if (Math.Abs(newVolume - _volume) > 0.01)
+            {
+                _volume = newVolume;
+                if (_initialized)
+                {
+                    RegenerateSounds(); // Regenerate with new volume (only if already initialized)
+                }
+            }
+        }
     }
 
     public static bool IsMuted => !_enabled;
@@ -28,8 +47,12 @@ public static class SoundManager
     {
         if (_initialized) return;
         _initialized = true;
+        RegenerateSounds();
+    }
 
-        // Pre-generate all sounds
+    private static void RegenerateSounds()
+    {
+        // Pre-generate all sounds with current volume
         _sounds["click"] = CreateSound(GenerateClick());
         _sounds["crit"] = CreateSound(GenerateCrit());
         _sounds["purchase"] = CreateSound(GeneratePurchase());
@@ -112,12 +135,13 @@ public static class SoundManager
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * durationMs / 1000.0);
         var samples = new short[numSamples];
+        double masterVolume = _volume; // Apply master volume
 
         for (int i = 0; i < numSamples; i++)
         {
             double t = (double)i / sampleRate;
             double envelope = fadeOut ? Math.Max(0, 1.0 - (double)i / numSamples) : 1.0;
-            double sample = Math.Sin(2 * Math.PI * frequency * t) * volume * envelope;
+            double sample = Math.Sin(2 * Math.PI * frequency * t) * volume * envelope * masterVolume;
             samples[i] = (short)(sample * 32767);
         }
 
@@ -164,6 +188,7 @@ public static class SoundManager
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * 0.045); // 45ms
         var samples = new short[numSamples];
+        double masterVolume = _volume;
 
         for (int i = 0; i < numSamples; i++)
         {
@@ -177,7 +202,7 @@ public static class SoundManager
             double fundamental = Math.Sin(2 * Math.PI * 440 * t);
             double harmonic = Math.Sin(2 * Math.PI * 880 * t) * 0.2;
 
-            double sample = (fundamental + harmonic) * 0.25 * envelope;
+            double sample = (fundamental + harmonic) * 0.25 * envelope * masterVolume;
             samples[i] = (short)(sample * 32767);
         }
 
@@ -190,6 +215,7 @@ public static class SoundManager
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * 0.08); // 80ms
         var samples = new short[numSamples];
+        double masterVolume = _volume;
 
         for (int i = 0; i < numSamples; i++)
         {
@@ -204,7 +230,7 @@ public static class SoundManager
             double e5 = Math.Sin(2 * Math.PI * 659 * t) * 0.7;
             double g5 = Math.Sin(2 * Math.PI * 784 * t) * 0.5;
 
-            double sample = (c5 + e5 + g5) * 0.2 * envelope;
+            double sample = (c5 + e5 + g5) * 0.2 * envelope * masterVolume;
             samples[i] = (short)(sample * 32767);
         }
 
@@ -226,6 +252,7 @@ public static class SoundManager
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * 0.15);
         var samples = new short[numSamples];
+        double masterVolume = _volume;
 
         for (int i = 0; i < numSamples; i++)
         {
@@ -233,7 +260,7 @@ public static class SoundManager
             double progress = (double)i / numSamples;
             double freq = 400 + progress * 800; // Sweep from 400 to 1200 Hz
             double envelope = Math.Max(0, 1.0 - progress * 0.5);
-            double sample = Math.Sin(2 * Math.PI * freq * t) * 0.4 * envelope;
+            double sample = Math.Sin(2 * Math.PI * freq * t) * 0.4 * envelope * masterVolume;
             samples[i] = (short)(sample * 32767);
         }
 
@@ -256,6 +283,7 @@ public static class SoundManager
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * 0.2);
         var samples = new short[numSamples];
+        double masterVolume = _volume;
 
         for (int i = 0; i < numSamples; i++)
         {
@@ -263,9 +291,9 @@ public static class SoundManager
             double progress = (double)i / numSamples;
             double freq = 800 - Math.Sin(progress * Math.PI) * 400;
             double envelope = Math.Sin(progress * Math.PI);
-            double sample = Math.Sin(2 * Math.PI * freq * t) * 0.5 * envelope;
+            double sample = Math.Sin(2 * Math.PI * freq * t) * 0.5 * envelope * masterVolume;
             // Add some noise for woosh effect
-            sample += (new Random(i).NextDouble() - 0.5) * 0.1 * envelope;
+            sample += (new Random(i).NextDouble() - 0.5) * 0.1 * envelope * masterVolume;
             samples[i] = (short)(sample * 32767);
         }
 

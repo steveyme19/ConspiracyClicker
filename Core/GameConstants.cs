@@ -8,7 +8,7 @@ public static class GameConstants
 {
     // === TIMING ===
     public const int TICK_RATE_MS = 100;
-    public const int AUTO_SAVE_INTERVAL_MS = 30000; // 30 seconds
+    public const int AUTO_SAVE_INTERVAL_MS = 15000; // 15 seconds
 
     // === COMBO SYSTEM ===
     public const double COMBO_DECAY_RATE = 0.15;        // How fast combo meter drains per tick

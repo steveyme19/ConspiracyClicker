@@ -934,6 +934,106 @@
                             </ScrollViewer>
                         </Border>
                     </TabItem>
+
+                    <!-- Settings Tab -->
+                    <TabItem x:Name="SettingsTab" Header="Settings" ToolTip="Adjust game settings">
+                        <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
+                                <StackPanel>
+                                    <TextBlock Text="GAME SETTINGS" FontSize="21" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGreen}" Margin="0,0,0,20"/>
+
+                                    <!-- Audio Section -->
+                                    <TextBlock Text="AUDIO" FontSize="16" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGold}" Margin="0,0,0,10"/>
+                                    <Border Background="#0f1a2e" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                                        <StackPanel>
+                                            <!-- Sound Toggle -->
+                                            <Grid Margin="0,0,0,15">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="Sound Effects" FontSize="14" Foreground="{StaticResource TextLight}"/>
+                                                    <TextBlock Text="Enable or disable all game sounds" FontSize="11" Foreground="{StaticResource TextDim}"/>
+                                                </StackPanel>
+                                                <Button x:Name="SettingsSoundToggle" Grid.Column="1" Click="SettingsSoundToggle_Click"
+                                                        Content="ON" Width="70" Height="32"
+                                                        Background="#225522" Foreground="{StaticResource AccentGreen}"
+                                                        BorderBrush="{StaticResource AccentGreen}" BorderThickness="1"/>
+                                            </Grid>
+                                            <!-- Volume Slider -->
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,5">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Volume" FontSize="14" Foreground="{StaticResource TextLight}"/>
+                                                    <TextBlock x:Name="VolumePercentText" Grid.Column="1" Text="70%" FontSize="14" Foreground="{StaticResource AccentGreen}"/>
+                                                </Grid>
+                                                <Slider x:Name="VolumeSlider" Minimum="0" Maximum="100" Value="70"
+                                                        ValueChanged="VolumeSlider_ValueChanged"
+                                                        Background="#333355" Foreground="{StaticResource AccentGreen}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Display Section -->
+                                    <TextBlock Text="DISPLAY" FontSize="16" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGold}" Margin="0,10,0,10"/>
+                                    <Border Background="#0f1a2e" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                                        <StackPanel>
+                                            <!-- Zen Mode Toggle -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="Zen Mode" FontSize="14" Foreground="{StaticResource TextLight}"/>
+                                                    <TextBlock Text="Hide distracting UI elements for relaxed play" FontSize="11" Foreground="{StaticResource TextDim}"/>
+                                                </StackPanel>
+                                                <Button x:Name="SettingsZenToggle" Grid.Column="1" Click="SettingsZenToggle_Click"
+                                                        Content="OFF" Width="70" Height="32"
+                                                        Background="#552222" Foreground="#cc3333"
+                                                        BorderBrush="#cc3333" BorderThickness="1"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Help Section -->
+                                    <TextBlock Text="HELP" FontSize="16" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGold}" Margin="0,10,0,10"/>
+                                    <Border Background="#0f1a2e" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                                        <StackPanel>
+                                            <Button x:Name="ShowTutorialBtn" Click="ShowTutorial_Click"
+                                                    Content="View Tutorial" Height="36"
+                                                    Background="#223355" Foreground="{StaticResource TextLight}"
+                                                    BorderBrush="#4466aa" BorderThickness="1" Margin="0,0,0,10"/>
+                                            <TextBlock Text="Shows the new player tutorial explaining game mechanics"
+                                                       FontSize="11" Foreground="{StaticResource TextDim}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Game Data Section -->
+                                    <TextBlock Text="GAME DATA" FontSize="16" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGold}" Margin="0,10,0,10"/>
+                                    <Border Background="#0f1a2e" CornerRadius="8" Padding="15">
+                                        <StackPanel>
+                                            <Button x:Name="ReturnToMenuBtn" Click="ReturnToMenu_Click"
+                                                    Content="Return to Main Menu" Height="36"
+                                                    Background="#332222" Foreground="#cc9966"
+                                                    BorderBrush="#664433" BorderThickness="1"/>
+                                            <TextBlock Text="Save and return to the main menu"
+                                                       FontSize="11" Foreground="{StaticResource TextDim}" Margin="0,5,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Border>
+                    </TabItem>
                 </TabControl>
 
                 <!-- Notification Log -->
@@ -1167,6 +1267,109 @@
                                     Padding="20,12" Background="#333344" Foreground="{StaticResource TextDim}"
                                     FontWeight="Bold" FontSize="14" Cursor="Hand"/>
                         </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Tutorial Overlay (shown for new players) -->
+        <Border x:Name="TutorialOverlay" Visibility="Collapsed" Panel.ZIndex="650"
+                Background="#EE0a0a15">
+            <Grid>
+                <Border Background="#16213e" BorderBrush="{StaticResource AccentGreen}"
+                        BorderThickness="3" CornerRadius="12" Padding="30"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        MaxWidth="600">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#00ff41" BlurRadius="30" ShadowDepth="0" Opacity="0.4"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <!-- Title -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
+                            <Image Source="{DynamicResource Icon_all_seeing_eye_small}" Width="32" Height="32" Margin="0,0,10,0"/>
+                            <TextBlock Text="WELCOME, TRUTH SEEKER" FontSize="24" FontWeight="Bold"
+                                       Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Text="Your journey into the conspiracy begins here..."
+                                   FontSize="12" Foreground="{StaticResource TextDim}"
+                                   HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+                        <!-- Step 1: Click -->
+                        <Border Background="#0f1a2e" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="1" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AccentGreen}"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                    <TextBlock Text="CLICK THE EYE" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGold}"/>
+                                    <TextBlock Text="Click the Illuminati eye to gather Evidence. Build up combos for bonus power!"
+                                               FontSize="11" Foreground="{StaticResource TextLight}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Step 2: Generators -->
+                        <Border Background="#0f1a2e" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="2" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AccentGreen}"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                    <TextBlock Text="BUY GENERATORS" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGold}"/>
+                                    <TextBlock Text="Generators produce Evidence automatically. Each type is more powerful than the last!"
+                                               FontSize="11" Foreground="{StaticResource TextLight}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Step 3: Conspiracies -->
+                        <Border Background="#0f1a2e" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="3" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AccentGreen}"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                    <TextBlock Text="PROVE CONSPIRACIES" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGold}"/>
+                                    <TextBlock Text="Use your Evidence to prove conspiracies. Each one grants powerful bonuses!"
+                                               FontSize="11" Foreground="{StaticResource TextLight}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Step 4: Prestige (most important!) -->
+                        <Border Background="#1a1a2e" CornerRadius="8" Padding="12" Margin="0,0,0,15"
+                                BorderBrush="#9933ff" BorderThickness="2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="4" FontSize="24" FontWeight="Bold" Foreground="#9933ff"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                    <TextBlock Text="ASCEND (PRESTIGE)" FontSize="14" FontWeight="Bold" Foreground="#9933ff"/>
+                                    <TextBlock Text="When you reach 50K total Evidence, you can ASCEND to join the Illuminati!"
+                                               FontSize="11" Foreground="{StaticResource TextLight}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="Ascending resets your progress but grants Illuminati Tokens that give MASSIVE permanent multipliers (100x-500x EPS). This is ESSENTIAL for reaching the late game!"
+                                               FontSize="11" Foreground="{StaticResource AccentGold}" TextWrapping="Wrap" Margin="0,5,0,0" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Close Button -->
+                        <Button x:Name="TutorialCloseBtn" Click="TutorialClose_Click"
+                                Content="BEGIN YOUR INVESTIGATION" Height="40"
+                                Background="{StaticResource AccentGreen}" Foreground="#0a0a15"
+                                FontWeight="Bold" FontSize="14" Cursor="Hand"/>
                     </StackPanel>
                 </Border>
             </Grid>

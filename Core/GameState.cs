@@ -96,6 +96,7 @@ public class GameState
     // Settings
     public bool ZenMode { get; set; }
     public bool AutoQuestEnabled { get; set; } = true;
+    public bool HasSeenTutorial { get; set; }
 
     // Bonus believers from quests (permanent, added to generator-derived believers)
     public double BonusBelievers { get; set; }
