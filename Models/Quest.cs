@@ -14,7 +14,7 @@ public class Quest
     public required string Description { get; init; }
     public required string FlavorText { get; init; }
     public required QuestRisk Risk { get; init; }
-    public required int BelieversRequired { get; init; }
+    public required double BelieversRequired { get; init; }
     public required int DurationSeconds { get; init; }
     public required double SuccessChance { get; init; } // 0.0 to 1.0
     public string Icon { get; init; } = "?";
@@ -22,7 +22,7 @@ public class Quest
     // Rewards on success
     public double EvidenceReward { get; init; }
     public double EvidenceMultiplier { get; init; } = 1.0; // Multiplied by current EPS
-    public int TinfoilReward { get; init; }
+    public long TinfoilReward { get; init; }
     public string? UnlockUpgradeId { get; init; }
 
     // Partial reward on fail (for Low risk)
@@ -34,7 +34,7 @@ public class ActiveQuest
     public required string QuestId { get; init; }
     public required DateTime StartTime { get; init; }
     public required DateTime EndTime { get; init; }
-    public required int BelieversSent { get; init; }
+    public required double BelieversSent { get; init; }
 
     public bool IsComplete => DateTime.Now >= EndTime;
     public double Progress => Math.Min(1.0, (DateTime.Now - StartTime).TotalSeconds / (EndTime - StartTime).TotalSeconds);

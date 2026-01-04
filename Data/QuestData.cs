@@ -392,6 +392,120 @@ public static class QuestData
             EvidenceMultiplier = 2000000000,
             TinfoilReward = 1000000,
             Icon = "🔧"
+        },
+
+        // === TRANSCENDENT TIER QUESTS ===
+        new Quest
+        {
+            Id = "multiverse_bridge",
+            Name = "Multiverse Bridge Construction",
+            Description = "Build a stable connection to parallel realities",
+            FlavorText = "In another timeline, you already succeeded. Borrow their work.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 500000000,
+            DurationSeconds = 1200,
+            SuccessChance = 0.04,
+            EvidenceMultiplier = 5000000000,
+            TinfoilReward = 2500000,
+            Icon = "🌉"
+        },
+        new Quest
+        {
+            Id = "akashic_download",
+            Name = "Akashic Records Download",
+            Description = "Download the complete history of all conspiracies",
+            FlavorText = "Unlimited cloud storage. Literally cosmic.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 1000000000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.03,
+            EvidenceMultiplier = 10000000000,
+            TinfoilReward = 5000000,
+            Icon = "📖"
+        },
+        new Quest
+        {
+            Id = "god_committee_meeting",
+            Name = "God Committee Attendance",
+            Description = "Attend the meeting where reality decisions are made",
+            FlavorText = "RSVP: Mandatory. Dress code: Omniscient casual.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 5000000000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.02,
+            EvidenceMultiplier = 50000000000,
+            TinfoilReward = 10000000,
+            Icon = "⚖️"
+        },
+        new Quest
+        {
+            Id = "entropy_reversal",
+            Name = "Entropy Reversal Experiment",
+            Description = "Run time backwards to witness the original cover-up",
+            FlavorText = "Spoiler: It was always a conspiracy.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 10000000000,
+            DurationSeconds = 1200,
+            SuccessChance = 0.025,
+            EvidenceMultiplier = 100000000000,
+            TinfoilReward = 25000000,
+            Icon = "⏪"
+        },
+        new Quest
+        {
+            Id = "universe_source_code",
+            Name = "Universe Source Code Audit",
+            Description = "Review the code that runs existence itself",
+            FlavorText = "// TODO: Fix conspiracy bug - has been here since v1.0",
+            Risk = QuestRisk.High,
+            BelieversRequired = 50000000000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.02,
+            EvidenceMultiplier = 500000000000,
+            TinfoilReward = 50000000,
+            Icon = "💻"
+        },
+        new Quest
+        {
+            Id = "cosmic_consciousness_merge",
+            Name = "Cosmic Consciousness Merge",
+            Description = "Become one with the universal awareness",
+            FlavorText = "You are the universe experiencing itself. Conspiratorially.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 100000000000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.015,
+            EvidenceMultiplier = 1000000000000,
+            TinfoilReward = 100000000,
+            Icon = "🧘"
+        },
+        new Quest
+        {
+            Id = "omega_point_expedition",
+            Name = "Omega Point Expedition",
+            Description = "Journey to the end of time where all truth converges",
+            FlavorText = "At the end of everything, the truth finally comes out.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 500000000000,
+            DurationSeconds = 1500,
+            SuccessChance = 0.01,
+            EvidenceMultiplier = 10000000000000,
+            TinfoilReward = 500000000,
+            Icon = "🔚"
+        },
+        new Quest
+        {
+            Id = "reality_rewrite",
+            Name = "Reality Rewrite Operation",
+            Description = "Edit the fundamental laws of existence",
+            FlavorText = "If you can't find the truth, make it.",
+            Risk = QuestRisk.High,
+            BelieversRequired = 1000000000000,
+            DurationSeconds = 1200,
+            SuccessChance = 0.01,
+            EvidenceMultiplier = 100000000000000,
+            TinfoilReward = 1000000000,
+            Icon = "✏️"
         }
     };
 

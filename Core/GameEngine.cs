@@ -6,19 +6,11 @@ namespace ConspiracyClicker.Core;
 
 public class GameEngine
 {
-    private readonly GameState _state;
+    private GameState _state;
     private readonly SaveManager _saveManager;
     private readonly DispatcherTimer _gameLoop;
     private readonly DispatcherTimer _autoSaveTimer;
     private readonly Random _random = new();
-
-    private const int TICK_RATE_MS = 100;
-    private const int AUTO_SAVE_INTERVAL_MS = 30000;
-    private const double COMBO_DECAY_RATE = 0.15;
-    private const double COMBO_FILL_PER_CLICK = 0.08;
-    private const int COMBO_BURST_CLICKS = 10; // Combo gives value of 10 clicks
-    private const double CRITICAL_MULTIPLIER = 7.5; // Average of 5x-10x
-    private const double PRESTIGE_THRESHOLD = 1_000_000_000_000; // 1 trillion
 
     private double _autoClickAccumulator = 0;
 
@@ -27,7 +19,7 @@ public class GameEngine
     public event Action<string>? OnFlavorMessage;
     public event Action<double>? OnComboBurst;
     public event Action<double, bool>? OnClickProcessed; // clickPower, isCritical
-    public event Action<string, bool, double, int>? OnQuestComplete;
+    public event Action<string, bool, double, long>? OnQuestComplete;
     public event Action? OnGoldenEyeStart;
     public event Action? OnGoldenEyeEnd;
     public event Action? OnWhistleBlowerSpawn;
@@ -38,8 +30,34 @@ public class GameEngine
 
     private bool _prestigeNotified = false;
     private DateTime _lastDailyCheck = DateTime.MinValue;
+    private int _normalizationCounter = 0;
 
     public GameState State => _state;
+
+    /// <summary>
+    /// Aggressively reduces precision based on magnitude.
+    /// Larger numbers get fewer significant figures since precision doesn't matter.
+    /// </summary>
+    private static double NormalizeLargeNumber(double value)
+    {
+        if (value <= 0 || value < 1_000) return value;
+
+        // Calculate magnitude (power of 10)
+        double magnitude = Math.Floor(Math.Log10(value));
+
+        // Adaptive precision: fewer sig figs for larger numbers
+        // < 1M: 6 sig figs, < 1B: 5 sig figs, < 1T: 4 sig figs, >= 1T: 3 sig figs
+        int sigFigs = magnitude switch
+        {
+            < 6 => 6,   // < 1M
+            < 9 => 5,   // < 1B
+            < 12 => 4,  // < 1T
+            _ => 3      // >= 1T (3 sig figs is plenty for huge numbers)
+        };
+
+        double scale = Math.Pow(10, magnitude - (sigFigs - 1));
+        return Math.Round(value / scale) * scale;
+    }
     public SaveManager SaveManager => _saveManager;
 
     public GameEngine()
@@ -47,23 +65,34 @@ public class GameEngine
         _saveManager = new SaveManager();
         _state = new GameState(); // Start with empty state, load via menu
 
-        _gameLoop = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(TICK_RATE_MS) };
+        _gameLoop = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(GameConstants.TICK_RATE_MS) };
         _gameLoop.Tick += GameLoop_Tick;
 
-        _autoSaveTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(AUTO_SAVE_INTERVAL_MS) };
+        _autoSaveTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(GameConstants.AUTO_SAVE_INTERVAL_MS) };
         _autoSaveTimer.Tick += (s, e) => Save();
     }
 
     public void LoadSlot(int slot)
     {
-        Stop();
-        var loadedState = _saveManager.LoadFromSlot(slot);
-        CopyState(loadedState);
-        CalculateOfflineProgress();
-    }
+        // Stop timers without saving - we're about to replace the state
+        _gameLoop.Stop();
+        _autoSaveTimer.Stop();
 
-    private const double OFFLINE_RATE = 0.25; // 25% of normal earnings while offline
-    private const double MAX_OFFLINE_HOURS = 24; // Cap at 24 hours of offline earnings
+        var loadedState = _saveManager.LoadFromSlot(slot);
+        if (loadedState != null)
+        {
+            // Replace state entirely with loaded state
+            _state = loadedState;
+            _saveManager.SetCurrentSlot(slot);
+
+            // Apply offline progress if this is a real save
+            if (_state.TotalPlayTimeSeconds > 0)
+            {
+                CalculateOfflineProgress();
+            }
+        }
+        // If loadedState is null, keep current state
+    }
 
     private void CalculateOfflineProgress()
     {
@@ -74,14 +103,14 @@ public class GameEngine
         if (timeAway.TotalMinutes < 1) return; // Minimum 1 minute away
 
         // Cap at max hours
-        double secondsAway = Math.Min(timeAway.TotalSeconds, MAX_OFFLINE_HOURS * 3600);
+        double secondsAway = Math.Min(timeAway.TotalSeconds, GameConstants.MAX_OFFLINE_HOURS * 3600);
 
         // Calculate base EPS (without active events)
         double eps = CalculateEvidencePerSecond();
         if (eps <= 0) return;
 
         // Apply offline earnings (reduced rate)
-        double evidenceEarned = eps * secondsAway * OFFLINE_RATE;
+        double evidenceEarned = eps * secondsAway * GameConstants.OFFLINE_EARNINGS_RATE;
         _state.Evidence += evidenceEarned;
         _state.TotalEvidenceEarned += evidenceEarned;
 
@@ -95,7 +124,7 @@ public class GameEngine
                 if (owned > 0)
                 {
                     // Believer growth at reduced offline rate
-                    double growth = gen.BelieverBonus * owned * (secondsAway / 60.0) * OFFLINE_RATE;
+                    double growth = gen.BelieverBonus * owned * (secondsAway / 60.0) * GameConstants.OFFLINE_EARNINGS_RATE;
                     believersGained += growth;
                 }
             }
@@ -105,7 +134,7 @@ public class GameEngine
         // Passive tinfoil from Matrix upgrade
         if (_state.MatrixUpgrades.Contains("red_pill_factory"))
         {
-            int tinfoilGained = (int)(secondsAway / 60.0 * 5 * OFFLINE_RATE); // 5 per minute at reduced rate
+            int tinfoilGained = (int)(secondsAway / 60.0 * 5 * GameConstants.OFFLINE_EARNINGS_RATE); // 5 per minute at reduced rate
             _state.Tinfoil += tinfoilGained;
         }
 
@@ -192,6 +221,13 @@ public class GameEngine
         _state.DailyChallenges.Clear();
         foreach (var d in source.DailyChallenges) _state.DailyChallenges.Add(d);
 
+        // Generator-specific upgrades
+        _state.GeneratorUpgrades.Clear();
+        foreach (var g in source.GeneratorUpgrades) _state.GeneratorUpgrades.Add(g);
+
+        // Settings
+        _state.ZenMode = source.ZenMode;
+
         // Challenge mode state
         _state.ActiveChallengeId = source.ActiveChallengeId;
         _state.ChallengeStartTime = source.ChallengeStartTime;
@@ -234,15 +270,24 @@ public class GameEngine
     private void GameLoop_Tick(object? sender, EventArgs e)
     {
         double eps = CalculateEvidencePerSecond();
-        double evidenceThisTick = eps * (TICK_RATE_MS / 1000.0);
+        double evidenceThisTick = eps * (GameConstants.TICK_RATE_MS / 1000.0);
 
         _state.Evidence += evidenceThisTick;
         _state.TotalEvidenceEarned += evidenceThisTick;
-        _state.TotalPlayTimeSeconds += TICK_RATE_MS / 1000.0;
+        _state.TotalPlayTimeSeconds += GameConstants.TICK_RATE_MS / 1000.0;
+
+        // Normalize large numbers every 10 ticks to reduce floating-point overhead
+        if (++_normalizationCounter >= 10)
+        {
+            _normalizationCounter = 0;
+            _state.Evidence = NormalizeLargeNumber(_state.Evidence);
+            _state.TotalEvidenceEarned = NormalizeLargeNumber(_state.TotalEvidenceEarned);
+        }
 
         UpdateBelievers();
         UpdateComboMeter();
         ProcessAutoClicks();
+        TryAutoStartQuests();
         CheckQuests();
         CheckRandomEvents();
         CheckEventExpiry();
@@ -269,10 +314,15 @@ public class GameEngine
         totalBelievers *= GetSkillBelieverMultiplier();
 
         // Apply Prestige believer bonus
-        if (_state.IlluminatiUpgrades.Contains("believer_magnetism")) totalBelievers *= 1.25;
+        if (_state.IlluminatiUpgrades.Contains("believer_magnetism")) totalBelievers *= 6.0; // +500%
+        if (_state.IlluminatiUpgrades.Contains("global_awakening")) totalBelievers *= 21.0; // +2000%
+        if (_state.IlluminatiUpgrades.Contains("believer_singularity")) totalBelievers *= 251.0; // +25000%
 
         // Apply Matrix believer bonus
         totalBelievers *= GetMatrixBelieverMultiplier();
+
+        // Apply generator upgrade believer bonus
+        totalBelievers *= GetGeneratorUpgradeGlobalBelieverMultiplier();
 
         _state.Believers = totalBelievers;
     }
@@ -282,7 +332,7 @@ public class GameEngine
         double timeSinceClick = (DateTime.Now - _state.LastClickTime).TotalSeconds;
         if (timeSinceClick > 0.5)
         {
-            _state.ComboMeter -= COMBO_DECAY_RATE * (TICK_RATE_MS / 1000.0);
+            _state.ComboMeter -= GameConstants.COMBO_DECAY_RATE * (GameConstants.TICK_RATE_MS / 1000.0);
             if (_state.ComboMeter < 0) _state.ComboMeter = 0;
             if (timeSinceClick > 2) _state.ComboClicks = 0;
         }
@@ -293,7 +343,7 @@ public class GameEngine
         double autoClickRate = GetAutoClickRate();
         if (autoClickRate <= 0) return;
 
-        _autoClickAccumulator += autoClickRate * (TICK_RATE_MS / 1000.0);
+        _autoClickAccumulator += autoClickRate * (GameConstants.TICK_RATE_MS / 1000.0);
 
         while (_autoClickAccumulator >= 1.0)
         {
@@ -338,7 +388,7 @@ public class GameEngine
             _state.ComboClicks++;
 
             // Fill combo meter
-            _state.ComboMeter += COMBO_FILL_PER_CLICK;
+            _state.ComboMeter += GameConstants.COMBO_FILL_PER_CLICK;
             if (_state.ComboMeter >= 1.0)
             {
                 TriggerComboBurst();
@@ -352,7 +402,7 @@ public class GameEngine
 
     private void TriggerComboBurst()
     {
-        double burstAmount = CalculateClickPower() * COMBO_BURST_CLICKS;
+        double burstAmount = CalculateClickPower() * GameConstants.COMBO_BURST_CLICKS;
 
         // Apply Golden Eye bonus to combo burst
         if (_state.GoldenEyeActive && DateTime.Now < _state.GoldenEyeEndTime)
@@ -377,7 +427,7 @@ public class GameEngine
     {
         double basePower = 1.0;
         double multiplier = 1.0;
-        double epsBonus = 0.01; // Baseline: clicks always give 1% of EPS
+        double epsBonus = 0.10; // Baseline: clicks always give 10% of EPS
 
         foreach (var upgradeId in _state.PurchasedUpgrades)
         {
@@ -420,13 +470,20 @@ public class GameEngine
         if (_state.UnlockedSkills.Contains("one_with_the_click")) multiplier *= 2.0;
 
         // Prestige bonuses
-        if (_state.IlluminatiUpgrades.Contains("secret_handshake")) multiplier *= 1.10;
+        if (_state.IlluminatiUpgrades.Contains("secret_handshake")) multiplier *= 50.0;
+        if (_state.IlluminatiUpgrades.Contains("reality_distortion")) multiplier *= 100.0;
+        if (_state.IlluminatiUpgrades.Contains("reality_overwrite")) multiplier *= 25.0;
+        if (_state.IlluminatiUpgrades.Contains("click_transcendence")) multiplier *= 500.0;
+        if (_state.IlluminatiUpgrades.Contains("final_truth")) multiplier *= 200.0;
         if (_state.IlluminatiUpgrades.Contains("all_seeing_investment"))
-            multiplier *= 1.0 + (_state.IlluminatiTokens * 0.01);
+            multiplier *= 1.0 + (_state.IlluminatiTokens * 0.25); // Boosted from 0.05 to 0.25
 
         // Matrix bonuses
         multiplier *= GetMatrixClickMultiplier();
         epsBonus += GetMatrixEpsToClickBonus();
+
+        // Generator upgrade global click power bonus
+        multiplier *= GetGeneratorUpgradeGlobalClickMultiplier();
 
         // EPS to click component from upgrades
         double epsComponent = epsBonus > 0 ? CalculateBaseEps() * GetEpsMultiplier() * epsBonus : 0;
@@ -462,6 +519,8 @@ public class GameEngine
             if (generator != null)
             {
                 double genMultiplier = generatorMultipliers.TryGetValue(genId, out var m) ? m : 1.0;
+                // Apply generator-specific upgrades
+                genMultiplier *= GetGeneratorUpgradeProductionMultiplier(genId);
                 total += generator.GetProduction(count) * genMultiplier;
             }
         }
@@ -491,15 +550,35 @@ public class GameEngine
         if (_state.UnlockedSkills.Contains("quantum_analysis")) multiplier *= 1.50;
         if (_state.UnlockedSkills.Contains("omniscience")) multiplier *= 2.0;
 
-        // Prestige bonuses
-        if (_state.IlluminatiUpgrades.Contains("pyramid_scheme")) multiplier *= 1.05;
-        if (_state.IlluminatiUpgrades.Contains("reptilian_dna")) multiplier *= 2.0;
+        // Prestige bonuses - massively boosted for faster progression
+        // Tier 1 (1-3 tokens)
+        if (_state.IlluminatiUpgrades.Contains("pyramid_scheme")) multiplier *= 100.0;
+        if (_state.IlluminatiUpgrades.Contains("reptilian_dna")) multiplier *= 100.0;
+        if (_state.IlluminatiUpgrades.Contains("deep_state_connections")) multiplier *= 50.0;
+        // Tier 2 (4-10 tokens)
+        if (_state.IlluminatiUpgrades.Contains("ancient_knowledge")) multiplier *= 100.0;
+        // Tier 3 (12-30 tokens)
+        if (_state.IlluminatiUpgrades.Contains("parallel_universe_access")) multiplier *= 10.0;
+        if (_state.IlluminatiUpgrades.Contains("cosmic_alignment")) multiplier *= 200.0;
+        // Tier 4 (40-150 tokens)
+        if (_state.IlluminatiUpgrades.Contains("illuminati_council_seat")) multiplier *= 500.0;
+        if (_state.IlluminatiUpgrades.Contains("eternal_conspiracy")) multiplier *= 1000.0;
+        if (_state.IlluminatiUpgrades.Contains("reality_overwrite")) multiplier *= 25.0;
+        // Tier 5 (200-300 tokens)
+        if (_state.IlluminatiUpgrades.Contains("entropy_mastery")) multiplier *= 2000.0;
+        // Tier 6 (350+ tokens)
+        if (_state.IlluminatiUpgrades.Contains("evidence_singularity")) multiplier *= 5000.0;
+        if (_state.IlluminatiUpgrades.Contains("omnipresent_network")) multiplier *= 50.0;
+        if (_state.IlluminatiUpgrades.Contains("final_truth")) multiplier *= 200.0;
 
         // Conspiracy bonus
         if (_state.ProvenConspiracies.Contains("you_are_conspiracy")) multiplier *= 2.0;
 
         // Matrix bonuses
         multiplier *= GetMatrixEpsMultiplier();
+
+        // Generator upgrade global EPS bonus
+        multiplier *= GetGeneratorUpgradeGlobalEpsMultiplier();
 
         return multiplier;
     }
@@ -567,7 +646,8 @@ public class GameEngine
             if (upgrade?.Type == TinfoilUpgradeType.AutoClicker)
                 rate += upgrade.Value;
         }
-        return rate;
+        // Cap auto-click rate at 50 CPS
+        return Math.Min(rate, 50.0);
     }
 
     public double GetCriticalChance()
@@ -580,12 +660,22 @@ public class GameEngine
                 chance += upgrade.Value;
         }
         chance += GetSkillCriticalChanceBonus();
+        if (_state.IlluminatiUpgrades.Contains("third_eye_awakening")) chance += 0.50;
+        chance += GetGeneratorUpgradeGlobalCritChance();
         return chance;
     }
 
     public IEnumerable<TinfoilUpgrade> GetAvailableTinfoilUpgrades()
     {
-        return TinfoilShopData.AllUpgrades.Where(u => !_state.TinfoilShopPurchases.Contains(u.Id));
+        return TinfoilShopData.AllUpgrades.Where(u =>
+            !_state.TinfoilShopPurchases.Contains(u.Id) &&
+            // AutoQuest requires 8+ auto CPS to unlock
+            (u.Type != TinfoilUpgradeType.AutoQuest || GetAutoClickRate() >= 8));
+    }
+
+    public bool HasAutoQuest()
+    {
+        return _state.TinfoilShopPurchases.Contains("quest_autopilot");
     }
 
     public IEnumerable<TinfoilUpgrade> GetPurchasedTinfoilUpgrades()
@@ -633,11 +723,19 @@ public class GameEngine
         var quest = QuestData.GetById(questId);
         if (quest == null) return false;
 
+        // Apply quest duration bonuses
+        double durationMultiplier = 1.0;
+        if (_state.IlluminatiUpgrades.Contains("time_manipulation")) durationMultiplier *= 0.10; // -90%
+        if (_state.IlluminatiUpgrades.Contains("temporal_fold")) durationMultiplier *= 0.02; // -98%
+        if (_state.IlluminatiUpgrades.Contains("probability_control")) durationMultiplier *= 0.10; // -90%
+        durationMultiplier *= GetGeneratorUpgradeGlobalQuestSpeed();
+        double adjustedDuration = quest.DurationSeconds * durationMultiplier;
+
         var activeQuest = new ActiveQuest
         {
             QuestId = questId,
             StartTime = DateTime.Now,
-            EndTime = DateTime.Now.AddSeconds(quest.DurationSeconds),
+            EndTime = DateTime.Now.AddSeconds(adjustedDuration),
             BelieversSent = quest.BelieversRequired
         };
 
@@ -646,6 +744,26 @@ public class GameEngine
 
         OnTick?.Invoke();
         return true;
+    }
+
+    private void TryAutoStartQuests()
+    {
+        if (!HasAutoQuest()) return;
+
+        // Get all available quests that can be started
+        var availableQuests = QuestData.GetAvailable(_state.AvailableBelievers)
+            .Where(q => CanStartQuest(q.Id))
+            .OrderByDescending(q => q.EvidenceReward) // Prioritize higher reward quests
+            .ToList();
+
+        // Start as many quests as possible
+        foreach (var quest in availableQuests)
+        {
+            if (CanStartQuest(quest.Id))
+            {
+                StartQuest(quest.Id);
+            }
+        }
     }
 
     private void CheckQuests()
@@ -660,12 +778,12 @@ public class GameEngine
             _state.ActiveQuests.Remove(activeQuest);
             _state.BusyBelievers -= activeQuest.BelieversSent;
 
-            // Apply quest success bonus from Tinfoil Shop, Skills, and Matrix
-            double adjustedSuccessChance = quest.SuccessChance + GetTinfoilQuestSuccessBonus() + GetSkillQuestSuccessBonus() + GetMatrixQuestSuccessBonus();
+            // Apply quest success bonus from Tinfoil Shop, Skills, Matrix, and Illuminati
+            double adjustedSuccessChance = quest.SuccessChance + GetTinfoilQuestSuccessBonus() + GetSkillQuestSuccessBonus() + GetMatrixQuestSuccessBonus() + GetIlluminatiQuestSuccessBonus();
             adjustedSuccessChance = Math.Min(adjustedSuccessChance, 0.95);
             bool success = SkillQuestsNeverFail() || _random.NextDouble() < adjustedSuccessChance;
             double evidenceReward = 0;
-            int tinfoilReward = 0;
+            long tinfoilReward = 0;
 
             if (success)
             {
@@ -673,7 +791,7 @@ public class GameEngine
 
                 // Apply prestige and skill quest reward bonuses
                 double rewardMultiplier = 1.0;
-                if (_state.IlluminatiUpgrades.Contains("moon_base_alpha")) rewardMultiplier *= 1.50;
+                if (_state.IlluminatiUpgrades.Contains("moon_base_alpha")) rewardMultiplier *= 6.0; // +500%
                 if (_state.UnlockedSkills.Contains("cult_of_personality")) rewardMultiplier *= 1.25;
                 evidenceReward *= rewardMultiplier;
 
@@ -700,6 +818,8 @@ public class GameEngine
                         break;
 
                     case QuestRisk.High:
+                        // Believers are detained/lost permanently on high-risk failure
+                        _state.Believers -= activeQuest.BelieversSent;
                         _state.BelieversLost += activeQuest.BelieversSent;
                         break;
                 }
@@ -712,7 +832,11 @@ public class GameEngine
     // === RANDOM EVENTS ===
     private void CheckRandomEvents()
     {
-        if (_random.NextDouble() > 0.001) return;
+        // Only start spawning after the first conspiracy is proven
+        if (_state.ProvenConspiracies.Count == 0) return;
+
+        double spawnChance = 0.001 * GetGeneratorUpgradeGlobalGoldenEyeFrequency();
+        if (_random.NextDouble() > spawnChance) return;
         if (_state.GoldenEyeActive || _state.WhistleBlowerActive) return;
 
         if (_random.NextDouble() < 0.5)
@@ -768,14 +892,14 @@ public class GameEngine
     // === PRESTIGE ===
     private void CheckPrestige()
     {
-        if (!_prestigeNotified && _state.TotalEvidenceEarned >= PRESTIGE_THRESHOLD)
+        if (!_prestigeNotified && _state.TotalEvidenceEarned >= GameConstants.PRESTIGE_THRESHOLD)
         {
             _prestigeNotified = true;
             OnPrestigeAvailable?.Invoke();
         }
     }
 
-    public bool CanPrestige() => _state.TotalEvidenceEarned >= PRESTIGE_THRESHOLD;
+    public bool CanPrestige() => _state.TotalEvidenceEarned >= GameConstants.PRESTIGE_THRESHOLD;
 
     // === BELIEVER INFO ===
     public Dictionary<string, double> GetBelieverBreakdown()
@@ -868,6 +992,7 @@ public class GameEngine
                 AchievementType.QuestsCompleted => _state.QuestsCompleted >= achievement.Threshold,
                 AchievementType.TotalTinfoil => _state.Tinfoil >= achievement.Threshold,
                 AchievementType.CriticalClicks => _state.CriticalClicks >= achievement.Threshold,
+                AchievementType.TotalTokensEarned => _state.TotalIlluminatiTokensEarned >= achievement.Threshold,
                 _ => false
             };
 
@@ -893,8 +1018,10 @@ public class GameEngine
         if (generator == null) return double.MaxValue;
         int owned = _state.GetGeneratorCount(generatorId);
         double cost = generator.GetCost(owned);
-        if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) cost *= 0.9;
+        if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) cost *= 0.10; // -90%
+        if (_state.IlluminatiUpgrades.Contains("shadow_network")) cost *= 0.05; // -95%
         cost *= GetMatrixCostMultiplier();
+        cost *= GetGeneratorUpgradeCostMultiplier(generatorId); // Generator-specific discount
         return cost;
     }
 
@@ -919,10 +1046,13 @@ public class GameEngine
         double available = _state.Evidence;
         int count = 0;
 
+        double genUpgradeCostMult = GetGeneratorUpgradeCostMultiplier(generatorId);
         while (count < 1000)
         {
             double cost = generator.GetCost(owned + count);
-            if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) cost *= 0.9;
+            if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) cost *= 0.10; // -90%
+            if (_state.IlluminatiUpgrades.Contains("shadow_network")) cost *= 0.05; // -95%
+            cost *= genUpgradeCostMult;
             if (available >= cost) { available -= cost; count++; }
             else break;
         }
@@ -943,6 +1073,7 @@ public class GameEngine
     {
         double baseMultiplier = 5.0 + _random.NextDouble() * 5.0; // 5x to 10x
         if (_state.UnlockedSkills.Contains("deadly_precision")) baseMultiplier = 10.0 + _random.NextDouble() * 5.0; // 10x to 15x
+        baseMultiplier *= GetGeneratorUpgradeGlobalCritDamage();
         return baseMultiplier;
     }
 
@@ -1005,6 +1136,14 @@ public class GameEngine
         return bonus;
     }
 
+    public double GetIlluminatiQuestSuccessBonus()
+    {
+        double bonus = 0;
+        if (_state.IlluminatiUpgrades.Contains("omniscient_vision")) bonus += 0.80; // +80%
+        if (_state.IlluminatiUpgrades.Contains("probability_control")) bonus += 1.0; // Always succeed
+        return bonus;
+    }
+
     public bool SkillQuestsNeverFail() => _state.UnlockedSkills.Contains("mind_control");
 
     public double GetSkillComboFillBonus()
@@ -1037,9 +1176,8 @@ public class GameEngine
         _state.TimesAscended++;
 
         // Reset progress but keep permanent upgrades
-        double startingEvidence = _state.IlluminatiUpgrades.Contains("starting_evidence") ? 1_000_000 : 0;
-
-        _state.Evidence = startingEvidence;
+        // Ascensions always reset to zero - multipliers make the difference
+        _state.Evidence = 0;
         _state.TotalEvidenceEarned = 0;
         _state.Believers = 0;
         _state.BusyBelievers = 0;
@@ -1402,5 +1540,179 @@ public class GameEngine
         {
             _state.ChallengeHighRiskQuestsCompleted++;
         }
+    }
+
+    // === GENERATOR UPGRADES ===
+    public double GetGeneratorUpgradeProductionMultiplier(string generatorId)
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade != null && upgrade.GeneratorId == generatorId && upgrade.Type == GeneratorUpgradeType.ProductionMultiplier)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
+    public double GetGeneratorUpgradeCostMultiplier(string generatorId)
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade != null && upgrade.GeneratorId == generatorId && upgrade.Type == GeneratorUpgradeType.CostReduction)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
+    public double GetGeneratorUpgradeGlobalClickMultiplier()
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == GeneratorUpgradeType.GlobalClickPower)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
+    public double GetGeneratorUpgradeGlobalQuestSpeed()
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == GeneratorUpgradeType.GlobalQuestSpeed)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
+    public double GetGeneratorUpgradeGlobalTinfoilMultiplier()
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == GeneratorUpgradeType.GlobalTinfoilGain)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
+    public double GetGeneratorUpgradeGlobalCritChance()
+    {
+        double bonus = 0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == GeneratorUpgradeType.GlobalCritChance)
+                bonus += upgrade.Value;
+        }
+        return bonus;
+    }
+
+    public double GetGeneratorUpgradeGlobalCritDamage()
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == GeneratorUpgradeType.GlobalCritDamage)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
+    public double GetGeneratorUpgradeGlobalGoldenEyeFrequency()
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == GeneratorUpgradeType.GlobalGoldenEye)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
+    public double GetGeneratorUpgradeGlobalBelieverMultiplier()
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == GeneratorUpgradeType.GlobalBelieverGain)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
+    public double GetGeneratorUpgradeGlobalEpsMultiplier()
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == GeneratorUpgradeType.GlobalEpsMultiplier)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
+    public IEnumerable<GeneratorUpgrade> GetAvailableGeneratorUpgrades(string generatorId)
+    {
+        int level = _state.GetGeneratorCount(generatorId);
+        return GeneratorUpgradeData.GetAvailableUpgrades(generatorId, level, _state.GeneratorUpgrades);
+    }
+
+    public IEnumerable<GeneratorUpgrade> GetPurchasedGeneratorUpgrades(string generatorId)
+    {
+        return GeneratorUpgradeData.GetPurchasedUpgrades(generatorId, _state.GeneratorUpgrades);
+    }
+
+    public double GetGeneratorUpgradeCost(string upgradeId)
+    {
+        var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+        if (upgrade == null) return double.MaxValue;
+
+        var generator = GeneratorData.GetById(upgrade.GeneratorId);
+        if (generator == null) return double.MaxValue;
+
+        // Cost is 3x the generator's cost at the unlock level
+        double baseCost = generator.GetCost(upgrade.UnlockLevel) * 3.0;
+
+        // Apply cost reductions from prestige
+        if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) baseCost *= 0.10;
+        if (_state.IlluminatiUpgrades.Contains("shadow_network")) baseCost *= 0.05;
+        baseCost *= GetMatrixCostMultiplier();
+
+        return baseCost;
+    }
+
+    public bool CanAffordGeneratorUpgrade(string upgradeId)
+    {
+        return _state.Evidence >= GetGeneratorUpgradeCost(upgradeId);
+    }
+
+    public bool PurchaseGeneratorUpgrade(string upgradeId)
+    {
+        var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+        if (upgrade == null) return false;
+        if (_state.GeneratorUpgrades.Contains(upgradeId)) return false;
+
+        int level = _state.GetGeneratorCount(upgrade.GeneratorId);
+        if (level < upgrade.UnlockLevel) return false;
+
+        double cost = GetGeneratorUpgradeCost(upgradeId);
+        if (_state.Evidence < cost) return false;
+
+        _state.Evidence -= cost;
+        _state.GeneratorUpgrades.Add(upgradeId);
+        OnTick?.Invoke();
+        return true;
     }
 }

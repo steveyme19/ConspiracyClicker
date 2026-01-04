@@ -7,6 +7,18 @@ public static class UpgradeData
     public static readonly List<Upgrade> AllUpgrades = new()
     {
         // === CLICK POWER UPGRADES (small values to stay at ~10% of EPS) ===
+        // Costs scaled 6x for 50h target
+        new Upgrade
+        {
+            Id = "sticky_notes",
+            Name = "Sticky Notes",
+            Description = "+0.1 click power",
+            FlavorText = "For important reminders like 'THEY'RE WATCHING'.",
+            Type = UpgradeType.ClickPower,
+            Value = 0.1,
+            EvidenceCost = 90,
+            RequiredEvidence = 30
+        },
         new Upgrade
         {
             Id = "reinforced_tinfoil",
@@ -15,8 +27,19 @@ public static class UpgradeData
             FlavorText = "Now with extra crinkles for style.",
             Type = UpgradeType.ClickPower,
             Value = 0.2,
-            EvidenceCost = 50,
-            RequiredEvidence = 25
+            EvidenceCost = 300,
+            RequiredEvidence = 150
+        },
+        new Upgrade
+        {
+            Id = "notebook",
+            Name = "Spiral Notebook",
+            Description = "+0.3 click power",
+            FlavorText = "College ruled. Conspiracy filled.",
+            Type = UpgradeType.ClickPower,
+            Value = 0.3,
+            EvidenceCost = 600,
+            RequiredEvidence = 300
         },
         new Upgrade
         {
@@ -26,8 +49,19 @@ public static class UpgradeData
             FlavorText = "For examining those suspicious documents.",
             Type = UpgradeType.ClickPower,
             Value = 0.5,
-            EvidenceCost = 200,
-            RequiredEvidence = 100
+            EvidenceCost = 1200,
+            RequiredEvidence = 600
+        },
+        new Upgrade
+        {
+            Id = "flashlight",
+            Name = "Heavy Duty Flashlight",
+            Description = "+0.7 click power",
+            FlavorText = "For illuminating dark corners. And faces.",
+            Type = UpgradeType.ClickPower,
+            Value = 0.7,
+            EvidenceCost = 2400,
+            RequiredEvidence = 1200
         },
         new Upgrade
         {
@@ -37,8 +71,19 @@ public static class UpgradeData
             FlavorText = "For circling faces in newspapers.",
             Type = UpgradeType.ClickPower,
             Value = 1,
-            EvidenceCost = 800,
-            RequiredEvidence = 400
+            EvidenceCost = 4800,
+            RequiredEvidence = 2400
+        },
+        new Upgrade
+        {
+            Id = "binoculars",
+            Name = "Surveillance Binoculars",
+            Description = "+1.5 click power",
+            FlavorText = "Bird watching. Definitely bird watching.",
+            Type = UpgradeType.ClickPower,
+            Value = 1.5,
+            EvidenceCost = 9000,
+            RequiredEvidence = 4500
         },
         new Upgrade
         {
@@ -48,8 +93,19 @@ public static class UpgradeData
             FlavorText = "Industrial grade. Holds 47% more string.",
             Type = UpgradeType.ClickPower,
             Value = 2,
-            EvidenceCost = 3000,
-            RequiredEvidence = 1500
+            EvidenceCost = 18000,
+            RequiredEvidence = 9000
+        },
+        new Upgrade
+        {
+            Id = "scanner",
+            Name = "Document Scanner",
+            Description = "+3 click power",
+            FlavorText = "Digitize ALL the evidence.",
+            Type = UpgradeType.ClickPower,
+            Value = 3,
+            EvidenceCost = 36000,
+            RequiredEvidence = 18000
         },
         new Upgrade
         {
@@ -59,8 +115,19 @@ public static class UpgradeData
             FlavorText = "For those 3 AM stakeouts.",
             Type = UpgradeType.ClickPower,
             Value = 4,
-            EvidenceCost = 15000,
-            RequiredEvidence = 7500
+            EvidenceCost = 90000,
+            RequiredEvidence = 45000
+        },
+        new Upgrade
+        {
+            Id = "voice_recorder",
+            Name = "Concealed Voice Recorder",
+            Description = "+6 click power",
+            FlavorText = "In pen form. Very subtle.",
+            Type = UpgradeType.ClickPower,
+            Value = 6,
+            EvidenceCost = 180000,
+            RequiredEvidence = 90000
         },
         new Upgrade
         {
@@ -70,8 +137,8 @@ public static class UpgradeData
             FlavorText = "CLACK CLACK CLACK. The sound of truth.",
             Type = UpgradeType.ClickPower,
             Value = 8,
-            EvidenceCost = 75000,
-            RequiredEvidence = 35000
+            EvidenceCost = 450000,
+            RequiredEvidence = 210000
         },
 
         // === CLICK MULTIPLIERS (small multipliers) ===
@@ -83,8 +150,8 @@ public static class UpgradeData
             FlavorText = "Side effects may include seeing through walls.",
             Type = UpgradeType.ClickMultiplier,
             Value = 1.1,
-            EvidenceCost = 100000,
-            RequiredEvidence = 50000
+            EvidenceCost = 600000,
+            RequiredEvidence = 300000
         },
         new Upgrade
         {
@@ -94,8 +161,8 @@ public static class UpgradeData
             FlavorText = "Sleep is for the uninformed.",
             Type = UpgradeType.ClickMultiplier,
             Value = 1.15,
-            EvidenceCost = 1000000,
-            RequiredEvidence = 500000
+            EvidenceCost = 6000000,
+            RequiredEvidence = 3000000
         },
         new Upgrade
         {
@@ -105,8 +172,8 @@ public static class UpgradeData
             FlavorText = "Click in multiple dimensions simultaneously.",
             Type = UpgradeType.ClickMultiplier,
             Value = 1.2,
-            EvidenceCost = 10000000,
-            RequiredEvidence = 5000000
+            EvidenceCost = 60000000,
+            RequiredEvidence = 30000000
         },
 
         // === EPS TO CLICK (harder - more expensive and higher requirements) ===
@@ -118,8 +185,8 @@ public static class UpgradeData
             FlavorText = "Feel the truth flowing through you.",
             Type = UpgradeType.EpsToClick,
             Value = 0.01,
-            EvidenceCost = 50000,
-            RequiredEvidence = 25000
+            EvidenceCost = 300000,
+            RequiredEvidence = 150000
         },
         new Upgrade
         {
@@ -129,8 +196,8 @@ public static class UpgradeData
             FlavorText = "The more you know, the more each discovery matters.",
             Type = UpgradeType.EpsToClick,
             Value = 0.02,
-            EvidenceCost = 500000,
-            RequiredEvidence = 250000
+            EvidenceCost = 3000000,
+            RequiredEvidence = 1500000
         },
         new Upgrade
         {
@@ -140,8 +207,8 @@ public static class UpgradeData
             FlavorText = "Your passive income amplifies your active work.",
             Type = UpgradeType.EpsToClick,
             Value = 0.03,
-            EvidenceCost = 5000000,
-            RequiredEvidence = 2500000
+            EvidenceCost = 30000000,
+            RequiredEvidence = 15000000
         },
         new Upgrade
         {
@@ -151,8 +218,8 @@ public static class UpgradeData
             FlavorText = "Everything is connected. Especially your income.",
             Type = UpgradeType.EpsToClick,
             Value = 0.04,
-            EvidenceCost = 50000000,
-            RequiredEvidence = 25000000
+            EvidenceCost = 300000000,
+            RequiredEvidence = 150000000
         },
         new Upgrade
         {
@@ -162,8 +229,8 @@ public static class UpgradeData
             FlavorText = "Tesla knew. Now you do too.",
             Type = UpgradeType.EpsToClick,
             Value = 0.05,
-            EvidenceCost = 500000000,
-            RequiredEvidence = 250000000
+            EvidenceCost = 3000000000,
+            RequiredEvidence = 1500000000
         },
         new Upgrade
         {
@@ -173,8 +240,8 @@ public static class UpgradeData
             FlavorText = "Each click triggers a cascade of truth.",
             Type = UpgradeType.EpsToClick,
             Value = 0.07,
-            EvidenceCost = 5000000000,
-            RequiredEvidence = 2500000000
+            EvidenceCost = 30000000000,
+            RequiredEvidence = 15000000000
         },
         new Upgrade
         {
@@ -184,8 +251,8 @@ public static class UpgradeData
             FlavorText = "It's clicks all the way down.",
             Type = UpgradeType.EpsToClick,
             Value = 0.10,
-            EvidenceCost = 50000000000,
-            RequiredEvidence = 25000000000
+            EvidenceCost = 300000000000,
+            RequiredEvidence = 150000000000
         },
 
         // === GENERATOR BOOSTS ===
@@ -198,7 +265,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "red_string",
-            EvidenceCost = 1000,
+            EvidenceCost = 6000,
             RequiredGeneratorCount = 10,
             RequiredGeneratorId = "red_string"
         },
@@ -211,7 +278,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "suspicious_neighbor",
-            EvidenceCost = 5000,
+            EvidenceCost = 30000,
             RequiredGeneratorCount = 10,
             RequiredGeneratorId = "suspicious_neighbor"
         },
@@ -224,7 +291,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "basement_researcher",
-            EvidenceCost = 25000,
+            EvidenceCost = 150000,
             RequiredGeneratorCount = 10,
             RequiredGeneratorId = "basement_researcher"
         },
@@ -237,7 +304,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "blogspot_blog",
-            EvidenceCost = 150000,
+            EvidenceCost = 900000,
             RequiredGeneratorCount = 10,
             RequiredGeneratorId = "blogspot_blog"
         },
@@ -250,7 +317,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "youtube_channel",
-            EvidenceCost = 1500000,
+            EvidenceCost = 9000000,
             RequiredGeneratorCount = 10,
             RequiredGeneratorId = "youtube_channel"
         },
@@ -265,7 +332,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 5.0,
             TargetGeneratorId = "red_string",
-            EvidenceCost = 500000,
+            EvidenceCost = 3000000,
             RequiredGeneratorCount = 25,
             RequiredGeneratorId = "red_string"
         },
@@ -278,7 +345,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 10.0,
             TargetGeneratorId = "red_string",
-            EvidenceCost = 50000000,
+            EvidenceCost = 300000000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "red_string"
         },
@@ -291,7 +358,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 5.0,
             TargetGeneratorId = "suspicious_neighbor",
-            EvidenceCost = 1000000,
+            EvidenceCost = 6000000,
             RequiredGeneratorCount = 25,
             RequiredGeneratorId = "suspicious_neighbor"
         },
@@ -304,7 +371,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 10.0,
             TargetGeneratorId = "suspicious_neighbor",
-            EvidenceCost = 100000000,
+            EvidenceCost = 600000000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "suspicious_neighbor"
         },
@@ -317,7 +384,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 5.0,
             TargetGeneratorId = "basement_researcher",
-            EvidenceCost = 5000000,
+            EvidenceCost = 30000000,
             RequiredGeneratorCount = 25,
             RequiredGeneratorId = "basement_researcher"
         },
@@ -330,7 +397,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 10.0,
             TargetGeneratorId = "basement_researcher",
-            EvidenceCost = 500000000,
+            EvidenceCost = 3000000000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "basement_researcher"
         },
@@ -343,7 +410,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 5.0,
             TargetGeneratorId = "blogspot_blog",
-            EvidenceCost = 25000000,
+            EvidenceCost = 150000000,
             RequiredGeneratorCount = 25,
             RequiredGeneratorId = "blogspot_blog"
         },
@@ -356,7 +423,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 10.0,
             TargetGeneratorId = "blogspot_blog",
-            EvidenceCost = 2500000000,
+            EvidenceCost = 15000000000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "blogspot_blog"
         },
@@ -369,7 +436,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 5.0,
             TargetGeneratorId = "youtube_channel",
-            EvidenceCost = 100000000,
+            EvidenceCost = 600000000,
             RequiredGeneratorCount = 25,
             RequiredGeneratorId = "youtube_channel"
         },
@@ -382,7 +449,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 10.0,
             TargetGeneratorId = "youtube_channel",
-            EvidenceCost = 10000000000,
+            EvidenceCost = 60000000000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "youtube_channel"
         },
@@ -396,8 +463,8 @@ public static class UpgradeData
             FlavorText = "The algorithm favors the bold.",
             Type = UpgradeType.GlobalBoost,
             Value = 1.10,
-            EvidenceCost = 10000000,
-            RequiredEvidence = 5000000
+            EvidenceCost = 60000000,
+            RequiredEvidence = 30000000
         },
         new Upgrade
         {
@@ -407,8 +474,8 @@ public static class UpgradeData
             FlavorText = "They're finally listening.",
             Type = UpgradeType.GlobalBoost,
             Value = 1.25,
-            EvidenceCost = 100000000,
-            RequiredEvidence = 50000000
+            EvidenceCost = 600000000,
+            RequiredEvidence = 300000000
         },
         new Upgrade
         {
@@ -418,8 +485,8 @@ public static class UpgradeData
             FlavorText = "Critical mass achieved.",
             Type = UpgradeType.GlobalBoost,
             Value = 1.50,
-            EvidenceCost = 1000000000,
-            RequiredEvidence = 500000000
+            EvidenceCost = 6000000000,
+            RequiredEvidence = 3000000000
         },
 
         // === MORE CLICK POWER UPGRADES (small values to stay at ~10% of EPS) ===
@@ -431,8 +498,8 @@ public static class UpgradeData
             FlavorText = "Found in a parking lot. Totally safe to plug in.",
             Type = UpgradeType.ClickPower,
             Value = 15,
-            EvidenceCost = 250000,
-            RequiredEvidence = 125000
+            EvidenceCost = 1500000,
+            RequiredEvidence = 750000
         },
         new Upgrade
         {
@@ -442,8 +509,8 @@ public static class UpgradeData
             FlavorText = "One for each personality.",
             Type = UpgradeType.ClickPower,
             Value = 30,
-            EvidenceCost = 1000000,
-            RequiredEvidence = 500000
+            EvidenceCost = 6000000,
+            RequiredEvidence = 3000000
         },
         new Upgrade
         {
@@ -453,8 +520,8 @@ public static class UpgradeData
             FlavorText = "Made from a wok and coat hangers.",
             Type = UpgradeType.ClickPower,
             Value = 60,
-            EvidenceCost = 5000000,
-            RequiredEvidence = 2500000
+            EvidenceCost = 30000000,
+            RequiredEvidence = 15000000
         },
         new Upgrade
         {
@@ -464,8 +531,8 @@ public static class UpgradeData
             FlavorText = "Reveals hidden messages. And unfortunate stains.",
             Type = UpgradeType.ClickPower,
             Value = 120,
-            EvidenceCost = 25000000,
-            RequiredEvidence = 12500000
+            EvidenceCost = 150000000,
+            RequiredEvidence = 75000000
         },
         new Upgrade
         {
@@ -475,8 +542,8 @@ public static class UpgradeData
             FlavorText = "Fireproof, waterproof, government-proof.",
             Type = UpgradeType.ClickPower,
             Value = 250,
-            EvidenceCost = 100000000,
-            RequiredEvidence = 50000000
+            EvidenceCost = 600000000,
+            RequiredEvidence = 300000000
         },
         new Upgrade
         {
@@ -486,8 +553,8 @@ public static class UpgradeData
             FlavorText = "See connections others can't. Literally.",
             Type = UpgradeType.ClickPower,
             Value = 500,
-            EvidenceCost = 500000000,
-            RequiredEvidence = 250000000
+            EvidenceCost = 3000000000,
+            RequiredEvidence = 1500000000
         },
 
         // === MORE CLICK MULTIPLIERS (small multipliers) ===
@@ -499,8 +566,8 @@ public static class UpgradeData
             FlavorText = "Works on you too, unfortunately.",
             Type = UpgradeType.ClickMultiplier,
             Value = 1.25,
-            EvidenceCost = 50000000,
-            RequiredEvidence = 25000000
+            EvidenceCost = 300000000,
+            RequiredEvidence = 150000000
         },
         new Upgrade
         {
@@ -510,21 +577,21 @@ public static class UpgradeData
             FlavorText = "Bend truth to your will.",
             Type = UpgradeType.ClickMultiplier,
             Value = 1.3,
-            EvidenceCost = 500000000,
-            RequiredEvidence = 250000000
+            EvidenceCost = 3000000000,
+            RequiredEvidence = 1500000000
         },
 
         // === MORE GENERATOR BOOSTS (Tier 2) ===
         new Upgrade
         {
             Id = "premium_string_2",
-            Name = "Quantum Entangled String",
+            Name = "Interdimensional Thread",
             Description = "Red String production x3",
             FlavorText = "Connected across space and time.",
             Type = UpgradeType.GeneratorBoost,
             Value = 3.0,
             TargetGeneratorId = "red_string",
-            EvidenceCost = 100000,
+            EvidenceCost = 600000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "red_string"
         },
@@ -537,7 +604,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 3.0,
             TargetGeneratorId = "suspicious_neighbor",
-            EvidenceCost = 500000,
+            EvidenceCost = 3000000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "suspicious_neighbor"
         },
@@ -550,7 +617,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 3.0,
             TargetGeneratorId = "basement_researcher",
-            EvidenceCost = 2500000,
+            EvidenceCost = 15000000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "basement_researcher"
         },
@@ -563,7 +630,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 3.0,
             TargetGeneratorId = "blogspot_blog",
-            EvidenceCost = 15000000,
+            EvidenceCost = 90000000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "blogspot_blog"
         },
@@ -576,7 +643,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 3.0,
             TargetGeneratorId = "youtube_channel",
-            EvidenceCost = 75000000,
+            EvidenceCost = 450000000,
             RequiredGeneratorCount = 50,
             RequiredGeneratorId = "youtube_channel"
         },
@@ -591,7 +658,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "discord_server",
-            EvidenceCost = 10000000,
+            EvidenceCost = 60000000,
             RequiredGeneratorCount = 10,
             RequiredGeneratorId = "discord_server"
         },
@@ -604,7 +671,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "am_radio",
-            EvidenceCost = 50000000,
+            EvidenceCost = 300000000,
             RequiredGeneratorCount = 10,
             RequiredGeneratorId = "am_radio"
         },
@@ -617,7 +684,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "podcast",
-            EvidenceCost = 250000000,
+            EvidenceCost = 1500000000,
             RequiredGeneratorCount = 10,
             RequiredGeneratorId = "podcast"
         },
@@ -630,7 +697,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "truth_conference",
-            EvidenceCost = 1500000000,
+            EvidenceCost = 9000000000,
             RequiredGeneratorCount = 10,
             RequiredGeneratorId = "truth_conference"
         },
@@ -643,7 +710,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "netflix_documentary",
-            EvidenceCost = 10000000000,
+            EvidenceCost = 60000000000,
             RequiredGeneratorCount = 5,
             RequiredGeneratorId = "netflix_documentary"
         },
@@ -656,7 +723,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "spy_satellite",
-            EvidenceCost = 75000000000,
+            EvidenceCost = 450000000000,
             RequiredGeneratorCount = 5,
             RequiredGeneratorId = "spy_satellite"
         },
@@ -669,7 +736,7 @@ public static class UpgradeData
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
             TargetGeneratorId = "shadow_government",
-            EvidenceCost = 500000000000,
+            EvidenceCost = 3000000000000,
             RequiredGeneratorCount = 3,
             RequiredGeneratorId = "shadow_government"
         },
@@ -683,8 +750,8 @@ public static class UpgradeData
             FlavorText = "We are all connected.",
             Type = UpgradeType.GlobalBoost,
             Value = 1.75,
-            EvidenceCost = 10000000000,
-            RequiredEvidence = 5000000000
+            EvidenceCost = 60000000000,
+            RequiredEvidence = 30000000000
         },
         new Upgrade
         {
@@ -694,8 +761,8 @@ public static class UpgradeData
             FlavorText = "The truth shall set you free.",
             Type = UpgradeType.GlobalBoost,
             Value = 2.0,
-            EvidenceCost = 100000000000,
-            RequiredEvidence = 50000000000
+            EvidenceCost = 600000000000,
+            RequiredEvidence = 300000000000
         },
         new Upgrade
         {
@@ -705,8 +772,8 @@ public static class UpgradeData
             FlavorText = "You have transcended.",
             Type = UpgradeType.GlobalBoost,
             Value = 3.0,
-            EvidenceCost = 1000000000000,
-            RequiredEvidence = 500000000000
+            EvidenceCost = 6000000000000,
+            RequiredEvidence = 3000000000000
         },
 
         // === POST-ASCENSION GENERATOR BOOSTS ===
@@ -822,73 +889,569 @@ public static class UpgradeData
             RequiredEvidence = 50000000000000000000000000000.0
         },
 
-        // === EARLY GAME FILLERS (small values for ~10% EPS) ===
+        // === GENERATOR MASTERY UPGRADES (Late-game scaling for early generators) ===
+        // These unlock at high generator counts and provide massive multipliers
+        // to keep early generators relevant in late game
+
+        // RED STRING MASTERY (First tier generator)
+        // Total with all mastery: x2 * x3 * x4 * x5 = x120
+        // Combined with existing x300 = x36,000 total
         new Upgrade
         {
-            Id = "sticky_notes",
-            Name = "Sticky Notes",
-            Description = "+0.1 click power",
-            FlavorText = "For important reminders like 'THEY'RE WATCHING'.",
-            Type = UpgradeType.ClickPower,
-            Value = 0.1,
-            EvidenceCost = 15,
-            RequiredEvidence = 5
+            Id = "red_string_mastery_1",
+            Name = "String Theory Mastery",
+            Description = "Red String production x2",
+            FlavorText = "Each string vibrates with universal truth.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "red_string",
+            EvidenceCost = 500000000,
+            RequiredGeneratorCount = 75,
+            RequiredGeneratorId = "red_string"
         },
         new Upgrade
         {
-            Id = "notebook",
-            Name = "Spiral Notebook",
-            Description = "+0.3 click power",
-            FlavorText = "College ruled. Conspiracy filled.",
-            Type = UpgradeType.ClickPower,
-            Value = 0.3,
-            EvidenceCost = 100,
-            RequiredEvidence = 50
+            Id = "red_string_mastery_2",
+            Name = "Infinite Connection Web",
+            Description = "Red String production x3",
+            FlavorText = "All strings lead to all truths.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "red_string",
+            EvidenceCost = 50000000000,
+            RequiredGeneratorCount = 100,
+            RequiredGeneratorId = "red_string"
         },
         new Upgrade
         {
-            Id = "flashlight",
-            Name = "Heavy Duty Flashlight",
-            Description = "+0.7 click power",
-            FlavorText = "For illuminating dark corners. And faces.",
-            Type = UpgradeType.ClickPower,
-            Value = 0.7,
-            EvidenceCost = 400,
-            RequiredEvidence = 200
+            Id = "red_string_mastery_3",
+            Name = "Cosmic String Network",
+            Description = "Red String production x4",
+            FlavorText = "Your cork board spans galaxies.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "red_string",
+            EvidenceCost = 5000000000000,
+            RequiredGeneratorCount = 150,
+            RequiredGeneratorId = "red_string"
         },
         new Upgrade
         {
-            Id = "binoculars",
-            Name = "Surveillance Binoculars",
-            Description = "+1.5 click power",
-            FlavorText = "Bird watching. Definitely bird watching.",
-            Type = UpgradeType.ClickPower,
-            Value = 1.5,
-            EvidenceCost = 1500,
-            RequiredEvidence = 750
+            Id = "red_string_mastery_4",
+            Name = "Reality-Binding Threads",
+            Description = "Red String production x5",
+            FlavorText = "The universe IS your cork board.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 5.0,
+            TargetGeneratorId = "red_string",
+            EvidenceCost = 500000000000000,
+            RequiredGeneratorCount = 200,
+            RequiredGeneratorId = "red_string"
+        },
+
+        // SUSPICIOUS NEIGHBOR MASTERY
+        new Upgrade
+        {
+            Id = "neighbor_mastery_1",
+            Name = "Neighborhood Alliance",
+            Description = "Suspicious Neighbor production x2",
+            FlavorText = "Every window has eyes. Watching.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "suspicious_neighbor",
+            EvidenceCost = 1000000000,
+            RequiredGeneratorCount = 75,
+            RequiredGeneratorId = "suspicious_neighbor"
         },
         new Upgrade
         {
-            Id = "scanner",
-            Name = "Document Scanner",
-            Description = "+3 click power",
-            FlavorText = "Digitize ALL the evidence.",
-            Type = UpgradeType.ClickPower,
-            Value = 3,
-            EvidenceCost = 6000,
-            RequiredEvidence = 3000
+            Id = "neighbor_mastery_2",
+            Name = "Suburban Intelligence Agency",
+            Description = "Suspicious Neighbor production x3",
+            FlavorText = "The HOA is just a cover.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "suspicious_neighbor",
+            EvidenceCost = 100000000000,
+            RequiredGeneratorCount = 100,
+            RequiredGeneratorId = "suspicious_neighbor"
         },
         new Upgrade
         {
-            Id = "voice_recorder",
-            Name = "Concealed Voice Recorder",
-            Description = "+6 click power",
-            FlavorText = "In pen form. Very subtle.",
-            Type = UpgradeType.ClickPower,
-            Value = 6,
-            EvidenceCost = 30000,
-            RequiredEvidence = 15000
-        }
+            Id = "neighbor_mastery_3",
+            Name = "Global Neighborhood Watch",
+            Description = "Suspicious Neighbor production x4",
+            FlavorText = "Gary's everywhere. He's multiplied.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "suspicious_neighbor",
+            EvidenceCost = 10000000000000,
+            RequiredGeneratorCount = 150,
+            RequiredGeneratorId = "suspicious_neighbor"
+        },
+        new Upgrade
+        {
+            Id = "neighbor_mastery_4",
+            Name = "Omnipresent Observation",
+            Description = "Suspicious Neighbor production x5",
+            FlavorText = "They're not just watching. They're KNOWING.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 5.0,
+            TargetGeneratorId = "suspicious_neighbor",
+            EvidenceCost = 1000000000000000,
+            RequiredGeneratorCount = 200,
+            RequiredGeneratorId = "suspicious_neighbor"
+        },
+
+        // BASEMENT RESEARCHER MASTERY
+        new Upgrade
+        {
+            Id = "researcher_mastery_1",
+            Name = "Underground Network",
+            Description = "Basement Researcher production x2",
+            FlavorText = "Basement tunnels connecting worldwide.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "basement_researcher",
+            EvidenceCost = 5000000000,
+            RequiredGeneratorCount = 75,
+            RequiredGeneratorId = "basement_researcher"
+        },
+        new Upgrade
+        {
+            Id = "researcher_mastery_2",
+            Name = "Subterranean Think Tank",
+            Description = "Basement Researcher production x3",
+            FlavorText = "Sunlight is for the uninformed anyway.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "basement_researcher",
+            EvidenceCost = 500000000000,
+            RequiredGeneratorCount = 100,
+            RequiredGeneratorId = "basement_researcher"
+        },
+        new Upgrade
+        {
+            Id = "researcher_mastery_3",
+            Name = "Mole People Wisdom",
+            Description = "Basement Researcher production x4",
+            FlavorText = "They've been down there so long, they've evolved.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "basement_researcher",
+            EvidenceCost = 50000000000000,
+            RequiredGeneratorCount = 150,
+            RequiredGeneratorId = "basement_researcher"
+        },
+        new Upgrade
+        {
+            Id = "researcher_mastery_4",
+            Name = "Core of Truth",
+            Description = "Basement Researcher production x5",
+            FlavorText = "Research so deep it touches the Earth's core.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 5.0,
+            TargetGeneratorId = "basement_researcher",
+            EvidenceCost = 5000000000000000,
+            RequiredGeneratorCount = 200,
+            RequiredGeneratorId = "basement_researcher"
+        },
+
+        // BLOGSPOT MASTERY
+        new Upgrade
+        {
+            Id = "blog_mastery_1",
+            Name = "Viral Truth Phenomenon",
+            Description = "Blogspot Blog production x2",
+            FlavorText = "Every share multiplies the awakening.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "blogspot_blog",
+            EvidenceCost = 25000000000,
+            RequiredGeneratorCount = 75,
+            RequiredGeneratorId = "blogspot_blog"
+        },
+        new Upgrade
+        {
+            Id = "blog_mastery_2",
+            Name = "Internet Archive Dominance",
+            Description = "Blogspot Blog production x3",
+            FlavorText = "Cached forever. Truth is eternal.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "blogspot_blog",
+            EvidenceCost = 2500000000000,
+            RequiredGeneratorCount = 100,
+            RequiredGeneratorId = "blogspot_blog"
+        },
+        new Upgrade
+        {
+            Id = "blog_mastery_3",
+            Name = "Blogosphere Takeover",
+            Description = "Blogspot Blog production x4",
+            FlavorText = "Every click is a red pill.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "blogspot_blog",
+            EvidenceCost = 250000000000000,
+            RequiredGeneratorCount = 150,
+            RequiredGeneratorId = "blogspot_blog"
+        },
+        new Upgrade
+        {
+            Id = "blog_mastery_4",
+            Name = "Digital Truth Omnipresence",
+            Description = "Blogspot Blog production x5",
+            FlavorText = "The internet IS your blog now.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 5.0,
+            TargetGeneratorId = "blogspot_blog",
+            EvidenceCost = 25000000000000000,
+            RequiredGeneratorCount = 200,
+            RequiredGeneratorId = "blogspot_blog"
+        },
+
+        // YOUTUBE MASTERY
+        new Upgrade
+        {
+            Id = "youtube_mastery_1",
+            Name = "Algorithmic Enlightenment",
+            Description = "YouTube Channel production x2",
+            FlavorText = "The recommendation engine serves only truth.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "youtube_channel",
+            EvidenceCost = 100000000000,
+            RequiredGeneratorCount = 75,
+            RequiredGeneratorId = "youtube_channel"
+        },
+        new Upgrade
+        {
+            Id = "youtube_mastery_2",
+            Name = "Content Creator Collective",
+            Description = "YouTube Channel production x3",
+            FlavorText = "Every creator is an investigator.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "youtube_channel",
+            EvidenceCost = 10000000000000,
+            RequiredGeneratorCount = 100,
+            RequiredGeneratorId = "youtube_channel"
+        },
+        new Upgrade
+        {
+            Id = "youtube_mastery_3",
+            Name = "Platform Consciousness",
+            Description = "YouTube Channel production x4",
+            FlavorText = "YouTube itself has awakened.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "youtube_channel",
+            EvidenceCost = 1000000000000000,
+            RequiredGeneratorCount = 150,
+            RequiredGeneratorId = "youtube_channel"
+        },
+        new Upgrade
+        {
+            Id = "youtube_mastery_4",
+            Name = "Streaming Singularity",
+            Description = "YouTube Channel production x5",
+            FlavorText = "All video IS conspiracy now.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 5.0,
+            TargetGeneratorId = "youtube_channel",
+            EvidenceCost = 100000000000000000,
+            RequiredGeneratorCount = 200,
+            RequiredGeneratorId = "youtube_channel"
+        },
+
+        // DISCORD MASTERY (3 tiers: x2, x3, x4)
+        new Upgrade
+        {
+            Id = "discord_mastery_1",
+            Name = "Server Federation",
+            Description = "Discord Server production x2",
+            FlavorText = "All the Kyles have united.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "discord_server",
+            EvidenceCost = 500000000000,
+            RequiredGeneratorCount = 50,
+            RequiredGeneratorId = "discord_server"
+        },
+        new Upgrade
+        {
+            Id = "discord_mastery_2",
+            Name = "Voice Chat Awakening",
+            Description = "Discord Server production x3",
+            FlavorText = "Truth transmitted at 128kbps.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "discord_server",
+            EvidenceCost = 50000000000000,
+            RequiredGeneratorCount = 75,
+            RequiredGeneratorId = "discord_server"
+        },
+        new Upgrade
+        {
+            Id = "discord_mastery_3",
+            Name = "Digital Community Nexus",
+            Description = "Discord Server production x4",
+            FlavorText = "Every ping is a revelation.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "discord_server",
+            EvidenceCost = 5000000000000000,
+            RequiredGeneratorCount = 100,
+            RequiredGeneratorId = "discord_server"
+        },
+
+        // AM RADIO MASTERY (3 tiers: x2, x3, x4)
+        new Upgrade
+        {
+            Id = "radio_mastery_1",
+            Name = "Broadcast Dominance",
+            Description = "AM Radio Show production x2",
+            FlavorText = "Every frequency carries the signal.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "am_radio",
+            EvidenceCost = 2500000000000,
+            RequiredGeneratorCount = 50,
+            RequiredGeneratorId = "am_radio"
+        },
+        new Upgrade
+        {
+            Id = "radio_mastery_2",
+            Name = "Airwave Supremacy",
+            Description = "AM Radio Show production x3",
+            FlavorText = "Static is just encrypted truth.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "am_radio",
+            EvidenceCost = 250000000000000,
+            RequiredGeneratorCount = 75,
+            RequiredGeneratorId = "am_radio"
+        },
+        new Upgrade
+        {
+            Id = "radio_mastery_3",
+            Name = "Electromagnetic Enlightenment",
+            Description = "AM Radio Show production x4",
+            FlavorText = "The ionosphere amplifies your message.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "am_radio",
+            EvidenceCost = 25000000000000000,
+            RequiredGeneratorCount = 100,
+            RequiredGeneratorId = "am_radio"
+        },
+
+        // PODCAST MASTERY (3 tiers: x2, x3, x4)
+        new Upgrade
+        {
+            Id = "podcast_mastery_1",
+            Name = "Podcast Network Empire",
+            Description = "4-Hour Podcast production x2",
+            FlavorText = "Every commute is an awakening session.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "podcast",
+            EvidenceCost = 15000000000000,
+            RequiredGeneratorCount = 50,
+            RequiredGeneratorId = "podcast"
+        },
+        new Upgrade
+        {
+            Id = "podcast_mastery_2",
+            Name = "Audio Truth Revolution",
+            Description = "4-Hour Podcast production x3",
+            FlavorText = "8 hours isn't enough anymore.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "podcast",
+            EvidenceCost = 1500000000000000,
+            RequiredGeneratorCount = 75,
+            RequiredGeneratorId = "podcast"
+        },
+        new Upgrade
+        {
+            Id = "podcast_mastery_3",
+            Name = "Eternal Episode",
+            Description = "4-Hour Podcast production x4",
+            FlavorText = "The podcast never ends. Neither does truth.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "podcast",
+            EvidenceCost = 150000000000000000,
+            RequiredGeneratorCount = 100,
+            RequiredGeneratorId = "podcast"
+        },
+
+        // TRUTH CONFERENCE MASTERY (3 tiers: x2, x3, x4)
+        new Upgrade
+        {
+            Id = "conference_mastery_1",
+            Name = "World Truth Summit",
+            Description = "Truth Conference production x2",
+            FlavorText = "Every major city. Every weekend.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "truth_conference",
+            EvidenceCost = 100000000000000,
+            RequiredGeneratorCount = 25,
+            RequiredGeneratorId = "truth_conference"
+        },
+        new Upgrade
+        {
+            Id = "conference_mastery_2",
+            Name = "Global Awakening Convention",
+            Description = "Truth Conference production x3",
+            FlavorText = "Standing room only. Everywhere.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "truth_conference",
+            EvidenceCost = 10000000000000000,
+            RequiredGeneratorCount = 50,
+            RequiredGeneratorId = "truth_conference"
+        },
+        new Upgrade
+        {
+            Id = "conference_mastery_3",
+            Name = "Permanent Truth Festival",
+            Description = "Truth Conference production x4",
+            FlavorText = "The conference never ends.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "truth_conference",
+            EvidenceCost = 1000000000000000000,
+            RequiredGeneratorCount = 75,
+            RequiredGeneratorId = "truth_conference"
+        },
+
+        // NETFLIX DOC MASTERY (3 tiers: x2, x3, x4)
+        new Upgrade
+        {
+            Id = "netflix_mastery_1",
+            Name = "Streaming Platform Takeover",
+            Description = "Netflix Documentary production x2",
+            FlavorText = "Every platform. All truth content.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "netflix_doc",
+            EvidenceCost = 500000000000000,
+            RequiredGeneratorCount = 15,
+            RequiredGeneratorId = "netflix_doc"
+        },
+        new Upgrade
+        {
+            Id = "netflix_mastery_2",
+            Name = "Award-Winning Truth",
+            Description = "Netflix Documentary production x3",
+            FlavorText = "Critics love conspiracy now.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "netflix_doc",
+            EvidenceCost = 50000000000000000,
+            RequiredGeneratorCount = 25,
+            RequiredGeneratorId = "netflix_doc"
+        },
+        new Upgrade
+        {
+            Id = "netflix_mastery_3",
+            Name = "Cinematic Truth Universe",
+            Description = "Netflix Documentary production x4",
+            FlavorText = "Phase 1 of the Truth Cinematic Universe.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "netflix_doc",
+            EvidenceCost = 5000000000000000000.0,
+            RequiredGeneratorCount = 40,
+            RequiredGeneratorId = "netflix_doc"
+        },
+
+        // SPY SATELLITE MASTERY (3 tiers: x2, x3, x4)
+        new Upgrade
+        {
+            Id = "satellite_mastery_1",
+            Name = "Low Orbit Dominance",
+            Description = "Spy Satellite production x2",
+            FlavorText = "Nothing escapes your view.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "spy_satellite",
+            EvidenceCost = 5000000000000000,
+            RequiredGeneratorCount = 10,
+            RequiredGeneratorId = "spy_satellite"
+        },
+        new Upgrade
+        {
+            Id = "satellite_mastery_2",
+            Name = "Constellation Control",
+            Description = "Spy Satellite production x3",
+            FlavorText = "Your own Starlink. For truth.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "spy_satellite",
+            EvidenceCost = 500000000000000000,
+            RequiredGeneratorCount = 20,
+            RequiredGeneratorId = "spy_satellite"
+        },
+        new Upgrade
+        {
+            Id = "satellite_mastery_3",
+            Name = "Orbital Truth Network",
+            Description = "Spy Satellite production x4",
+            FlavorText = "The sky isn't the limit. It's the base.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "spy_satellite",
+            EvidenceCost = 50000000000000000000.0,
+            RequiredGeneratorCount = 35,
+            RequiredGeneratorId = "spy_satellite"
+        },
+
+        // SHADOW GOVERNMENT MASTERY (3 tiers: x2, x3, x4)
+        new Upgrade
+        {
+            Id = "shadow_mastery_1",
+            Name = "Deep State Expansion",
+            Description = "Shadow Government production x2",
+            FlavorText = "More shadows. More depth.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 2.0,
+            TargetGeneratorId = "shadow_government",
+            EvidenceCost = 100000000000000000,
+            RequiredGeneratorCount = 5,
+            RequiredGeneratorId = "shadow_government"
+        },
+        new Upgrade
+        {
+            Id = "shadow_mastery_2",
+            Name = "Parallel World Order",
+            Description = "Shadow Government production x3",
+            FlavorText = "Governing realities you don't even know exist.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 3.0,
+            TargetGeneratorId = "shadow_government",
+            EvidenceCost = 10000000000000000000.0,
+            RequiredGeneratorCount = 10,
+            RequiredGeneratorId = "shadow_government"
+        },
+        new Upgrade
+        {
+            Id = "shadow_mastery_3",
+            Name = "Absolute Shadow Control",
+            Description = "Shadow Government production x4",
+            FlavorText = "You ARE the deep state now.",
+            Type = UpgradeType.GeneratorBoost,
+            Value = 4.0,
+            TargetGeneratorId = "shadow_government",
+            EvidenceCost = 1000000000000000000000.0,
+            RequiredGeneratorCount = 20,
+            RequiredGeneratorId = "shadow_government"
+        },
+
     };
 
     public static Upgrade? GetById(string id)

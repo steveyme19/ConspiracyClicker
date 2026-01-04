@@ -173,12 +173,40 @@ public static class AchievementData
         },
         new Achievement
         {
-            Id = "conspiracy_all",
-            Name = "Omniscient",
-            Description = "Prove all conspiracies",
+            Id = "conspiracy_10",
+            Name = "Red-Pill Master",
+            Description = "Prove 10 conspiracies",
             Type = AchievementType.ConspiraciesProven,
             Threshold = 10,
-            TinfoilReward = 25
+            TinfoilReward = 10
+        },
+        new Achievement
+        {
+            Id = "conspiracy_15",
+            Name = "Truth Seeker",
+            Description = "Prove 15 conspiracies",
+            Type = AchievementType.ConspiraciesProven,
+            Threshold = 15,
+            TinfoilReward = 20
+        },
+        new Achievement
+        {
+            Id = "conspiracy_20",
+            Name = "Enlightened One",
+            Description = "Prove 20 conspiracies",
+            Type = AchievementType.ConspiraciesProven,
+            Threshold = 20,
+            TinfoilReward = 40
+        },
+        new Achievement
+        {
+            Id = "conspiracy_all",
+            Name = "Omniscient",
+            Description = "Prove all 25 conspiracies",
+            Type = AchievementType.ConspiraciesProven,
+            Threshold = 25,
+            TinfoilReward = 100,
+            MultiplierReward = 1.25
         },
 
         // === PLAYTIME ===
@@ -534,6 +562,266 @@ public static class AchievementData
             TargetId = "universe_creator",
             TinfoilReward = 100,
             MultiplierReward = 1.5
+        },
+
+        // === TRANSCENDENT GENERATORS ===
+        new Achievement
+        {
+            Id = "entropy_reverser_1",
+            Name = "Time Lord",
+            Description = "Own your first Entropy Reverser",
+            FlavorText = "Heat death is so last universe.",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "entropy_reverser",
+            TinfoilReward = 150
+        },
+        new Achievement
+        {
+            Id = "omega_point_1",
+            Name = "Omega Being",
+            Description = "Own your first Omega Point Collective",
+            FlavorText = "The final evolution begins.",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "omega_point",
+            TinfoilReward = 200
+        },
+        new Achievement
+        {
+            Id = "void_architect_1",
+            Name = "Void Walker",
+            Description = "Own your first Void Architect",
+            FlavorText = "Building from nothing. Literally.",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "void_architect",
+            TinfoilReward = 250
+        },
+        new Achievement
+        {
+            Id = "eternity_engine_1",
+            Name = "Eternal One",
+            Description = "Own your first Eternity Engine",
+            FlavorText = "Time bends to your will.",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "eternity_engine",
+            TinfoilReward = 300
+        },
+        new Achievement
+        {
+            Id = "final_revelation_gen_1",
+            Name = "The Revelation",
+            Description = "Own your first Final Revelation Device",
+            FlavorText = "This is it. The end. The beginning. The truth.",
+            Type = AchievementType.GeneratorOwned,
+            Threshold = 1,
+            TargetId = "final_revelation_gen",
+            TinfoilReward = 500,
+            MultiplierReward = 2.0
+        },
+
+        // === TOKEN ACHIEVEMENTS ===
+        new Achievement
+        {
+            Id = "tokens_10",
+            Name = "Illuminati Initiate",
+            Description = "Earn 10 total Illuminati Tokens",
+            FlavorText = "You're starting to see the pyramid.",
+            Type = AchievementType.TotalTokensEarned,
+            Threshold = 10,
+            TinfoilReward = 20
+        },
+        new Achievement
+        {
+            Id = "tokens_50",
+            Name = "Illuminati Adept",
+            Description = "Earn 50 total Illuminati Tokens",
+            FlavorText = "The eye opens wider.",
+            Type = AchievementType.TotalTokensEarned,
+            Threshold = 50,
+            TinfoilReward = 50
+        },
+        new Achievement
+        {
+            Id = "tokens_100",
+            Name = "Illuminati Master",
+            Description = "Earn 100 total Illuminati Tokens",
+            FlavorText = "You've climbed the pyramid.",
+            Type = AchievementType.TotalTokensEarned,
+            Threshold = 100,
+            TinfoilReward = 100
+        },
+        new Achievement
+        {
+            Id = "tokens_500",
+            Name = "Illuminati Overlord",
+            Description = "Earn 500 total Illuminati Tokens",
+            FlavorText = "The all-seeing eye IS you.",
+            Type = AchievementType.TotalTokensEarned,
+            Threshold = 500,
+            TinfoilReward = 250
+        },
+        new Achievement
+        {
+            Id = "tokens_1000",
+            Name = "Illuminati Eternal",
+            Description = "Earn 1,000 total Illuminati Tokens",
+            FlavorText = "You ARE the pyramid.",
+            Type = AchievementType.TotalTokensEarned,
+            Threshold = 1000,
+            TinfoilReward = 500,
+            MultiplierReward = 1.5
+        },
+
+        // === TINFOIL ACHIEVEMENTS ===
+        new Achievement
+        {
+            Id = "tinfoil_100",
+            Name = "Tinfoil Hatter",
+            Description = "Collect 100 Tinfoil",
+            FlavorText = "Protection starts somewhere.",
+            Type = AchievementType.TotalTinfoil,
+            Threshold = 100,
+            TinfoilReward = 5
+        },
+        new Achievement
+        {
+            Id = "tinfoil_1000",
+            Name = "Foil Fortress",
+            Description = "Collect 1,000 Tinfoil",
+            FlavorText = "Your defenses are strong.",
+            Type = AchievementType.TotalTinfoil,
+            Threshold = 1000,
+            TinfoilReward = 25
+        },
+        new Achievement
+        {
+            Id = "tinfoil_10000",
+            Name = "Aluminum Empire",
+            Description = "Collect 10,000 Tinfoil",
+            FlavorText = "The signal blockers are EVERYWHERE.",
+            Type = AchievementType.TotalTinfoil,
+            Threshold = 10000,
+            TinfoilReward = 100
+        },
+        new Achievement
+        {
+            Id = "tinfoil_100000",
+            Name = "Foil Dimension",
+            Description = "Collect 100,000 Tinfoil",
+            FlavorText = "You've transcended protection itself.",
+            Type = AchievementType.TotalTinfoil,
+            Threshold = 100000,
+            TinfoilReward = 500,
+            MultiplierReward = 1.25
+        },
+
+        // === EXTREME EVIDENCE ===
+        new Achievement
+        {
+            Id = "evidence_1e21",
+            Name = "Zettabyte Truth",
+            Description = "Gather 1 sextillion evidence",
+            FlavorText = "That's a lot of documents.",
+            Type = AchievementType.TotalEvidence,
+            Threshold = 1e21,
+            TinfoilReward = 150,
+            MultiplierReward = 1.25
+        },
+        new Achievement
+        {
+            Id = "evidence_1e24",
+            Name = "Yottabyte Revelations",
+            Description = "Gather 1 septillion evidence",
+            FlavorText = "More data than the universe can hold.",
+            Type = AchievementType.TotalEvidence,
+            Threshold = 1e24,
+            TinfoilReward = 250,
+            MultiplierReward = 1.3
+        },
+        new Achievement
+        {
+            Id = "evidence_1e27",
+            Name = "Cosmic Archives",
+            Description = "Gather 1 octillion evidence",
+            FlavorText = "Every truth in every dimension. Catalogued.",
+            Type = AchievementType.TotalEvidence,
+            Threshold = 1e27,
+            TinfoilReward = 400,
+            MultiplierReward = 1.35
+        },
+        new Achievement
+        {
+            Id = "evidence_1e30",
+            Name = "Infinite Library",
+            Description = "Gather 1 nonillion evidence",
+            FlavorText = "The truth is literally everywhere.",
+            Type = AchievementType.TotalEvidence,
+            Threshold = 1e30,
+            TinfoilReward = 600,
+            MultiplierReward = 1.5
+        },
+
+        // === EXTENDED ASCENSION ===
+        new Achievement
+        {
+            Id = "ascend_50",
+            Name = "Ascension Addict",
+            Description = "Ascend 50 times",
+            FlavorText = "You can stop any time. You just don't want to.",
+            Type = AchievementType.TimesAscended,
+            Threshold = 50,
+            TinfoilReward = 200,
+            MultiplierReward = 1.2
+        },
+        new Achievement
+        {
+            Id = "ascend_100",
+            Name = "Eternal Ascendant",
+            Description = "Ascend 100 times",
+            FlavorText = "The pyramid has no top for you.",
+            Type = AchievementType.TimesAscended,
+            Threshold = 100,
+            TinfoilReward = 500,
+            MultiplierReward = 1.5
+        },
+
+        // === QUEST MILESTONES ===
+        new Achievement
+        {
+            Id = "quest_1000",
+            Name = "Quest Legend",
+            Description = "Complete 1,000 quests",
+            FlavorText = "Your believers have seen everything.",
+            Type = AchievementType.QuestsCompleted,
+            Threshold = 1000,
+            TinfoilReward = 200
+        },
+        new Achievement
+        {
+            Id = "quest_5000",
+            Name = "Quest Transcendent",
+            Description = "Complete 5,000 quests",
+            FlavorText = "Missions? You ARE the mission.",
+            Type = AchievementType.QuestsCompleted,
+            Threshold = 5000,
+            TinfoilReward = 500,
+            MultiplierReward = 1.25
+        },
+
+        // === EXTENDED CLICKS ===
+        new Achievement
+        {
+            Id = "clicks_10m",
+            Name = "Click Singularity",
+            Description = "Click 10,000,000 times",
+            FlavorText = "Your finger has achieved sentience.",
+            Type = AchievementType.TotalClicks,
+            Threshold = 10000000,
+            TinfoilReward = 100,
+            MultiplierReward = 1.25
         }
     };
 

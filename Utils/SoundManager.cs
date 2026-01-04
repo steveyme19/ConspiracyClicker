@@ -48,6 +48,8 @@ public static class SoundManager
         return new SoundPlayer(stream);
     }
 
+    private static bool _soundErrorLogged = false;
+
     public static void Play(string soundName)
     {
         if (!_enabled || !_initialized) return;
@@ -58,9 +60,14 @@ public static class SoundManager
             {
                 player.Play();
             }
-            catch
+            catch (Exception)
             {
-                // Ignore sound errors
+                // Only log error once to avoid spam, then disable sound
+                if (!_soundErrorLogged)
+                {
+                    _soundErrorLogged = true;
+                    _enabled = false; // Disable sound on error
+                }
             }
         }
     }

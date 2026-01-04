@@ -21,6 +21,9 @@ public class SaveManager
 
     public int CurrentSlot => _currentSlot;
 
+    // Event for error notifications
+    public event Action<string>? OnError;
+
     public SaveManager()
     {
         _saveDirectory = Path.Combine(
@@ -64,16 +67,16 @@ public class SaveManager
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Save failed: {ex.Message}");
+            OnError?.Invoke($"Save failed: {ex.Message}");
         }
     }
 
-    public GameState Load()
+    public GameState? Load()
     {
         return LoadFromSlot(_currentSlot);
     }
 
-    public GameState LoadFromSlot(int slot)
+    public GameState? LoadFromSlot(int slot)
     {
         try
         {
@@ -91,7 +94,7 @@ public class SaveManager
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Load failed: {ex.Message}");
+            OnError?.Invoke($"Load failed: {ex.Message}");
             var backup = TryLoadBackup(slot);
             if (backup != null)
             {
@@ -100,7 +103,7 @@ public class SaveManager
             }
         }
 
-        return new GameState();
+        return null; // Return null instead of empty state on failure
     }
 
     private GameState? TryLoadBackup(int slot)
@@ -185,7 +188,7 @@ public class SaveManager
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Delete failed: {ex.Message}");
+            OnError?.Invoke($"Delete failed: {ex.Message}");
         }
     }
 

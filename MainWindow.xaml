@@ -16,43 +16,92 @@
         <SolidColorBrush x:Key="TextLight" Color="#e0e0e0"/>
         <SolidColorBrush x:Key="TextDim" Color="#888888"/>
 
-        <!-- Eye Ring Rotation Animations -->
-        <Storyboard x:Key="EyeRing1Animation" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="EyeRing1Transform"
-                             Storyboard.TargetProperty="Angle"
-                             From="0" To="360" Duration="0:0:20"/>
-        </Storyboard>
-        <Storyboard x:Key="EyeRing2Animation" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="EyeRing2Transform"
-                             Storyboard.TargetProperty="Angle"
-                             From="360" To="0" Duration="0:0:15"/>
-        </Storyboard>
+        <!-- Dark themed Tooltip style with transparency -->
+        <Style TargetType="ToolTip">
+            <Setter Property="Background" Value="#E61a1a2e"/>
+            <Setter Property="Foreground" Value="#e0e0e0"/>
+            <Setter Property="BorderBrush" Value="#C800ff41"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HasDropShadow" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="3" Opacity="0.6"/>
+                            </Border.Effect>
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <!-- Eye Pulse Animation (subtle breathing effect) -->
-        <Storyboard x:Key="EyePulseAnimation" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="EyeOuterScale"
-                             Storyboard.TargetProperty="ScaleX"
-                             From="1.0" To="1.02" Duration="0:0:2"
-                             AutoReverse="True">
-                <DoubleAnimation.EasingFunction>
-                    <SineEase EasingMode="EaseInOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Storyboard.TargetName="EyeOuterScale"
-                             Storyboard.TargetProperty="ScaleY"
-                             From="1.0" To="1.02" Duration="0:0:2"
-                             AutoReverse="True">
-                <DoubleAnimation.EasingFunction>
-                    <SineEase EasingMode="EaseInOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
+        <!-- Global ToolTipService settings -->
+        <Style TargetType="FrameworkElement">
+            <Setter Property="ToolTipService.ShowDuration" Value="10000"/>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="400"/>
+            <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+        </Style>
+
+        <!-- Custom ScrollBar style to match UI -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="#0a1628"/>
+            <Setter Property="Width" Value="10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="#0a1628">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="#00ff41" CornerRadius="4" Margin="2" Opacity="0.6">
+                                                    <Border.Triggers>
+                                                        <EventTrigger RoutedEvent="MouseEnter">
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </EventTrigger>
+                                                        <EventTrigger RoutedEvent="MouseLeave">
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.15"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </EventTrigger>
+                                                    </Border.Triggers>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="10"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
         <!-- Ambient Glow Pulse -->
         <Storyboard x:Key="AmbientGlowAnimation" RepeatBehavior="Forever">
             <DoubleAnimation Storyboard.TargetName="EyeAmbientGlow"
                              Storyboard.TargetProperty="Opacity"
-                             From="0.1" To="0.3" Duration="0:0:3"
+                             From="0.15" To="0.35" Duration="0:0:3"
                              AutoReverse="True">
                 <DoubleAnimation.EasingFunction>
                     <SineEase EasingMode="EaseInOut"/>
@@ -60,31 +109,13 @@
             </DoubleAnimation>
         </Storyboard>
 
-        <!-- Ring Scale Pulse -->
-        <Storyboard x:Key="RingPulseAnimation" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="EyeRing1"
-                             Storyboard.TargetProperty="Opacity"
-                             From="0.3" To="0.5" Duration="0:0:1.5"
-                             AutoReverse="True"/>
-            <DoubleAnimation Storyboard.TargetName="EyeRing2"
-                             Storyboard.TargetProperty="Opacity"
-                             From="0.2" To="0.4" Duration="0:0:2"
-                             AutoReverse="True"/>
-        </Storyboard>
-
-        <!-- Base button style with enhanced hover effects -->
+        <!-- Base button style with hover effects -->
         <Style TargetType="Button">
             <Setter Property="Background" Value="#0f3460"/>
             <Setter Property="Foreground" Value="#e0e0e0"/>
             <Setter Property="BorderBrush" Value="#00ff41"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                </Setter.Value>
-            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -100,29 +131,16 @@
                                 <Setter TargetName="border" Property="Background" Value="#1a5a7e"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#66ff99"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
-                                <Setter TargetName="border" Property="Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect Color="#00ff41" BlurRadius="15" ShadowDepth="0" Opacity="0.6"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter TargetName="border" Property="Margin" Value="-1"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#0a3a4e"/>
-                                <Setter TargetName="border" Property="Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect Color="#00ff41" BlurRadius="8" ShadowDepth="0" Opacity="0.8"/>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="RenderTransform">
-                                    <Setter.Value>
-                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
-                                    </Setter.Value>
-                                </Setter>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Background" Value="#2a2a3e"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#444444"/>
-                                <Setter Property="Foreground" Value="#666666"/>
+                                <Setter TargetName="border" Property="Background" Value="#1a1a2e"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#333344"/>
+                                <Setter Property="Foreground" Value="#707080"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -136,14 +154,8 @@
             <Setter Property="BorderBrush" Value="#00ff41"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12,10"/>
-            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Margin" Value="5,5,5,8"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                </Setter.Value>
-            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -159,29 +171,110 @@
                                 <Setter TargetName="border" Property="Background" Value="#1a5a7e"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#66ff99"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
-                                <Setter TargetName="border" Property="Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect Color="#00ff41" BlurRadius="12" ShadowDepth="0" Opacity="0.5"/>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="RenderTransform">
-                                    <Setter.Value>
-                                        <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter TargetName="border" Property="Margin" Value="-1"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#0a3a4e"/>
-                                <Setter Property="RenderTransform">
-                                    <Setter.Value>
-                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
-                                    </Setter.Value>
-                                </Setter>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Background" Value="#2a2a3e"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#444444"/>
-                                <Setter Property="Foreground" Value="#666666"/>
+                                <Setter TargetName="border" Property="Background" Value="#1a1a2e"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#333344"/>
+                                <Setter Property="Foreground" Value="#707080"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark themed ComboBox style -->
+        <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="32"/>
+                </Grid.ColumnDefinitions>
+                <Border x:Name="Border" Grid.ColumnSpan="2" CornerRadius="4"
+                        Background="#0f1a2e" BorderBrush="#333366" BorderThickness="1"/>
+                <Border Grid.Column="0" CornerRadius="4,0,0,4" Margin="1"
+                        Background="#0f1a2e"/>
+                <Path x:Name="Arrow" Grid.Column="1" Fill="#00ff41"
+                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                      Data="M 0 0 L 6 6 L 12 0 Z"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#00ff41"/>
+                    <Setter TargetName="Border" Property="Background" Value="#1a2a4e"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#00ff41"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="DarkComboBox" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#e0e0e0"/>
+            <Setter Property="Background" Value="#0f1a2e"/>
+            <Setter Property="BorderBrush" Value="#333366"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                          Template="{StaticResource ComboBoxToggleButton}"
+                                          Focusable="False" ClickMode="Press"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="14,6,32,6" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid x:Name="DropDown" SnapsToDevicePixels="True"
+                                      MinWidth="{TemplateBinding ActualWidth}" MaxHeight="300">
+                                    <Border x:Name="DropDownBorder" Background="#0f1a2e"
+                                            BorderBrush="#00ff41" BorderThickness="1" CornerRadius="4">
+                                        <ScrollViewer Margin="4" SnapsToDevicePixels="True">
+                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DarkComboBoxItem" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#e0e0e0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}" CornerRadius="3">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1a4a3e"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#0a3a2e"/>
+                                <Setter Property="Foreground" Value="#00ff41"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1a4a3e"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -228,6 +321,11 @@
                                    FontSize="24"
                                    Foreground="{StaticResource TextDim}"
                                    Text="0/sec"/>
+                        <!-- Hidden rank stubs (disabled feature) -->
+                        <StackPanel x:Name="RankDisplayPanel" Visibility="Collapsed">
+                            <TextBlock x:Name="RankSocietyDisplay"/>
+                            <TextBlock x:Name="RankTitleDisplay"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <Grid Grid.Row="1" Margin="15,0,15,10">
@@ -259,12 +357,24 @@
                         </StackPanel>
                     </Grid>
 
-                    <!-- Sound Toggle and Menu -->
+                    <!-- Sound Toggle, Fullscreen, and Menu -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="15,0,15,5">
                         <Button x:Name="SoundToggleButton" Click="SoundToggle_Click"
                                 Background="Transparent" BorderThickness="0" Cursor="Hand"
                                 ToolTip="Toggle Sound" Margin="0,0,10,0">
                             <Image x:Name="SoundToggleIcon" Source="{DynamicResource Icon_sound_on}"
+                                   Width="28" Height="28" Stretch="Uniform"/>
+                        </Button>
+                        <Button x:Name="FullscreenToggleButton" Click="FullscreenToggle_Click"
+                                Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                ToolTip="Toggle Fullscreen (F11)" Margin="0,0,10,0">
+                            <Image x:Name="FullscreenToggleIcon" Source="{DynamicResource Icon_fullscreen}"
+                                   Width="28" Height="28" Stretch="Uniform"/>
+                        </Button>
+                        <Button x:Name="ZenModeToggleButton" Click="ZenModeToggle_Click"
+                                Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                ToolTip="Zen Mode - Disable random events" Margin="0,0,10,0">
+                            <Image x:Name="ZenModeToggleIcon" Source="{DynamicResource Icon_zen_off}"
                                    Width="28" Height="28" Stretch="Uniform"/>
                         </Button>
                         <Button Click="ReturnToMenu_Click"
@@ -285,101 +395,63 @@
 
                         <!-- The Eye Button -->
                         <Grid x:Name="EyeContainer" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <!-- Ambient outer glow (animated) -->
-                            <Ellipse x:Name="EyeAmbientGlow" Width="260" Height="260"
-                                     Opacity="0.15" IsHitTestVisible="False">
+                            <!-- Ambient outer glow -->
+                            <Ellipse x:Name="EyeAmbientGlow" Width="200" Height="200"
+                                     Opacity="0.2" IsHitTestVisible="False">
                                 <Ellipse.Fill>
                                     <RadialGradientBrush>
-                                        <GradientStop Color="#00ff41" Offset="0.3"/>
+                                        <GradientStop Color="#00ff41" Offset="0.2"/>
                                         <GradientStop Color="Transparent" Offset="1.0"/>
                                     </RadialGradientBrush>
                                 </Ellipse.Fill>
                             </Ellipse>
-                            <Ellipse x:Name="EyeGlow" Width="220" Height="220"
-                                     Fill="Transparent" Opacity="0.3">
-                                <Ellipse.Effect>
-                                    <BlurEffect Radius="20"/>
-                                </Ellipse.Effect>
-                            </Ellipse>
-                            <Ellipse x:Name="EyeOuter" Width="180" Height="180"
-                                     Fill="#0f3460" Stroke="{StaticResource AccentGreen}" StrokeThickness="3"
-                                     RenderTransformOrigin="0.5,0.5">
-                                <Ellipse.Effect>
-                                    <DropShadowEffect Color="#00ff41" BlurRadius="15" ShadowDepth="0" Opacity="0.6"/>
-                                </Ellipse.Effect>
-                                <Ellipse.RenderTransform>
-                                    <ScaleTransform x:Name="EyeOuterScale" ScaleX="1" ScaleY="1"/>
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-                            <!-- Rotating ring 1 with dashed stroke -->
-                            <Ellipse x:Name="EyeRing1" Width="140" Height="140"
-                                     Fill="Transparent" Stroke="#00ff41" StrokeThickness="1" Opacity="0.3"
-                                     StrokeDashArray="4 2" RenderTransformOrigin="0.5,0.5">
-                                <Ellipse.RenderTransform>
-                                    <RotateTransform x:Name="EyeRing1Transform" Angle="0"/>
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-                            <!-- Rotating ring 2 with different dash pattern (opposite direction) -->
-                            <Ellipse x:Name="EyeRing2" Width="100" Height="100"
-                                     Fill="Transparent" Stroke="#00ff41" StrokeThickness="1" Opacity="0.2"
-                                     StrokeDashArray="2 4" RenderTransformOrigin="0.5,0.5">
-                                <Ellipse.RenderTransform>
-                                    <RotateTransform x:Name="EyeRing2Transform" Angle="0"/>
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-                            <Ellipse x:Name="EyePupil" Width="60" Height="60"
-                                     Fill="{StaticResource AccentGreen}" Opacity="0.4"/>
+                            <!-- Pyramid (evolves with conspiracies) - larger background -->
+                            <Image x:Name="PyramidImage"
+                                   Source="{DynamicResource Icon_pyramid_level_0}"
+                                   Width="180" Height="180"
+                                   Stretch="Uniform"
+                                   RenderTransformOrigin="0.5,0.5"
+                                   IsHitTestVisible="False">
+                                <Image.OpacityMask>
+                                    <RadialGradientBrush>
+                                        <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                                        <GradientStop Color="#FFFFFFFF" Offset="0.6"/>
+                                        <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Image.OpacityMask>
+                                <Image.Effect>
+                                    <DropShadowEffect x:Name="PyramidGlow" Color="#00ff41" BlurRadius="15" ShadowDepth="0" Opacity="0.4"/>
+                                </Image.Effect>
+                                <Image.RenderTransform>
+                                    <ScaleTransform x:Name="PyramidScale" ScaleX="1" ScaleY="1"/>
+                                </Image.RenderTransform>
+                            </Image>
+                            <!-- The Eye (this part grows with combo) - smaller, positioned in upper portion -->
+                            <Image x:Name="EyeImage"
+                                   Source="{DynamicResource Icon_eye_only}"
+                                   Width="50" Height="50"
+                                   Margin="0,-30,0,0"
+                                   Stretch="Uniform"
+                                   RenderTransformOrigin="0.5,0.5"
+                                   IsHitTestVisible="False">
+                                <Image.Effect>
+                                    <DropShadowEffect x:Name="EyeGlow" Color="#00ff41" BlurRadius="20" ShadowDepth="0" Opacity="0.6"/>
+                                </Image.Effect>
+                                <Image.RenderTransform>
+                                    <ScaleTransform x:Name="EyeScale" ScaleX="1" ScaleY="1"/>
+                                </Image.RenderTransform>
+                            </Image>
+                            <!-- Clickable button overlay -->
                             <Button x:Name="ClickButton" Width="180" Height="180"
                                     Click="ClickButton_Click" Cursor="Hand"
                                     Background="Transparent" BorderThickness="0">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Grid Background="Transparent">
-                                            <Image x:Name="EyeIcon"
-                                                   Source="{DynamicResource Icon_all_seeing_eye}"
-                                                   Width="160" Height="160"
-                                                   Stretch="Uniform"
-                                                   RenderTransformOrigin="0.5,0.5">
-                                                <Image.RenderTransform>
-                                                    <ScaleTransform x:Name="EyeIconScale" ScaleX="1" ScaleY="1"/>
-                                                </Image.RenderTransform>
-                                                <Image.Triggers>
-                                                    <EventTrigger RoutedEvent="Loaded">
-                                                        <BeginStoryboard>
-                                                            <Storyboard RepeatBehavior="Forever">
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetName="EyeIconScale"
-                                                                    Storyboard.TargetProperty="ScaleX"
-                                                                    From="1.0" To="1.08" Duration="0:0:1.5"
-                                                                    AutoReverse="True">
-                                                                    <DoubleAnimation.EasingFunction>
-                                                                        <SineEase EasingMode="EaseInOut"/>
-                                                                    </DoubleAnimation.EasingFunction>
-                                                                </DoubleAnimation>
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetName="EyeIconScale"
-                                                                    Storyboard.TargetProperty="ScaleY"
-                                                                    From="1.0" To="1.08" Duration="0:0:1.5"
-                                                                    AutoReverse="True">
-                                                                    <DoubleAnimation.EasingFunction>
-                                                                        <SineEase EasingMode="EaseInOut"/>
-                                                                    </DoubleAnimation.EasingFunction>
-                                                                </DoubleAnimation>
-                                                            </Storyboard>
-                                                        </BeginStoryboard>
-                                                    </EventTrigger>
-                                                </Image.Triggers>
-                                            </Image>
-                                        </Grid>
+                                        <Border Background="Transparent"/>
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
                         </Grid>
-
-                        <!-- Click Power Label (hidden - kept for code compatibility) -->
-                        <TextBlock x:Name="ClickPowerLabel"
-                                   Visibility="Collapsed"
-                                   Text="+1/click"/>
 
                         <!-- Canvas for animations (on top) -->
                         <Canvas x:Name="ClickCanvas" ClipToBounds="False" IsHitTestVisible="False"/>
@@ -410,27 +482,42 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TabControl x:Name="MainTabControl" Grid.Row="0" Background="Transparent" BorderThickness="0">
+                <TabControl x:Name="MainTabControl" Grid.Row="0" Background="Transparent" BorderThickness="0"
+                            Padding="0">
                     <TabControl.Resources>
                         <Style TargetType="TabItem">
-                            <Setter Property="Background" Value="#0f3460"/>
-                            <Setter Property="Foreground" Value="#888888"/>
-                            <Setter Property="Padding" Value="18,9"/>
-                            <Setter Property="FontSize" Value="21"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="#666666"/>
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="TabItem">
-                                        <Border x:Name="Border" Background="#0f3460" CornerRadius="4,4,0,0" Margin="1,0">
-                                            <ContentPresenter x:Name="Content" ContentSource="Header"
-                                                              Margin="18,9" HorizontalAlignment="Center"/>
-                                        </Border>
+                                        <Grid Margin="0,0,4,0">
+                                            <Border x:Name="Border" Background="#0a2040"
+                                                    CornerRadius="4,4,0,0" Padding="12,8"
+                                                    BorderThickness="0">
+                                                <ContentPresenter x:Name="Content" ContentSource="Header"
+                                                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <!-- Separate border overlay for clean rendering -->
+                                            <Border x:Name="BorderOverlay"
+                                                    BorderBrush="#1a3a5c" BorderThickness="1"
+                                                    CornerRadius="4,4,0,0" IsHitTestVisible="False"/>
+                                        </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsSelected" Value="True">
                                                 <Setter TargetName="Border" Property="Background" Value="#16213e"/>
+                                                <Setter TargetName="Border" Property="Padding" Value="12,10,12,9"/>
+                                                <Setter TargetName="BorderOverlay" Property="BorderBrush" Value="#00ff41"/>
+                                                <Setter TargetName="BorderOverlay" Property="BorderThickness" Value="2"/>
                                                 <Setter Property="Foreground" Value="#00ff41"/>
+                                                <Setter Property="Panel.ZIndex" Value="10"/>
                                             </Trigger>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="Border" Property="Background" Value="#1a4a6e"/>
+                                                <Setter TargetName="Border" Property="Background" Value="#12304a"/>
+                                                <Setter Property="Foreground" Value="#aaaaaa"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -440,7 +527,7 @@
                     </TabControl.Resources>
 
                     <!-- Generators Tab -->
-                    <TabItem x:Name="GeneratorsTab" Header="Generators">
+                    <TabItem x:Name="GeneratorsTab" Header="Generators" ToolTip="Buy generators to produce evidence automatically">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -451,15 +538,19 @@
                                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,0">
                                     <TextBlock Text="Buy Mode: " Foreground="{StaticResource TextDim}" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="21"/>
                                     <Button x:Name="BuyMode1" Content="1x" Click="BuyMode_Click" Tag="1"
+                                            ToolTip="Buy 1 at a time"
                                             Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource AccentGreen}"
                                             BorderBrush="{StaticResource AccentGreen}" BorderThickness="1"/>
                                     <Button x:Name="BuyMode10" Content="10x" Click="BuyMode_Click" Tag="10"
+                                            ToolTip="Buy 10 at a time"
                                             Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource TextDim}"
                                             BorderBrush="{StaticResource TextDim}" BorderThickness="1"/>
                                     <Button x:Name="BuyMode100" Content="100x" Click="BuyMode_Click" Tag="100"
+                                            ToolTip="Buy 100 at a time"
                                             Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource TextDim}"
                                             BorderBrush="{StaticResource TextDim}" BorderThickness="1"/>
                                     <Button x:Name="BuyModeMax" Content="MAX" Click="BuyMode_Click" Tag="max"
+                                            ToolTip="Buy as many as you can afford"
                                             Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource TextDim}"
                                             BorderBrush="{StaticResource TextDim}" BorderThickness="1"/>
                                 </StackPanel>
@@ -472,7 +563,7 @@
                     </TabItem>
 
                     <!-- Upgrades Tab -->
-                    <TabItem x:Name="UpgradesTab" Header="Upgrades">
+                    <TabItem x:Name="UpgradesTab" Header="Upgrades" ToolTip="Purchase upgrades to boost your click power and production">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel>
@@ -491,7 +582,7 @@
                     </TabItem>
 
                     <!-- Tinfoil Shop Tab -->
-                    <TabItem x:Name="TinfoilShopTab" Header="Tinfoil Shop">
+                    <TabItem x:Name="TinfoilShopTab" Header="Tinfoil Shop" ToolTip="Spend Tinfoil on powerful permanent upgrades">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel>
@@ -510,7 +601,7 @@
                     </TabItem>
 
                     <!-- Conspiracies Tab -->
-                    <TabItem x:Name="ConspiraciesTab" Header="Conspiracies">
+                    <TabItem x:Name="ConspiraciesTab" Header="Conspiracies" ToolTip="Prove conspiracies to unlock bonuses and level up the pyramid">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel x:Name="ConspiracyPanel"/>
@@ -519,7 +610,7 @@
                     </TabItem>
 
                     <!-- Quests Tab -->
-                    <TabItem x:Name="QuestsTab" Header="Quests">
+                    <TabItem x:Name="QuestsTab" Header="Quests" ToolTip="Send believers on quests for evidence and Tinfoil rewards">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel>
@@ -538,7 +629,7 @@
                     </TabItem>
 
                     <!-- Achievements Tab -->
-                    <TabItem x:Name="AchievementsTab" Header="Achievements">
+                    <TabItem x:Name="AchievementsTab" Header="Achievements" ToolTip="View your accomplishments and earn Tinfoil bonuses">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel x:Name="AchievementPanel"/>
@@ -547,7 +638,7 @@
                     </TabItem>
 
                     <!-- Skills Tab -->
-                    <TabItem x:Name="SkillsTab" Header="Skills">
+                    <TabItem x:Name="SkillsTab" Header="Skills" ToolTip="Unlock permanent skills with Skill Points">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel>
@@ -633,73 +724,22 @@
                     </TabItem>
 
                     <!-- Daily Challenges Tab -->
-                    <TabItem x:Name="DailyTab" Header="Daily">
+                    <TabItem x:Name="DailyTab" Header="Daily" ToolTip="Complete daily challenges for extra Tinfoil">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel>
-                                    <TextBlock Text="DAILY CHALLENGES" FontSize="14" FontWeight="Bold"
-                                               Foreground="{StaticResource AccentGreen}" Margin="0,0,0,5"/>
-                                    <TextBlock Text="Complete challenges to earn Tinfoil!" FontSize="11"
-                                               Foreground="{StaticResource TextDim}" Margin="0,0,0,15"/>
+                                    <TextBlock Text="DAILY CHALLENGES" FontSize="21" FontWeight="Bold"
+                                               Foreground="{StaticResource AccentGreen}" Margin="0,0,0,8"/>
+                                    <TextBlock Text="Complete challenges to earn Tinfoil!" FontSize="17"
+                                               Foreground="{StaticResource TextDim}" Margin="0,0,0,20"/>
                                     <StackPanel x:Name="DailyChallengesPanel"/>
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>
                     </TabItem>
 
-                    <!-- Challenge Modes Tab -->
-                    <TabItem x:Name="ChallengeModesTab" Header="Challenges">
-                        <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
-                                <StackPanel>
-                                    <!-- Active Challenge Display -->
-                                    <Border x:Name="ActiveChallengePanel" Background="#2a1a0a" BorderBrush="#ffd700"
-                                            BorderThickness="2" CornerRadius="8" Padding="15" Margin="0,0,0,15"
-                                            Visibility="Collapsed">
-                                        <StackPanel>
-                                            <TextBlock x:Name="ActiveChallengeTitle" FontSize="24" FontWeight="Bold"
-                                                       Foreground="#ffd700" HorizontalAlignment="Center"/>
-                                            <TextBlock x:Name="ActiveChallengeRules" TextWrapping="Wrap"
-                                                       FontSize="17" Foreground="{StaticResource TextDim}"
-                                                       HorizontalAlignment="Center" Margin="0,5,0,10"/>
-                                            <Border Background="#1a1a2e" CornerRadius="4" Height="18" Margin="0,5">
-                                                <Border x:Name="ChallengeProgressFill" Background="#ffd700"
-                                                        CornerRadius="4" HorizontalAlignment="Left" Width="0"/>
-                                            </Border>
-                                            <TextBlock x:Name="ChallengeProgressText" FontSize="18"
-                                                       Foreground="#ffd700" HorizontalAlignment="Center"/>
-                                            <TextBlock x:Name="ChallengeTimeText" FontSize="17"
-                                                       Foreground="{StaticResource TextDim}" HorizontalAlignment="Center"/>
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-                                                <Button x:Name="ClaimChallengeBtn" Click="ClaimChallengeBtn_Click"
-                                                        Content="CLAIM REWARD" FontWeight="Bold" FontSize="18"
-                                                        Background="#ffd700" Foreground="Black" Padding="20,10"
-                                                        Margin="5,0" Visibility="Collapsed" Cursor="Hand"/>
-                                                <Button x:Name="AbandonChallengeBtn" Click="AbandonChallengeBtn_Click"
-                                                        Content="ABANDON" FontWeight="Bold" FontSize="18"
-                                                        Background="#cc0000" Foreground="White" Padding="20,10"
-                                                        Margin="5,0" Cursor="Hand"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-
-                                    <TextBlock x:Name="NoChallengeText" Text="NO ACTIVE CHALLENGE" FontSize="24" FontWeight="Bold"
-                                               Foreground="{StaticResource TextDim}" Margin="0,0,0,5" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Start a challenge from the main menu when creating a new save slot!"
-                                               FontSize="18" Foreground="{StaticResource TextDim}" TextWrapping="Wrap"
-                                               Margin="0,0,0,15" HorizontalAlignment="Center" TextAlignment="Center"/>
-                                    <StackPanel x:Name="ChallengeModesPanel" Visibility="Collapsed"/>
-
-                                    <TextBlock x:Name="CompletedChallengesHeader" Text="COMPLETED CHALLENGES" FontSize="24" FontWeight="Bold"
-                                               Foreground="{StaticResource AccentGreen}" Margin="0,15,0,10" Visibility="Collapsed"/>
-                                    <StackPanel x:Name="CompletedChallengesPanel"/>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Border>
-                    </TabItem>
-
                     <!-- Prestige Tab -->
-                    <TabItem x:Name="IlluminatiTab" Header="Illuminati">
+                    <TabItem x:Name="IlluminatiTab" Header="Illuminati" ToolTip="Ascend to earn Illuminati Tokens and unlock powerful upgrades">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel>
@@ -714,6 +754,7 @@
                                                        HorizontalAlignment="Center" Margin="0,5,0,10"/>
                                             <Button x:Name="PrestigeButton" Click="PrestigeButton_Click"
                                                     Content="ASCEND" FontWeight="Bold" FontSize="14"
+                                                    ToolTip="Reset progress to earn Illuminati Tokens"
                                                     Background="#9933ff" Foreground="White" Padding="20,8"
                                                     HorizontalAlignment="Center" Cursor="Hand" IsEnabled="False"/>
                                         </StackPanel>
@@ -731,39 +772,22 @@
                                                Foreground="{StaticResource AccentGold}" Margin="0,0,0,10"/>
                                     <StackPanel x:Name="PurchasedIlluminatiPanel"/>
 
-                                    <!-- Matrix Prestige Section -->
-                                    <Border x:Name="MatrixSection" Background="#1a0a2e" BorderBrush="#00ff41"
-                                            BorderThickness="2" CornerRadius="8" Margin="0,20,0,0" Padding="15"
-                                            Visibility="Collapsed">
-                                        <StackPanel>
-                                            <TextBlock Text="⟁ THE MATRIX ⟁" FontSize="18" FontWeight="Bold"
-                                                       Foreground="#00ff41" HorizontalAlignment="Center"/>
-                                            <TextBlock x:Name="MatrixInfoText" TextWrapping="Wrap"
-                                                       FontSize="11" Foreground="{StaticResource TextDim}"
-                                                       HorizontalAlignment="Center" Margin="0,5,0,10"/>
-                                            <TextBlock x:Name="GlitchTokensText" FontSize="12" FontWeight="Bold"
-                                                       Foreground="#00ff41" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                                            <Button x:Name="MatrixBreakButton" Click="MatrixBreakButton_Click"
-                                                    Content="BREAK THE MATRIX" FontWeight="Bold" FontSize="14"
-                                                    Background="#00ff41" Foreground="Black" Padding="20,8"
-                                                    HorizontalAlignment="Center" Cursor="Hand" IsEnabled="False"/>
-                                        </StackPanel>
-                                    </Border>
-
-                                    <TextBlock x:Name="MatrixUpgradesHeader" Text="MATRIX UPGRADES" FontSize="14" FontWeight="Bold"
-                                               Foreground="#00ff41" Margin="0,15,0,10" Visibility="Collapsed"/>
-                                    <StackPanel x:Name="MatrixUpgradesPanel"/>
-
-                                    <TextBlock x:Name="PurchasedMatrixHeader" Text="UNLOCKED POWERS" FontSize="14" FontWeight="Bold"
-                                               Foreground="{StaticResource AccentGold}" Margin="0,15,0,10" Visibility="Collapsed"/>
-                                    <StackPanel x:Name="PurchasedMatrixPanel"/>
+                                    <!-- Hidden Matrix stubs (disabled feature) -->
+                                    <Border x:Name="MatrixSection" Visibility="Collapsed"/>
+                                    <TextBlock x:Name="MatrixInfoText" Visibility="Collapsed"/>
+                                    <TextBlock x:Name="GlitchTokensText" Visibility="Collapsed"/>
+                                    <Button x:Name="MatrixBreakButton" Visibility="Collapsed"/>
+                                    <TextBlock x:Name="MatrixUpgradesHeader" Visibility="Collapsed"/>
+                                    <StackPanel x:Name="MatrixUpgradesPanel" Visibility="Collapsed"/>
+                                    <TextBlock x:Name="PurchasedMatrixHeader" Visibility="Collapsed"/>
+                                    <StackPanel x:Name="PurchasedMatrixPanel" Visibility="Collapsed"/>
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>
                     </TabItem>
 
                     <!-- Statistics Tab -->
-                    <TabItem x:Name="StatisticsTab" Header="Stats">
+                    <TabItem x:Name="StatisticsTab" Header="Stats" ToolTip="View your game statistics and progress">
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel>
@@ -823,12 +847,14 @@
                                         </StackPanel>
                                     </Grid>
                                     <!-- Quest Success Bar -->
-                                    <Border Background="#331111" CornerRadius="6" Height="24" Margin="0,5,0,20">
+                                    <Border x:Name="QuestBarContainer" Background="#331111" CornerRadius="6" Height="24" Margin="0,5,0,20" ClipToBounds="True">
                                         <Grid>
-                                            <Border x:Name="QuestSuccessBar" Background="{StaticResource AccentGreen}"
-                                                    CornerRadius="6" HorizontalAlignment="Left" Width="0"/>
-                                            <Border x:Name="QuestFailBar" Background="#cc3333"
-                                                    CornerRadius="0,6,6,0" HorizontalAlignment="Right" Width="0"/>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition x:Name="QuestSuccessColumn" Width="0*"/>
+                                                <ColumnDefinition x:Name="QuestFailColumn" Width="0*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{StaticResource AccentGreen}" CornerRadius="6,0,0,6"/>
+                                            <Border Grid.Column="1" Background="#cc3333" CornerRadius="0,6,6,0"/>
                                         </Grid>
                                     </Border>
 
@@ -858,9 +884,14 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Border Background="#222233" CornerRadius="6" Height="30">
-                                            <Border x:Name="AchievementProgressBar" Background="{StaticResource AccentGold}"
-                                                    CornerRadius="6" HorizontalAlignment="Left" Width="0"/>
+                                        <Border x:Name="AchievementProgressContainer" Background="#222233" CornerRadius="6" Height="30" ClipToBounds="True">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition x:Name="AchievementFilledColumn" Width="0*"/>
+                                                    <ColumnDefinition x:Name="AchievementEmptyColumn" Width="1*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="{StaticResource AccentGold}" CornerRadius="6,0,0,6"/>
+                                            </Grid>
                                         </Border>
                                         <TextBlock x:Name="StatAchievementProgress" Grid.Column="1" Text="0/0"
                                                    FontSize="21" FontWeight="Bold" Foreground="{StaticResource AccentGold}"
@@ -876,7 +907,6 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0">
                                             <TextBlock Text="Illuminati Tokens" FontSize="15" Foreground="{StaticResource TextDim}"/>
@@ -886,10 +916,8 @@
                                             <TextBlock Text="Total Earned" FontSize="15" Foreground="{StaticResource TextDim}"/>
                                             <TextBlock x:Name="StatTotalTokensEarned" Text="0" FontSize="24" FontWeight="Bold" Foreground="#9933ff"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Column="2">
-                                            <TextBlock Text="Matrix Breaks" FontSize="15" Foreground="{StaticResource TextDim}"/>
-                                            <TextBlock x:Name="StatMatrixBreaks" Text="0" FontSize="24" FontWeight="Bold" Foreground="#00ffff"/>
-                                        </StackPanel>
+                                        <!-- Hidden Matrix stat stub -->
+                                        <TextBlock x:Name="StatMatrixBreaks" Visibility="Collapsed"/>
                                     </Grid>
                                 </StackPanel>
                             </ScrollViewer>
@@ -1041,10 +1069,12 @@
                                        HorizontalAlignment="Center"/>
                             <Button x:Name="MinigameStartButton" Content="START GAME"
                                     Click="MinigameStart_Click" Margin="0,10,0,0"
+                                    ToolTip="Begin the minigame"
                                     Padding="20,8" Background="{StaticResource AccentGreen}"
                                     Foreground="#1a1a2e" FontWeight="Bold" Cursor="Hand"/>
                             <Button x:Name="MinigameCloseButton" Content="Close"
                                     Click="MinigameClose_Click" Margin="0,5,0,0"
+                                    ToolTip="Close this window"
                                     Padding="15,5" Background="Transparent"
                                     Foreground="{StaticResource TextDim}" Cursor="Hand"
                                     BorderThickness="0"/>
@@ -1118,9 +1148,11 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" Content="ASCEND" Click="AscendConfirm_Click"
+                                    ToolTip="Confirm prestige and earn tokens"
                                     Padding="20,12" Background="#9933ff" Foreground="White"
                                     FontWeight="Bold" FontSize="14" Cursor="Hand"/>
                             <Button Grid.Column="2" Content="Cancel" Click="AscendCancel_Click"
+                                    ToolTip="Return to game without ascending"
                                     Padding="20,12" Background="#333344" Foreground="{StaticResource TextDim}"
                                     FontWeight="Bold" FontSize="14" Cursor="Hand"/>
                         </Grid>
@@ -1131,8 +1163,32 @@
 
         <!-- Main Menu Overlay (shown on startup) -->
         <Border x:Name="MainMenuOverlay" Visibility="Visible" Panel.ZIndex="700"
-                Background="#FF1a1a2e">
+                Background="#FF0a0a15">
             <Grid>
+                <!-- Animated background canvas -->
+                <Canvas x:Name="MenuBackgroundCanvas" ClipToBounds="True" IsHitTestVisible="False"/>
+
+                <!-- Animated large pyramid in background -->
+                <Image x:Name="MenuPyramidBg" Source="{DynamicResource Icon_pyramid_level_5}"
+                       Width="500" Height="500" Opacity="0.08" Stretch="Uniform"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       RenderTransformOrigin="0.5,0.5" IsHitTestVisible="False">
+                    <Image.RenderTransform>
+                        <RotateTransform x:Name="MenuPyramidRotation" Angle="0"/>
+                    </Image.RenderTransform>
+                </Image>
+
+                <!-- Radial glow behind menu -->
+                <Ellipse Width="800" Height="800" Opacity="0.15" IsHitTestVisible="False"
+                         HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#00ff41" Offset="0"/>
+                            <GradientStop Color="Transparent" Offset="0.7"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+
                 <Border Background="#16213e" BorderBrush="#00ff41"
                         BorderThickness="3" CornerRadius="15" Padding="40"
                         HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -1177,6 +1233,7 @@
                                 </StackPanel>
                                 <Button x:Name="Slot1DeleteBtn" Grid.Column="2"
                                         Click="DeleteSlot_Click" Tag="1"
+                                        ToolTip="Delete this save"
                                         Visibility="Collapsed" Width="45" Height="45"
                                         Background="#442222" BorderBrush="#883333">
                                     <Image Source="{DynamicResource Icon_trash}" Width="24" Height="24"/>
@@ -1205,6 +1262,7 @@
                                 </StackPanel>
                                 <Button x:Name="Slot2DeleteBtn" Grid.Column="2"
                                         Click="DeleteSlot_Click" Tag="2"
+                                        ToolTip="Delete this save"
                                         Visibility="Collapsed" Width="45" Height="45"
                                         Background="#442222" BorderBrush="#883333">
                                     <Image Source="{DynamicResource Icon_trash}" Width="24" Height="24"/>
@@ -1233,6 +1291,7 @@
                                 </StackPanel>
                                 <Button x:Name="Slot3DeleteBtn" Grid.Column="2"
                                         Click="DeleteSlot_Click" Tag="3"
+                                        ToolTip="Delete this save"
                                         Visibility="Collapsed" Width="45" Height="45"
                                         Background="#442222" BorderBrush="#883333">
                                     <Image Source="{DynamicResource Icon_trash}" Width="24" Height="24"/>
@@ -1253,10 +1312,15 @@
                                     <TextBlock Text="CHALLENGE MODE" FontSize="18" FontWeight="Bold"
                                                Foreground="{StaticResource TextLight}" HorizontalAlignment="Center" Margin="0,0,0,8"/>
                                     <ComboBox x:Name="ChallengeModeCombo" SelectionChanged="ChallengeModeCombo_SelectionChanged"
-                                              Background="#0f1a2e" Foreground="{StaticResource TextLight}"
-                                              BorderBrush="#333366" Padding="12,8" FontSize="20"
+                                              Style="{StaticResource DarkComboBox}"
+                                              ItemContainerStyle="{StaticResource DarkComboBoxItem}"
                                               HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="🎮 Normal Mode" Tag="" IsSelected="True"/>
+                                        <ComboBoxItem Tag="" IsSelected="True">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🎮" FontFamily="Segoe UI Emoji" FontSize="20" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Normal Mode" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </ComboBoxItem>
                                     </ComboBox>
                                     <TextBlock x:Name="ChallengeDescriptionText" Text="" FontSize="17"
                                                Foreground="{StaticResource TextDim}" TextWrapping="Wrap"
@@ -1271,10 +1335,12 @@
                                     </Grid.ColumnDefinitions>
                                     <Button x:Name="ContinueBtn" Grid.Column="0" Content="CONTINUE"
                                             Click="MenuContinue_Click"
+                                            ToolTip="Continue your saved game"
                                             Padding="20,12" Background="#00aa33" Foreground="White"
                                             FontWeight="Bold" FontSize="21" Cursor="Hand"/>
                                     <Button x:Name="NewGameBtn" Grid.Column="2" Content="NEW GAME"
                                             Click="MenuNewGame_Click"
+                                            ToolTip="Start a fresh game in this slot"
                                             Padding="20,12" Background="#336699" Foreground="White"
                                             FontWeight="Bold" FontSize="21" Cursor="Hand"/>
                                 </Grid>
@@ -1284,16 +1350,18 @@
                         <!-- Quick Continue (if save exists) -->
                         <Button x:Name="QuickContinueBtn" Content="▶ QUICK CONTINUE"
                                 Click="MenuQuickContinue_Click" Visibility="Collapsed"
+                                ToolTip="Jump back into your most recent save"
                                 Padding="25,15" Background="#00aa33" Foreground="White"
                                 FontWeight="Bold" FontSize="21" Cursor="Hand" Margin="0,0,0,10"/>
 
                         <!-- Quit Button -->
                         <Button Content="QUIT" Click="MenuQuit_Click"
+                                ToolTip="Exit the game"
                                 Padding="25,15" Background="#442222" Foreground="#ff9999"
                                 FontWeight="Bold" FontSize="18" Cursor="Hand"/>
 
                         <!-- Version -->
-                        <TextBlock Text="v1.0 - Click responsibly" FontSize="15"
+                        <TextBlock x:Name="VersionText" Text="v1.0.0 - Click responsibly" FontSize="15"
                                    Foreground="{StaticResource TextDim}"
                                    HorizontalAlignment="Center" Margin="0,20,0,0"/>
                     </StackPanel>
@@ -1307,7 +1375,8 @@
                 Margin="0,20,0,0" Padding="25,12"
                 Background="#0f3460" BorderBrush="{StaticResource AccentGold}"
                 BorderThickness="2" CornerRadius="8"
-                Visibility="Collapsed" Panel.ZIndex="1000">
+                Visibility="Collapsed" Panel.ZIndex="1000"
+                IsHitTestVisible="False">
             <StackPanel Orientation="Horizontal">
                 <TextBlock x:Name="ToastIcon" Text="!" FontSize="27" FontWeight="Bold"
                            Foreground="{StaticResource AccentGold}" Margin="0,0,10,0"/>

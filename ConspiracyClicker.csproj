@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -7,10 +7,75 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>app.ico</ApplicationIcon>
+
+    <!-- App Metadata -->
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>Conspiracy Clicker</Product>
+    <Description>An incremental clicker game where you uncover conspiracies and gather evidence. Click, upgrade, and prove that the truth is out there!</Description>
+    <Company>Indie Game Dev</Company>
+    <Copyright>Copyright © 2024</Copyright>
+    <Authors>Indie Game Dev</Authors>
+
+    <!-- Build Settings -->
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <!-- Debug Configuration -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Release Configuration -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <Optimize>true</Optimize>
+    <DebugSymbols>false</DebugSymbols>
+    <DefineConstants>TRACE</DefineConstants>
+
+    <!-- Single file publishing for easier distribution -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+
+    <!-- Trim unused code for smaller executable -->
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
     <Resource Include="app.ico" />
+    <Resource Include="Resources\GeneratorSpriteSheet.png" />
+    <Resource Include="Resources\ConspiracySpriteSheet.png" />
+    <Resource Include="Resources\UpgradeSpriteSheet.png" />
+    <Resource Include="Resources\QuestSpriteSheet.png" />
+    <Resource Include="Resources\TinfoilShopSpriteSheet.png" />
+    <Resource Include="Resources\EventSpriteSheet.png" />
+    <Resource Include="Resources\MatrixSpriteSheet.png" />
+    <Resource Include="Resources\AchievementSpriteSheet.png" />
+    <Resource Include="Resources\ChallengeSpriteSheet.png" />
+    <Resource Include="Resources\DailyChallengeSpriteSheet.png" />
+    <Resource Include="Resources\UpgradeSpriteSheet2.png" />
+    <Resource Include="Resources\TinfoilShopSpriteSheet2.png" />
+    <Resource Include="Resources\IlluminatiSpriteSheet.png" />
+    <Resource Include="Resources\PyramidSpriteSheet.png" />
+    <Resource Include="Resources\EyeSpriteSheet.png" />
+    <Resource Include="Resources\IconSpriteSheet.png" />
+    <Resource Include="Resources\ConspiracySpriteSheet2.png" />
+    <Resource Include="Resources\TinfoilShopSpriteSheet3.png" />
+    <Resource Include="Resources\GeneratorSpriteSheet2.png" />
+    <Resource Include="Resources\AchievementSpriteSheet2.png" />
+    <Resource Include="Resources\GeneratorSpriteSheet3.png" />
+  </ItemGroup>
+
+  <!-- Exclude Simulator project files from main compilation -->
+  <ItemGroup>
+    <Compile Remove="Simulator\**" />
+    <None Remove="Simulator\**" />
   </ItemGroup>
 
 </Project>

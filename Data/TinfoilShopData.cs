@@ -9,7 +9,8 @@ public enum TinfoilUpgradeType
     QuestSuccess,
     BelieverBonus,
     AutoClicker,
-    CriticalChance
+    CriticalChance,
+    AutoQuest
 }
 
 public class TinfoilUpgrade
@@ -184,22 +185,35 @@ public static class TinfoilShopData
         {
             Id = "clicking_robot",
             Name = "Clicking Robot",
-            Description = "Auto-clicks 3x per second",
+            Description = "Auto-clicks 2x per second",
             FlavorText = "Beep boop. Click click.",
             TinfoilCost = 200,
             Type = TinfoilUpgradeType.AutoClicker,
-            Value = 3,
+            Value = 2,
             Icon = IconHelper.TinfoilShop.ClickingRobot
         },
         new TinfoilUpgrade
         {
             Id = "quantum_clicker",
             Name = "Quantum Clicker",
-            Description = "Auto-clicks 10x per second",
+            Description = "Auto-clicks 5x per second",
             FlavorText = "Clicks in multiple dimensions simultaneously.",
             TinfoilCost = 1000,
             Type = TinfoilUpgradeType.AutoClicker,
-            Value = 10,
+            Value = 5,
+            Icon = IconHelper.TinfoilShop.QuantumClicker
+        },
+
+        // Auto Quest (unlocks when you have 8+ auto CPS)
+        new TinfoilUpgrade
+        {
+            Id = "quest_autopilot",
+            Name = "Quest Autopilot",
+            Description = "Automatically starts available quests",
+            FlavorText = "Why click when the machine can conspire for you?",
+            TinfoilCost = 100,
+            Type = TinfoilUpgradeType.AutoQuest,
+            Value = 1,
             Icon = IconHelper.TinfoilShop.QuantumClicker
         },
 
@@ -331,22 +345,22 @@ public static class TinfoilShopData
         {
             Id = "neural_auto_clicker",
             Name = "Neural Interface Clicker",
-            Description = "Auto-clicks 25x per second",
+            Description = "Auto-clicks 10x per second",
             FlavorText = "Think clicks. Get clicks.",
             TinfoilCost = 5000,
             Type = TinfoilUpgradeType.AutoClicker,
-            Value = 25,
+            Value = 10,
             Icon = IconHelper.TinfoilShop.NeuralClicker
         },
         new TinfoilUpgrade
         {
             Id = "reality_clicker",
             Name = "Reality Bending Clicker",
-            Description = "Auto-clicks 50x per second",
+            Description = "Auto-clicks 15x per second",
             FlavorText = "Clicks from every possible timeline.",
             TinfoilCost = 25000,
             Type = TinfoilUpgradeType.AutoClicker,
-            Value = 50,
+            Value = 15,
             Icon = IconHelper.TinfoilShop.QuantumClicker
         },
         new TinfoilUpgrade
@@ -410,12 +424,183 @@ public static class TinfoilShopData
         {
             Id = "reality_clicker_supreme",
             Name = "Infinite Click Engine",
-            Description = "Auto-clicks 100x per second",
+            Description = "Auto-clicks 17x per second",
             FlavorText = "Clicking transcends time and space.",
             TinfoilCost = 150000,
             Type = TinfoilUpgradeType.AutoClicker,
-            Value = 100,
+            Value = 17,
             Icon = IconHelper.TinfoilShop.QuantumClicker
+        },
+
+        // === TRANSCENDENT TIER ===
+        new TinfoilUpgrade
+        {
+            Id = "cosmic_click_aura",
+            Name = "Cosmic Click Aura",
+            Description = "x25 click power permanently",
+            FlavorText = "Your finger contains multitudes.",
+            TinfoilCost = 250000,
+            Type = TinfoilUpgradeType.ClickPower,
+            Value = 25.0,
+            Icon = "cosmic_click_aura"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "multiverse_clicker",
+            Name = "Multiverse Clicker Array",
+            Description = "Auto-clicks 50x per second",
+            FlavorText = "Every version of you is clicking.",
+            TinfoilCost = 500000,
+            Type = TinfoilUpgradeType.AutoClicker,
+            Value = 50,
+            Icon = "multiverse_clicker"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "reality_architect",
+            Name = "Reality Architect Status",
+            Description = "x10 evidence per second",
+            FlavorText = "You don't find truth. You build it.",
+            TinfoilCost = 400000,
+            Type = TinfoilUpgradeType.EpsMultiplier,
+            Value = 10.0,
+            Icon = "reality_architect"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "probability_engine",
+            Name = "Probability Engine",
+            Description = "+75% quest success rate (cap 100%)",
+            FlavorText = "Failure is no longer an option.",
+            TinfoilCost = 350000,
+            Type = TinfoilUpgradeType.QuestSuccess,
+            Value = 0.75,
+            Icon = "probability_engine"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "consciousness_amplifier",
+            Name = "Consciousness Amplifier",
+            Description = "x10 believers from all sources",
+            FlavorText = "Wake up. Literally everyone.",
+            TinfoilCost = 300000,
+            Type = TinfoilUpgradeType.BelieverBonus,
+            Value = 10.0,
+            Icon = "consciousness_amplifier"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "omniscient_critical",
+            Name = "Omniscient Critical System",
+            Description = "+35% critical chance (85%+ total)",
+            FlavorText = "You see ALL the weaknesses.",
+            TinfoilCost = 200000,
+            Type = TinfoilUpgradeType.CriticalChance,
+            Value = 0.35,
+            Icon = "omniscient_critical"
+        },
+
+        // === OMEGA TIER ===
+        new TinfoilUpgrade
+        {
+            Id = "click_singularity",
+            Name = "Click Singularity",
+            Description = "x100 click power permanently",
+            FlavorText = "One click to rule them all.",
+            TinfoilCost = 1000000,
+            Type = TinfoilUpgradeType.ClickPower,
+            Value = 100.0,
+            Icon = "click_singularity"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "infinite_clicker_array",
+            Name = "Infinite Clicker Array",
+            Description = "Auto-clicks 100x per second",
+            FlavorText = "Infinite clicks. Finite patience.",
+            TinfoilCost = 2000000,
+            Type = TinfoilUpgradeType.AutoClicker,
+            Value = 100,
+            Icon = "infinite_clicker_array"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "truth_fabricator",
+            Name = "Truth Fabricator",
+            Description = "x25 evidence per second",
+            FlavorText = "Why discover truth when you can manufacture it?",
+            TinfoilCost = 1500000,
+            Type = TinfoilUpgradeType.EpsMultiplier,
+            Value = 25.0,
+            Icon = "truth_fabricator"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "destiny_manipulator",
+            Name = "Destiny Manipulator",
+            Description = "Quests complete instantly, always succeed",
+            FlavorText = "The future does what you tell it.",
+            TinfoilCost = 2500000,
+            Type = TinfoilUpgradeType.QuestSuccess,
+            Value = 1.0,
+            Icon = "destiny_manipulator"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "hivemind_omega",
+            Name = "Omega Hivemind",
+            Description = "x50 believers from all sources",
+            FlavorText = "Every consciousness joins. Resistance is illogical.",
+            TinfoilCost = 1800000,
+            Type = TinfoilUpgradeType.BelieverBonus,
+            Value = 50.0,
+            Icon = "hivemind_omega"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "perfect_critical",
+            Name = "Perfect Critical Mastery",
+            Description = "100% critical chance, crits deal 20x damage",
+            FlavorText = "Every. Single. Click. Is. Critical.",
+            TinfoilCost = 3000000,
+            Type = TinfoilUpgradeType.CriticalChance,
+            Value = 1.0,
+            Icon = "perfect_critical"
+        },
+
+        // === FINAL TIER ===
+        new TinfoilUpgrade
+        {
+            Id = "omega_evidence_engine",
+            Name = "Omega Evidence Engine",
+            Description = "x100 evidence per second permanently",
+            FlavorText = "The truth machine runs at full power.",
+            TinfoilCost = 10000000,
+            Type = TinfoilUpgradeType.EpsMultiplier,
+            Value = 100.0,
+            Icon = "omega_evidence_engine"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "cosmic_click_engine",
+            Name = "Cosmic Click Engine",
+            Description = "x500 click power, +200 auto-clicks/sec",
+            FlavorText = "The universe clicks in harmony with you.",
+            TinfoilCost = 15000000,
+            Type = TinfoilUpgradeType.ClickPower,
+            Value = 500.0,
+            Icon = "cosmic_click_engine"
+        },
+        new TinfoilUpgrade
+        {
+            Id = "final_believer_ascension",
+            Name = "Final Believer Ascension",
+            Description = "x200 believers from all sources",
+            FlavorText = "All minds. One truth. Yours.",
+            TinfoilCost = 20000000,
+            Type = TinfoilUpgradeType.BelieverBonus,
+            Value = 200.0,
+            Icon = "final_believer_ascension"
         }
     };
 

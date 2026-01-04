@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using ConspiracyClicker.Core;
@@ -22,8 +23,10 @@ public partial class MainWindow : Window
     private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
 
     private readonly GameEngine _engine;
+    private readonly UserSettings _settings;
     private readonly Random _random = new();
     private readonly Dictionary<string, Button> _generatorButtons = new();
+    private readonly Dictionary<string, WrapPanel> _generatorUpgradePanels = new();
     private readonly Dictionary<string, Button> _upgradeButtons = new();
     private readonly Dictionary<string, Button> _conspiracyButtons = new();
     private readonly Dictionary<string, Button> _questButtons = new();
@@ -35,7 +38,10 @@ public partial class MainWindow : Window
     private int _lastUpgradeCount = -1;
     private int _lastPurchasedUpgradeCount = -1;
     private int _lastProvenConspiracyCount = -1;
+    private int _currentPyramidLevel = -1;
+    private string _currentRankId = "";
     private readonly Dictionary<string, (double cost, int owned, double prod)> _lastGenState = new();
+    private readonly Dictionary<string, string> _lastUpgradePanelState = new(); // generatorId -> state hash
     private int _lastTinfoilCount = -1;
     private int _lastQuestCount = -1;
     private int _lastAchievementCount = -1;
@@ -83,10 +89,6 @@ public partial class MainWindow : Window
     // Reusable lists to avoid allocations
     private readonly List<AmbientParticle> _ambientToRemove = new();
     private readonly List<LuckyDrop> _dropsToRemove = new();
-
-    // Pupil size constants for combo visual
-    private const double PUPIL_MIN_SIZE = 60;
-    private const double PUPIL_MAX_SIZE = 150; // Well under outer circle (180) - triggers before reaching edge
 
     // Buy mode: 1, 10, 100, or -1 for max
     private int _buyMode = 1;
@@ -145,6 +147,72 @@ public partial class MainWindow : Window
     private double _ambientSpawnTimer = 0;
     private static readonly string[] AmbientIconKeys = { "Icon_document", "Icon_triangle", "Icon_all_seeing_eye_small", "Icon_question", "Icon_pin", "Icon_link" };
 
+    // === STARFIELD ===
+    private class Star
+    {
+        public required Ellipse Element { get; init; }
+        public double TwinklePhase { get; set; }
+        public double TwinkleSpeed { get; set; }
+        public double BaseOpacity { get; set; }
+    }
+    private readonly List<Star> _stars = new();
+    private bool _starfieldInitialized = false;
+
+    // === MYSTICAL SPARKS ===
+    private class MysticalSpark
+    {
+        public required Ellipse Element { get; init; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Angle { get; set; }
+        public double Distance { get; set; }
+        public double Speed { get; set; }
+        public double Life { get; set; }
+        public double PulsePhase { get; set; }
+    }
+    private readonly List<MysticalSpark> _mysticalSparks = new();
+    private readonly List<MysticalSpark> _sparksToRemove = new();
+    private double _sparkSpawnTimer = 0;
+
+    // === ORBITING RUNES ===
+    private class OrbitingRune
+    {
+        public required TextBlock Element { get; init; }
+        public double Angle { get; set; }
+        public double Radius { get; set; }
+        public double Speed { get; set; }
+        public double PulsePhase { get; set; }
+    }
+    private readonly List<OrbitingRune> _orbitingRunes = new();
+    private bool _runesInitialized = false;
+    private static readonly string[] RuneSymbols = { "☉", "☽", "★", "✧", "⚶", "◈", "⬡", "△", "⊛", "⍟", "✦", "◇" };
+
+    // === MENU BACKGROUND EFFECTS ===
+    private class MenuStar
+    {
+        public required Ellipse Element { get; init; }
+        public double TwinklePhase { get; set; }
+        public double TwinkleSpeed { get; set; }
+        public double BaseOpacity { get; set; }
+    }
+    private class MenuParticle
+    {
+        public required UIElement Element { get; init; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double VelocityX { get; set; }
+        public double VelocityY { get; set; }
+        public double Life { get; set; }
+        public double MaxLife { get; set; }
+        public double PulsePhase { get; set; }
+    }
+    private readonly List<MenuStar> _menuStars = new();
+    private readonly List<MenuParticle> _menuParticles = new();
+    private readonly List<MenuParticle> _menuParticlesToRemove = new();
+    private bool _menuBackgroundInitialized = false;
+    private double _menuParticleSpawnTimer = 0;
+    private double _menuPyramidAngle = 0;
+
     // === NEWS TICKER ===
     private double _newsTickerX = 0;
     private int _currentNewsIndex = 0;
@@ -176,6 +244,8 @@ public partial class MainWindow : Window
         public double VelocityY { get; set; }
         public double Life { get; set; }
         public required string Type { get; init; }
+        public bool IsFading { get; set; } = false;
+        public double FadeTime { get; set; } = 1.0; // 1 second fade
     }
     private readonly List<LuckyDrop> _luckyDrops = new();
     private double _luckyDropTimer = 0;
@@ -279,11 +349,14 @@ public partial class MainWindow : Window
 
     // Main menu state
     private int _selectedSlot = 0;
-    private bool _gameStarted = false;
 
     public MainWindow()
     {
         InitializeComponent();
+
+        // Load user settings
+        _settings = UserSettings.Load();
+        ApplyWindowSettings();
 
         // Enable dark title bar
         var hwnd = new WindowInteropHelper(this).EnsureHandle();
@@ -303,14 +376,21 @@ public partial class MainWindow : Window
         _engine.OnPrestigeComplete += OnPrestigeComplete;
         _engine.OnDailyChallengeComplete += OnDailyChallengeComplete;
         _engine.OnOfflineProgress += OnOfflineProgress;
+        _engine.SaveManager.OnError += OnSaveError;
 
         // Hook into rendering for smooth 60fps animations
         CompositionTarget.Rendering += OnRendering;
 
         // Initialize sound system
         SoundManager.Initialize();
+        SoundManager.Enabled = _settings.SoundEnabled;
+        UpdateSoundIcon();
 
         InitializeGeneratorButtons();
+
+        // Set version from assembly
+        var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        VersionText.Text = $"v{version?.Major}.{version?.Minor}.{version?.Build} - Click responsibly";
 
         // Show main menu on startup
         RefreshMainMenu();
@@ -321,20 +401,26 @@ public partial class MainWindow : Window
 
         // Start eye animations
         StartEyeAnimations();
+
+        // Initialize pyramid and eye from sprite sheet
+        InitializePyramidAndEye();
+    }
+
+    private void InitializePyramidAndEye()
+    {
+        // Set initial pyramid icon (level 0)
+        var pyramid = PyramidSpriteSheetLoader.GetPyramidIcon(0);
+        if (pyramid != null) PyramidImage.Source = pyramid;
+
+        // Set initial eye icon (tier based on level 0)
+        var eye = PyramidSpriteSheetLoader.GetEyeIcon(pyramidLevel: 0);
+        if (eye != null) EyeImage.Source = eye;
     }
 
     private void StartEyeAnimations()
     {
-        var ring1Anim = (Storyboard)FindResource("EyeRing1Animation");
-        ring1Anim.Begin(this, true);
-        var ring2Anim = (Storyboard)FindResource("EyeRing2Animation");
-        ring2Anim.Begin(this, true);
-        var pulseAnim = (Storyboard)FindResource("EyePulseAnimation");
-        pulseAnim.Begin(this, true);
         var glowAnim = (Storyboard)FindResource("AmbientGlowAnimation");
         glowAnim.Begin(this, true);
-        var ringPulseAnim = (Storyboard)FindResource("RingPulseAnimation");
-        ringPulseAnim.Begin(this, true);
     }
 
     private void MainWindow_KeyDown(object sender, KeyEventArgs e)
@@ -410,6 +496,21 @@ public partial class MainWindow : Window
                 UpdateSoundIcon();
                 e.Handled = true;
                 break;
+
+            // F11 = Toggle fullscreen
+            case Key.F11:
+                ToggleFullscreen();
+                e.Handled = true;
+                break;
+
+            // Escape = Exit fullscreen (if in fullscreen)
+            case Key.Escape:
+                if (_isFullscreen)
+                {
+                    ToggleFullscreen();
+                    e.Handled = true;
+                }
+                break;
         }
     }
 
@@ -451,8 +552,17 @@ public partial class MainWindow : Window
         // Cap delta time to avoid huge jumps
         if (deltaTime > 0.1) deltaTime = 0.1;
 
+        // Update menu background if menu is visible
+        if (MainMenuOverlay.Visibility == Visibility.Visible)
+        {
+            UpdateMenuBackground(deltaTime);
+        }
+
         UpdateOrbits(deltaTime);
         UpdateAmbientParticles(deltaTime);
+        UpdateStarfield(deltaTime);
+        UpdateMysticalSparks(deltaTime);
+        UpdateOrbitingRunes(deltaTime);
         UpdateNewsTicker(deltaTime);
         UpdateLuckyDrops(deltaTime);
         UpdateDebunker(deltaTime);
@@ -461,8 +571,9 @@ public partial class MainWindow : Window
         UpdateSpecialEvents(deltaTime);
         UpdateMinigame(deltaTime);
 
-        // Random minigame spawn (every 2-4 minutes)
-        if (!_minigameActive && MinigameOverlay.Visibility != Visibility.Visible)
+        // Random minigame spawn (every 2-4 minutes) - only after first conspiracy, not in zen mode
+        if (!_zenMode && !_minigameActive && MinigameOverlay.Visibility != Visibility.Visible &&
+            _engine.State.ProvenConspiracies.Count >= 1)
         {
             _minigameSpawnTimer += deltaTime;
             if (_minigameSpawnTimer > 120 + _random.NextDouble() * 120) // 2-4 minutes
@@ -501,9 +612,10 @@ public partial class MainWindow : Window
 
         if (width <= 0 || height <= 0) return;
 
-        // Spawn new drops randomly
+        // Spawn new drops randomly (only after first conspiracy is proven, not in zen mode)
         _luckyDropTimer += deltaTime;
-        if (_luckyDropTimer > 8 + _random.NextDouble() * 12 && _luckyDrops.Count < 3)
+        if (!_zenMode && _engine.State.ProvenConspiracies.Count > 0 &&
+            _luckyDropTimer > 8 + _random.NextDouble() * 12 && _luckyDrops.Count < 3)
         {
             _luckyDropTimer = 0;
             SpawnLuckyDrop(width, height);
@@ -513,14 +625,35 @@ public partial class MainWindow : Window
         _dropsToRemove.Clear();
         foreach (var drop in _luckyDrops)
         {
-            drop.Life -= deltaTime;
             drop.X += drop.VelocityX * deltaTime;
             drop.Y += drop.VelocityY * deltaTime;
 
             // Gentle floating motion
             drop.VelocityY += Math.Sin(drop.Life * 3) * 0.5;
 
-            if (drop.Life <= 0 || drop.X < -50 || drop.X > width + 50)
+            // Check if drop should start fading (still clickable during fade!)
+            if (!drop.IsFading)
+            {
+                drop.Life -= deltaTime;
+                if (drop.Life <= 0)
+                {
+                    drop.IsFading = true;
+                    drop.FadeTime = 1.0; // Start 1 second fade
+                }
+            }
+            else
+            {
+                // Fading - reduce fade time
+                drop.FadeTime -= deltaTime;
+                if (drop.FadeTime <= 0)
+                {
+                    _dropsToRemove.Add(drop);
+                    continue;
+                }
+            }
+
+            // Remove if off screen
+            if (drop.X < -50 || drop.X > width + 50)
             {
                 _dropsToRemove.Add(drop);
                 continue;
@@ -529,8 +662,15 @@ public partial class MainWindow : Window
             Canvas.SetLeft(drop.Element, drop.X);
             Canvas.SetTop(drop.Element, drop.Y);
 
-            // Pulse effect
-            drop.Element.Opacity = 0.8 + 0.2 * Math.Sin(drop.Life * 5);
+            // Visual effect - pulse when alive, fade when fading
+            if (drop.IsFading)
+            {
+                drop.Element.Opacity = drop.FadeTime; // Fade from 1.0 to 0 over 1 second
+            }
+            else
+            {
+                drop.Element.Opacity = 0.8 + 0.2 * Math.Sin(drop.Life * 5);
+            }
         }
 
         foreach (var drop in _dropsToRemove)
@@ -718,8 +858,8 @@ public partial class MainWindow : Window
                 // Debunker won - lose some believers
                 double loss = _engine.State.Believers * 0.1;
                 _engine.State.Believers = Math.Max(0, _engine.State.Believers - loss);
-                ShowToast("😱", $"Debunked! Lost {NumberFormatter.Format(loss)} believers!");
-                AddNotification($"🕵️ Debunker escaped! Lost {NumberFormatter.Format(loss)} believers.", RedBrush);
+                ShowToast("😱", $"Debunked! Lost {NumberFormatter.FormatInteger(loss)} believers!");
+                AddNotification($"🕵️ Debunker escaped! Lost {NumberFormatter.FormatInteger(loss)} believers.", RedBrush);
                 SoundManager.Play("error");
                 InteractiveCanvas.Children.Remove(_activeDebunker.Element);
                 _activeDebunker = null;
@@ -727,8 +867,9 @@ public partial class MainWindow : Window
         }
         else
         {
-            // Maybe spawn a new debunker (not during minigames)
-            if (!_minigameActive && MinigameOverlay.Visibility != Visibility.Visible)
+            // Maybe spawn a new debunker (not during minigames, only after first conspiracy)
+            if (!_zenMode && !_minigameActive && MinigameOverlay.Visibility != Visibility.Visible &&
+                _engine.State.ProvenConspiracies.Count > 0)
             {
                 _debunkerSpawnTimer += deltaTime;
                 if (_debunkerSpawnTimer > 45 + _random.NextDouble() * 30 && _engine.State.Believers > 100)
@@ -783,13 +924,13 @@ public partial class MainWindow : Window
         _activeDebunker = new Debunker
         {
             Element = border,
-            TimeLeft = 5.0,
+            TimeLeft = 8.0,
             ClicksRequired = 10,
             ClicksReceived = 0
         };
 
         ShowToast("🚨", "DEBUNKER INCOMING! Click to defeat them!");
-        AddNotification("🚨 DEBUNKER ALERT! Click 10 times in 5 seconds to defeat!", OrangeBrush);
+        AddNotification("🚨 DEBUNKER ALERT! Click 10 times in 8 seconds to defeat!", OrangeBrush);
         SoundManager.Play("debunker");
     }
 
@@ -849,15 +990,15 @@ public partial class MainWindow : Window
             _activeEvidenceThief.X += _activeEvidenceThief.VelocityX * deltaTime;
             _activeEvidenceThief.Y += _activeEvidenceThief.VelocityY * deltaTime;
 
-            // Bounce off edges (element is 140x80)
+            // Bounce off edges (element is 130x105)
             if (_activeEvidenceThief.X < 10)
             {
                 _activeEvidenceThief.X = 10;
                 _activeEvidenceThief.VelocityX = Math.Abs(_activeEvidenceThief.VelocityX);
             }
-            if (_activeEvidenceThief.X > width - 150)
+            if (_activeEvidenceThief.X > width - 140)
             {
-                _activeEvidenceThief.X = width - 150;
+                _activeEvidenceThief.X = width - 140;
                 _activeEvidenceThief.VelocityX = -Math.Abs(_activeEvidenceThief.VelocityX);
             }
             if (_activeEvidenceThief.Y < 10)
@@ -865,9 +1006,9 @@ public partial class MainWindow : Window
                 _activeEvidenceThief.Y = 10;
                 _activeEvidenceThief.VelocityY = Math.Abs(_activeEvidenceThief.VelocityY);
             }
-            if (_activeEvidenceThief.Y > height - 90)
+            if (_activeEvidenceThief.Y > height - 115)
             {
-                _activeEvidenceThief.Y = height - 90;
+                _activeEvidenceThief.Y = height - 115;
                 _activeEvidenceThief.VelocityY = -Math.Abs(_activeEvidenceThief.VelocityY);
             }
 
@@ -895,8 +1036,9 @@ public partial class MainWindow : Window
         }
         else
         {
-            // Maybe spawn a new evidence thief
-            if (!_minigameActive && MinigameOverlay.Visibility != Visibility.Visible && _activeDebunker == null)
+            // Maybe spawn a new evidence thief - only after second conspiracy, not in zen mode
+            if (!_zenMode && !_minigameActive && MinigameOverlay.Visibility != Visibility.Visible && _activeDebunker == null &&
+                _engine.State.ProvenConspiracies.Count >= 2)
             {
                 _evidenceThiefTimer += deltaTime;
                 if (_evidenceThiefTimer > 60 + _random.NextDouble() * 45 && _engine.State.Evidence > 1000)
@@ -913,56 +1055,62 @@ public partial class MainWindow : Window
         double width = InteractiveCanvas.ActualWidth;
         double height = InteractiveCanvas.ActualHeight;
 
-        // Start from a random edge (element is 140x80)
+        // Start from a random edge (element is 130x105)
         double startX, startY;
         int edge = _random.Next(4);
         switch (edge)
         {
-            case 0: startX = 10; startY = _random.NextDouble() * (height - 90); break;
-            case 1: startX = width - 150; startY = _random.NextDouble() * (height - 90); break;
-            case 2: startX = _random.NextDouble() * (width - 150); startY = 10; break;
-            default: startX = _random.NextDouble() * (width - 150); startY = height - 90; break;
+            case 0: startX = 10; startY = _random.NextDouble() * (height - 115); break;
+            case 1: startX = width - 140; startY = _random.NextDouble() * (height - 115); break;
+            case 2: startX = _random.NextDouble() * (width - 140); startY = 10; break;
+            default: startX = _random.NextDouble() * (width - 140); startY = height - 115; break;
         }
 
         // Calculate steal amount (15-25% of current evidence)
         double stealPercent = 0.15 + _random.NextDouble() * 0.10;
         double stealAmount = _engine.State.Evidence * stealPercent;
 
+        // Shadowy agent/MIB style design
         var border = new Border
         {
-            Background = new SolidColorBrush(Color.FromArgb(230, 100, 50, 20)),
-            BorderBrush = OrangeBrush,
-            BorderThickness = new Thickness(3),
-            CornerRadius = new CornerRadius(30),
-            Padding = new Thickness(12),
+            Background = new SolidColorBrush(Color.FromArgb(240, 20, 20, 30)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(80, 80, 100)),
+            BorderThickness = new Thickness(2),
+            CornerRadius = new CornerRadius(8),
+            Padding = new Thickness(10),
             Cursor = Cursors.Hand,
-            Width = 140,
-            Height = 80
+            Width = 130,
+            Height = 105,
+            Effect = new DropShadowEffect { Color = Colors.Black, BlurRadius = 15, ShadowDepth = 3, Opacity = 0.8 }
         };
 
         var stack = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+
+        // Agent silhouette with hat and briefcase
         stack.Children.Add(new TextBlock
         {
-            Text = "🦹",
-            FontSize = 28,
+            Text = "🕵️",
+            FontSize = 32,
             HorizontalAlignment = HorizontalAlignment.Center,
             FontFamily = EmojiFont
         });
         stack.Children.Add(new TextBlock
         {
             Text = $"⏱️ 6.0s",
-            FontSize = 12,
+            FontSize = 11,
             Foreground = LightBrush,
             HorizontalAlignment = HorizontalAlignment.Center,
-            FontWeight = FontWeights.Bold
+            FontWeight = FontWeights.Bold,
+            Margin = new Thickness(0, 2, 0, 0)
         });
         stack.Children.Add(new TextBlock
         {
-            Text = "CATCH ME!",
-            FontSize = 11,
-            Foreground = OrangeBrush,
+            Text = "[CLASSIFIED]",
+            FontSize = 9,
+            Foreground = RedBrush,
             HorizontalAlignment = HorizontalAlignment.Center,
-            FontWeight = FontWeights.Bold
+            FontWeight = FontWeights.Bold,
+            FontFamily = new FontFamily("Consolas")
         });
 
         border.Child = stack;
@@ -1040,7 +1188,7 @@ public partial class MainWindow : Window
             if (_activeTinfoilThief.StealProgress >= 1.0)
             {
                 // Thief succeeded - steal tinfoil
-                int stolen = Math.Min(_engine.State.Tinfoil, _activeTinfoilThief.StealAmount);
+                long stolen = Math.Min(_engine.State.Tinfoil, _activeTinfoilThief.StealAmount);
                 _engine.State.Tinfoil -= stolen;
                 ShowToast("💎", $"Tinfoil stolen! Lost {stolen}!");
                 AddNotification($"🎭 Tinfoil Thief stole {stolen} tinfoil!", RedBrush);
@@ -1059,9 +1207,10 @@ public partial class MainWindow : Window
         }
         else
         {
-            // Maybe spawn a new tinfoil thief (rarer than evidence thief)
-            if (!_minigameActive && MinigameOverlay.Visibility != Visibility.Visible &&
-                _activeDebunker == null && _activeEvidenceThief == null)
+            // Maybe spawn a new tinfoil thief (rarer than evidence thief) - only after second conspiracy, not in zen mode
+            if (!_zenMode && !_minigameActive && MinigameOverlay.Visibility != Visibility.Visible &&
+                _activeDebunker == null && _activeEvidenceThief == null &&
+                _engine.State.ProvenConspiracies.Count >= 2)
             {
                 _tinfoilThiefTimer += deltaTime;
                 if (_tinfoilThiefTimer > 90 + _random.NextDouble() * 60 && _engine.State.Tinfoil >= 5)
@@ -1079,7 +1228,7 @@ public partial class MainWindow : Window
         double centerY = InteractiveCanvas.ActualHeight / 2;
 
         // Scale with tinfoil amount
-        int tinfoil = _engine.State.Tinfoil;
+        long tinfoil = _engine.State.Tinfoil;
 
         // Steal amount scales: 10-30% of current tinfoil, minimum 1, max 100
         double stealPercent = 0.10 + Math.Min(0.20, tinfoil / 500.0 * 0.20);
@@ -1230,8 +1379,9 @@ public partial class MainWindow : Window
         UpdateEvidenceTrail(deltaTime);
         UpdateConnectionPins(deltaTime);
 
-        // Spawn new events randomly (only one at a time)
-        if (_escapedDocument == null && _evidenceTrail.Count == 0 && _connectionPins.Count == 0)
+        // Spawn new events randomly (only one at a time, only after first conspiracy, not in zen mode)
+        if (!_zenMode && _engine.State.ProvenConspiracies.Count > 0 &&
+            _escapedDocument == null && _evidenceTrail.Count == 0 && _connectionPins.Count == 0)
         {
             _specialEventTimer += deltaTime;
             if (_specialEventTimer > 15 + _random.NextDouble() * 20) // 15-35 seconds
@@ -1785,6 +1935,382 @@ public partial class MainWindow : Window
         _ambientParticles.Add(particle);
     }
 
+    // === STARFIELD ===
+    private void UpdateStarfield(double deltaTime)
+    {
+        double width = AmbientCanvas.ActualWidth;
+        double height = AmbientCanvas.ActualHeight;
+
+        if (width <= 0 || height <= 0) return;
+
+        // Initialize starfield once
+        if (!_starfieldInitialized)
+        {
+            InitializeStarfield(width, height);
+            _starfieldInitialized = true;
+        }
+
+        // Update star twinkling
+        foreach (var star in _stars)
+        {
+            star.TwinklePhase += star.TwinkleSpeed * deltaTime;
+            double twinkle = 0.5 + 0.5 * Math.Sin(star.TwinklePhase);
+            star.Element.Opacity = star.BaseOpacity * (0.3 + 0.7 * twinkle);
+        }
+    }
+
+    private void InitializeStarfield(double width, double height)
+    {
+        // Create 40-60 stars scattered across the background
+        int starCount = 40 + _random.Next(20);
+
+        for (int i = 0; i < starCount; i++)
+        {
+            double size = 1 + _random.NextDouble() * 2.5;
+            double baseOpacity = 0.3 + _random.NextDouble() * 0.5;
+
+            var starElement = new Ellipse
+            {
+                Width = size,
+                Height = size,
+                Fill = _random.NextDouble() < 0.7
+                    ? new SolidColorBrush(Color.FromRgb(255, 255, 255))
+                    : new SolidColorBrush(Color.FromRgb(200, 220, 255)),
+                Opacity = baseOpacity,
+                IsHitTestVisible = false
+            };
+
+            double x = _random.NextDouble() * width;
+            double y = _random.NextDouble() * height;
+
+            Canvas.SetLeft(starElement, x);
+            Canvas.SetTop(starElement, y);
+            AmbientCanvas.Children.Insert(0, starElement); // Behind other elements
+
+            _stars.Add(new Star
+            {
+                Element = starElement,
+                TwinklePhase = _random.NextDouble() * Math.PI * 2,
+                TwinkleSpeed = 1 + _random.NextDouble() * 3,
+                BaseOpacity = baseOpacity
+            });
+        }
+    }
+
+    // === MYSTICAL SPARKS ===
+    private void UpdateMysticalSparks(double deltaTime)
+    {
+        double width = AmbientCanvas.ActualWidth;
+        double height = AmbientCanvas.ActualHeight;
+
+        if (width <= 0 || height <= 0) return;
+
+        double centerX = width / 2;
+        double centerY = height / 2;
+
+        // Spawn new sparks
+        _sparkSpawnTimer += deltaTime;
+        if (_sparkSpawnTimer > 0.3 && _mysticalSparks.Count < 25)
+        {
+            _sparkSpawnTimer = 0;
+            SpawnMysticalSpark(centerX, centerY);
+        }
+
+        // Update existing sparks
+        _sparksToRemove.Clear();
+        foreach (var spark in _mysticalSparks)
+        {
+            spark.Life -= deltaTime;
+            spark.PulsePhase += deltaTime * 5;
+            spark.Angle += spark.Speed * deltaTime;
+            spark.Distance += deltaTime * 15; // Slowly drift outward
+
+            if (spark.Life <= 0 || spark.Distance > 200)
+            {
+                _sparksToRemove.Add(spark);
+                continue;
+            }
+
+            // Calculate position in orbit
+            double x = centerX + Math.Cos(spark.Angle) * spark.Distance - 2;
+            double y = centerY + Math.Sin(spark.Angle) * spark.Distance - 2;
+
+            Canvas.SetLeft(spark.Element, x);
+            Canvas.SetTop(spark.Element, y);
+
+            // Pulsing glow effect
+            double pulse = 0.5 + 0.5 * Math.Sin(spark.PulsePhase);
+            double lifeFade = Math.Min(1, spark.Life * 2);
+            spark.Element.Opacity = (0.4 + 0.4 * pulse) * lifeFade;
+        }
+
+        foreach (var spark in _sparksToRemove)
+        {
+            AmbientCanvas.Children.Remove(spark.Element);
+            _mysticalSparks.Remove(spark);
+        }
+    }
+
+    private void SpawnMysticalSpark(double centerX, double centerY)
+    {
+        // Random color - green, gold, or purple energy
+        Color sparkColor = _random.Next(3) switch
+        {
+            0 => Color.FromRgb(0, 255, 100),   // Green
+            1 => Color.FromRgb(255, 215, 0),   // Gold
+            _ => Color.FromRgb(180, 100, 255)  // Purple
+        };
+
+        var spark = new Ellipse
+        {
+            Width = 4,
+            Height = 4,
+            Fill = new RadialGradientBrush(sparkColor, Colors.Transparent),
+            IsHitTestVisible = false
+        };
+
+        double angle = _random.NextDouble() * Math.PI * 2;
+        double startDistance = 60 + _random.NextDouble() * 40;
+
+        Canvas.SetLeft(spark, centerX + Math.Cos(angle) * startDistance);
+        Canvas.SetTop(spark, centerY + Math.Sin(angle) * startDistance);
+        AmbientCanvas.Children.Add(spark);
+
+        _mysticalSparks.Add(new MysticalSpark
+        {
+            Element = spark,
+            Angle = angle,
+            Distance = startDistance,
+            Speed = (_random.NextDouble() - 0.5) * 1.5,
+            Life = 3 + _random.NextDouble() * 4,
+            PulsePhase = _random.NextDouble() * Math.PI * 2
+        });
+    }
+
+    // === ORBITING RUNES ===
+    private void UpdateOrbitingRunes(double deltaTime)
+    {
+        double width = AmbientCanvas.ActualWidth;
+        double height = AmbientCanvas.ActualHeight;
+
+        if (width <= 0 || height <= 0) return;
+
+        double centerX = width / 2;
+        double centerY = height / 2;
+
+        // Initialize runes based on conspiracy count
+        int targetRuneCount = Math.Min(_engine.State.ProvenConspiracies.Count, 8);
+
+        if (!_runesInitialized || _orbitingRunes.Count < targetRuneCount)
+        {
+            while (_orbitingRunes.Count < targetRuneCount)
+            {
+                SpawnOrbitingRune(_orbitingRunes.Count);
+            }
+            _runesInitialized = true;
+        }
+
+        // Update rune positions
+        foreach (var rune in _orbitingRunes)
+        {
+            rune.Angle += rune.Speed * deltaTime;
+            rune.PulsePhase += deltaTime * 2;
+
+            double x = centerX + Math.Cos(rune.Angle) * rune.Radius - 8;
+            double y = centerY + Math.Sin(rune.Angle) * rune.Radius - 8;
+
+            Canvas.SetLeft(rune.Element, x);
+            Canvas.SetTop(rune.Element, y);
+
+            // Gentle pulsing
+            double pulse = 0.6 + 0.4 * Math.Sin(rune.PulsePhase);
+            rune.Element.Opacity = 0.4 * pulse;
+        }
+    }
+
+    private void SpawnOrbitingRune(int index)
+    {
+        string symbol = RuneSymbols[index % RuneSymbols.Length];
+
+        var rune = new TextBlock
+        {
+            Text = symbol,
+            FontSize = 16,
+            Foreground = new SolidColorBrush(Color.FromRgb(0, 255, 100)),
+            Opacity = 0.4,
+            IsHitTestVisible = false
+        };
+
+        // Distribute evenly around the circle, with varying radii
+        double baseAngle = (2 * Math.PI / 8) * index;
+        double radius = 140 + (index % 3) * 25; // Varying orbits
+
+        AmbientCanvas.Children.Add(rune);
+
+        _orbitingRunes.Add(new OrbitingRune
+        {
+            Element = rune,
+            Angle = baseAngle,
+            Radius = radius,
+            Speed = 0.15 + (index % 2) * 0.1, // Alternate speeds
+            PulsePhase = _random.NextDouble() * Math.PI * 2
+        });
+    }
+
+    // === MENU BACKGROUND ===
+    private void UpdateMenuBackground(double deltaTime)
+    {
+        double width = MenuBackgroundCanvas.ActualWidth;
+        double height = MenuBackgroundCanvas.ActualHeight;
+
+        if (width <= 0 || height <= 0) return;
+
+        // Initialize menu background once
+        if (!_menuBackgroundInitialized)
+        {
+            InitializeMenuBackground(width, height);
+            _menuBackgroundInitialized = true;
+        }
+
+        // Slowly rotate background pyramid
+        _menuPyramidAngle += deltaTime * 3; // 3 degrees per second
+        MenuPyramidRotation.Angle = _menuPyramidAngle;
+
+        // Update star twinkling
+        foreach (var star in _menuStars)
+        {
+            star.TwinklePhase += star.TwinkleSpeed * deltaTime;
+            double twinkle = 0.5 + 0.5 * Math.Sin(star.TwinklePhase);
+            star.Element.Opacity = star.BaseOpacity * (0.3 + 0.7 * twinkle);
+        }
+
+        // Spawn floating particles
+        _menuParticleSpawnTimer += deltaTime;
+        if (_menuParticleSpawnTimer > 0.4 && _menuParticles.Count < 30)
+        {
+            _menuParticleSpawnTimer = 0;
+            SpawnMenuParticle(width, height);
+        }
+
+        // Update particles
+        _menuParticlesToRemove.Clear();
+        foreach (var p in _menuParticles)
+        {
+            p.Life -= deltaTime;
+            p.X += p.VelocityX * deltaTime;
+            p.Y += p.VelocityY * deltaTime;
+            p.PulsePhase += deltaTime * 4;
+
+            if (p.Life <= 0)
+            {
+                _menuParticlesToRemove.Add(p);
+                continue;
+            }
+
+            Canvas.SetLeft(p.Element, p.X);
+            Canvas.SetTop(p.Element, p.Y);
+
+            // Fade in/out with pulsing
+            double lifeFraction = p.Life / p.MaxLife;
+            double fadeMultiplier = lifeFraction < 0.2 ? lifeFraction * 5 :
+                                    lifeFraction > 0.8 ? (1 - lifeFraction) * 5 : 1.0;
+            double pulse = 0.6 + 0.4 * Math.Sin(p.PulsePhase);
+            p.Element.Opacity = 0.6 * fadeMultiplier * pulse;
+        }
+
+        foreach (var p in _menuParticlesToRemove)
+        {
+            MenuBackgroundCanvas.Children.Remove(p.Element);
+            _menuParticles.Remove(p);
+        }
+    }
+
+    private void InitializeMenuBackground(double width, double height)
+    {
+        // Create starfield for menu - more stars, denser
+        int starCount = 80 + _random.Next(40);
+
+        for (int i = 0; i < starCount; i++)
+        {
+            double size = 1 + _random.NextDouble() * 3;
+            double baseOpacity = 0.2 + _random.NextDouble() * 0.6;
+
+            // Varied colors - white, blue, gold, green tints
+            Color starColor = _random.Next(10) switch
+            {
+                0 or 1 => Color.FromRgb(200, 220, 255),  // Blue-white
+                2 => Color.FromRgb(255, 230, 180),       // Warm white
+                3 => Color.FromRgb(180, 255, 200),       // Green tint
+                4 => Color.FromRgb(255, 215, 100),       // Gold tint
+                _ => Color.FromRgb(255, 255, 255)        // Pure white
+            };
+
+            var starElement = new Ellipse
+            {
+                Width = size,
+                Height = size,
+                Fill = new SolidColorBrush(starColor),
+                Opacity = baseOpacity,
+                IsHitTestVisible = false
+            };
+
+            double x = _random.NextDouble() * width;
+            double y = _random.NextDouble() * height;
+
+            Canvas.SetLeft(starElement, x);
+            Canvas.SetTop(starElement, y);
+            MenuBackgroundCanvas.Children.Add(starElement);
+
+            _menuStars.Add(new MenuStar
+            {
+                Element = starElement,
+                TwinklePhase = _random.NextDouble() * Math.PI * 2,
+                TwinkleSpeed = 0.5 + _random.NextDouble() * 4,
+                BaseOpacity = baseOpacity
+            });
+        }
+    }
+
+    private void SpawnMenuParticle(double width, double height)
+    {
+        // Create glowing orb particles that float upward
+        Color particleColor = _random.Next(4) switch
+        {
+            0 => Color.FromRgb(0, 255, 100),    // Green
+            1 => Color.FromRgb(255, 215, 0),    // Gold
+            2 => Color.FromRgb(150, 100, 255),  // Purple
+            _ => Color.FromRgb(100, 200, 255)   // Cyan
+        };
+
+        double size = 3 + _random.NextDouble() * 5;
+
+        var particle = new Ellipse
+        {
+            Width = size,
+            Height = size,
+            Fill = new RadialGradientBrush(particleColor, Colors.Transparent),
+            IsHitTestVisible = false
+        };
+
+        double maxLife = 6 + _random.NextDouble() * 6;
+
+        var p = new MenuParticle
+        {
+            Element = particle,
+            X = _random.NextDouble() * width,
+            Y = height + 10, // Start from bottom
+            VelocityX = (_random.NextDouble() - 0.5) * 30,
+            VelocityY = -20 - _random.NextDouble() * 40, // Float upward
+            Life = maxLife,
+            MaxLife = maxLife,
+            PulsePhase = _random.NextDouble() * Math.PI * 2
+        };
+
+        Canvas.SetLeft(particle, p.X);
+        Canvas.SetTop(particle, p.Y);
+        MenuBackgroundCanvas.Children.Add(particle);
+        _menuParticles.Add(p);
+    }
 
     private void InitializeGeneratorButtons()
     {
@@ -1792,14 +2318,18 @@ public partial class MainWindow : Window
 
         foreach (var gen in GeneratorData.AllGenerators)
         {
-            var button = CreateGeneratorButton(gen, buttonStyle);
-            GeneratorPanel.Children.Add(button);
+            var (container, button, upgradePanel) = CreateGeneratorButton(gen, buttonStyle);
+            GeneratorPanel.Children.Add(container);
             _generatorButtons[gen.Id] = button;
+            _generatorUpgradePanels[gen.Id] = upgradePanel;
         }
     }
 
-    private Button CreateGeneratorButton(Generator gen, Style buttonStyle)
+    private (StackPanel container, Button button, WrapPanel upgradePanel) CreateGeneratorButton(Generator gen, Style buttonStyle)
     {
+        // Container holds button and upgrade panel as siblings (so upgrade hover doesn't highlight button)
+        var container = new StackPanel();
+
         var button = new Button
         {
             Style = buttonStyle,
@@ -1814,20 +2344,59 @@ public partial class MainWindow : Window
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
         var fallbackText = IconData.GeneratorIcons.TryGetValue(gen.Id, out var icon) ? icon : "?";
-        var iconElement = IconHelper.CreateIconWithFallback(gen.Id, fallbackText, 28, GreenBrush);
-        iconElement.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-        iconElement.SetValue(MarginProperty, new Thickness(0, 0, 10, 0));
+        var iconImage = IconHelper.CreateIconWithFallback(gen.Id, fallbackText, 76, GreenBrush);
+
+        // Wrap icon in a border with rounded corners and drop shadow
+        var iconBorder = new Border
+        {
+            Width = 80,
+            Height = 80,
+            CornerRadius = new CornerRadius(8),
+            Background = new SolidColorBrush(Color.FromArgb(40, 0, 0, 0)),
+            BorderBrush = new SolidColorBrush(Color.FromArgb(60, 0, 255, 65)),
+            BorderThickness = new Thickness(1),
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(0, 0, 15, 0),
+            Effect = new System.Windows.Media.Effects.DropShadowEffect
+            {
+                Color = Colors.Black,
+                BlurRadius = 10,
+                ShadowDepth = 3,
+                Opacity = 0.5,
+                Direction = 315
+            }
+        };
+
+        // If it's an Image, use ImageBrush as background to clip to rounded corners
+        if (iconImage is Image img && img.Source != null)
+        {
+            iconBorder.Background = new ImageBrush
+            {
+                ImageSource = img.Source,
+                Stretch = Stretch.Uniform,
+                AlignmentX = AlignmentX.Center,
+                AlignmentY = AlignmentY.Center
+            };
+        }
+        else
+        {
+            // For TextBlock fallback, keep as child
+            iconBorder.Child = iconImage;
+            iconImage.SetValue(MarginProperty, new Thickness(2));
+        }
+
+        var iconElement = iconBorder;
 
         var leftStack = new StackPanel();
-        leftStack.Children.Add(new TextBlock { Text = gen.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush });
-        leftStack.Children.Add(new TextBlock { Text = gen.FlavorText, FontSize = 10, Foreground = DimBrush, TextWrapping = TextWrapping.Wrap, MaxWidth = 250 });
-        leftStack.Children.Add(new TextBlock { Tag = "prod", FontSize = 11, Foreground = LightBrush, Margin = new Thickness(0, 3, 0, 0) });
+        leftStack.Children.Add(new TextBlock { Text = gen.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush, FontSize = 21 });
+        leftStack.Children.Add(new TextBlock { Text = gen.FlavorText, FontSize = 15, Foreground = DimBrush, TextWrapping = TextWrapping.Wrap, MaxWidth = 375 });
+        leftStack.Children.Add(new TextBlock { Tag = "prod", FontSize = 17, Foreground = LightBrush, Margin = new Thickness(0, 5, 0, 0) });
         if (gen.BelieverBonus > 0)
-            leftStack.Children.Add(new TextBlock { Text = $"+{NumberFormatter.Format(gen.BelieverBonus)} believers each", FontSize = 10, Foreground = GoldBrush });
+            leftStack.Children.Add(new TextBlock { Text = $"+{NumberFormatter.FormatInteger(gen.BelieverBonus)} believers each", FontSize = 15, Foreground = GoldBrush });
 
-        var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(10, 0, 0, 0) };
-        rightStack.Children.Add(new TextBlock { Tag = "cost", FontWeight = FontWeights.Bold, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right });
-        rightStack.Children.Add(new TextBlock { Tag = "owned", FontSize = 11, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Right });
+        var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(15, 0, 0, 0) };
+        rightStack.Children.Add(new TextBlock { Tag = "cost", FontWeight = FontWeights.Bold, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right, FontSize = 21 });
+        rightStack.Children.Add(new TextBlock { Tag = "owned", FontSize = 17, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Right });
 
         Grid.SetColumn(iconElement, 0);
         Grid.SetColumn(leftStack, 1);
@@ -1837,7 +2406,13 @@ public partial class MainWindow : Window
         grid.Children.Add(rightStack);
 
         button.Content = grid;
-        return button;
+        container.Children.Add(button);
+
+        // Upgrade panel for generator-specific upgrades - OUTSIDE the button so hover doesn't highlight button
+        var upgradePanel = new WrapPanel { Tag = "upgrades", Margin = new Thickness(17, 0, 17, 8), Visibility = Visibility.Collapsed };
+        container.Children.Add(upgradePanel);
+
+        return (container, button, upgradePanel);
     }
 
     private void ClickButton_Click(object sender, RoutedEventArgs e)
@@ -1936,16 +2511,26 @@ public partial class MainWindow : Window
 
     private void PulseEye()
     {
-        var scaleAnim = new DoubleAnimation { From = 1.0, To = 1.3, Duration = TimeSpan.FromMilliseconds(100), AutoReverse = true };
-        var scaleTransform = new ScaleTransform(1, 1, EyePupil.Width / 2, EyePupil.Height / 2);
-        EyePupil.RenderTransform = scaleTransform;
-        scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
-        scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim);
+        // Get current combo-based scale and add a click bump on top
+        double comboProgress = Math.Min(_engine.State.ComboMeter, 1.0);
+        double baseScale = 1.0 + 0.25 * comboProgress;
+        double clickScale = baseScale + 0.1; // Add 0.1 bump on click
 
-        var glowColor = _engine.State.GoldenEyeActive ? Colors.Gold : Color.FromRgb(0, 255, 65);
-        EyeGlow.Fill = new RadialGradientBrush(glowColor, Colors.Transparent);
-        var glowAnim = new DoubleAnimation { From = 0.5, To = 0, Duration = TimeSpan.FromMilliseconds(200) };
-        EyeGlow.BeginAnimation(OpacityProperty, glowAnim);
+        // Quick scale up then back to combo-based scale
+        var scaleAnim = new DoubleAnimation
+        {
+            From = clickScale,
+            To = baseScale,
+            Duration = TimeSpan.FromMilliseconds(150),
+            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+        };
+        EyeScale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
+        EyeScale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim);
+
+        // Pulse the glow effect brighter momentarily
+        double currentBlur = 20 + 20 * comboProgress;
+        var glowAnim = new DoubleAnimation { From = currentBlur + 15, To = currentBlur, Duration = TimeSpan.FromMilliseconds(200) };
+        EyeGlow.BeginAnimation(DropShadowEffect.BlurRadiusProperty, glowAnim);
     }
 
     // Cached easing function for particles
@@ -1992,16 +2577,37 @@ public partial class MainWindow : Window
     {
         SoundManager.Play("combo");
 
-        // Flash the eye bright white/gold
-        var flashAnim = new DoubleAnimation { From = 1.0, To = 0, Duration = TimeSpan.FromMilliseconds(400) };
-        EyeGlow.Fill = new RadialGradientBrush(Colors.White, Colors.Gold);
-        EyeGlow.BeginAnimation(OpacityProperty, flashAnim);
+        // BIG POP effect - eye scales up dramatically then back to normal
+        // First cancel any running animations
+        EyeScale.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+        EyeScale.BeginAnimation(ScaleTransform.ScaleYProperty, null);
 
-        // Reset pupil to default size immediately (no animation - let UpdateUI handle sizing)
-        EyePupil.BeginAnimation(WidthProperty, null);
-        EyePupil.BeginAnimation(HeightProperty, null);
-        EyePupil.Width = PUPIL_MIN_SIZE;
-        EyePupil.Height = PUPIL_MIN_SIZE;
+        // Pop animation: current size -> 1.5x -> 1.0x
+        var popAnim = new DoubleAnimation
+        {
+            From = 1.4,  // Big pop
+            To = 1.0,    // Back to normal
+            Duration = TimeSpan.FromMilliseconds(400),
+            EasingFunction = new ElasticEase { EasingMode = EasingMode.EaseOut, Oscillations = 2, Springiness = 3 }
+        };
+        EyeScale.BeginAnimation(ScaleTransform.ScaleXProperty, popAnim);
+        EyeScale.BeginAnimation(ScaleTransform.ScaleYProperty, popAnim);
+
+        // Flash the glow bright white/gold
+        EyeGlow.Color = Colors.White;
+        var glowColorAnim = new ColorAnimation { From = Colors.White, To = Color.FromRgb(0, 255, 65), Duration = TimeSpan.FromMilliseconds(500) };
+        EyeGlow.BeginAnimation(DropShadowEffect.ColorProperty, glowColorAnim);
+
+        var glowSizeAnim = new DoubleAnimation { From = 50, To = 20, Duration = TimeSpan.FromMilliseconds(400) };
+        EyeGlow.BeginAnimation(DropShadowEffect.BlurRadiusProperty, glowSizeAnim);
+
+        // Flash the ambient glow too
+        EyeAmbientGlow.Fill = new RadialGradientBrush(Colors.Gold, Colors.Transparent);
+        var ambientOpacityAnim = new DoubleAnimation { From = 0.8, To = 0.2, Duration = TimeSpan.FromMilliseconds(500) };
+        EyeAmbientGlow.BeginAnimation(OpacityProperty, ambientOpacityAnim);
+        var ambientSizeAnim = new DoubleAnimation { From = 220, To = 160, Duration = TimeSpan.FromMilliseconds(500) };
+        EyeAmbientGlow.BeginAnimation(WidthProperty, ambientSizeAnim);
+        EyeAmbientGlow.BeginAnimation(HeightProperty, ambientSizeAnim);
 
         // Combo text
         var text = new TextBlock { Text = $"COMBO! +{NumberFormatter.Format(amount)}", FontSize = 24, FontWeight = FontWeights.Bold, Foreground = GoldBrush };
@@ -2015,13 +2621,13 @@ public partial class MainWindow : Window
         var scaleTransform = new ScaleTransform(0.5, 0.5, 80, 12);
         text.RenderTransform = scaleTransform;
 
-        var scaleAnim = new DoubleAnimation { From = 0.5, To = 1.5, Duration = TimeSpan.FromMilliseconds(600), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        var textScaleAnim = new DoubleAnimation { From = 0.5, To = 1.5, Duration = TimeSpan.FromMilliseconds(600), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
         var fadeAnim = new DoubleAnimation { From = 1, To = 0, BeginTime = TimeSpan.FromMilliseconds(400), Duration = TimeSpan.FromMilliseconds(400) };
 
         fadeAnim.Completed += (s, e) => ClickCanvas.Children.Remove(text);
 
-        scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
-        scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim);
+        scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, textScaleAnim);
+        scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, textScaleAnim);
         text.BeginAnimation(OpacityProperty, fadeAnim);
 
         // Explosion of gold particles from the eye
@@ -2055,27 +2661,59 @@ public partial class MainWindow : Window
 
     private void OnGoldenEyeStart()
     {
-        EyeOuter.Stroke = GoldBrush;
-        EyePupil.Fill = GoldBrush;
+        // Ignore golden eye in zen mode
+        if (_zenMode)
+        {
+            _engine.State.GoldenEyeActive = false;
+            return;
+        }
+
+        // Switch to golden eye (keep pyramid at current level, just make it golden)
+        var goldenEye = PyramidSpriteSheetLoader.GetEyeIcon(pyramidLevel: _currentPyramidLevel, forceGolden: true);
+        if (goldenEye != null) EyeImage.Source = goldenEye;
+        EyeGlow.Color = Colors.Gold;
+        PyramidGlow.Color = Colors.Gold;
+        PyramidGlow.Opacity = 0.8;
         FlavorTextDisplay.Text = "GOLDEN EYE! 10x clicks for 10 seconds!";
         ShowToast("GOLDEN EYE!", "10x click power for 10 seconds!");
 
-        EyeGlow.Fill = new RadialGradientBrush(Colors.Gold, Colors.Transparent);
-        var glowAnim = new DoubleAnimation { From = 0.3, To = 0.7, Duration = TimeSpan.FromMilliseconds(500), AutoReverse = true, RepeatBehavior = RepeatBehavior.Forever };
-        EyeGlow.BeginAnimation(OpacityProperty, glowAnim);
+        // Pulsing glow animation for both eye and pyramid
+        var glowAnim = new DoubleAnimation { From = 20, To = 35, Duration = TimeSpan.FromMilliseconds(500), AutoReverse = true, RepeatBehavior = RepeatBehavior.Forever };
+        EyeGlow.BeginAnimation(DropShadowEffect.BlurRadiusProperty, glowAnim);
+        var pyramidGlowAnim = new DoubleAnimation { From = 15, To = 30, Duration = TimeSpan.FromMilliseconds(500), AutoReverse = true, RepeatBehavior = RepeatBehavior.Forever };
+        PyramidGlow.BeginAnimation(DropShadowEffect.BlurRadiusProperty, pyramidGlowAnim);
     }
 
     private void OnGoldenEyeEnd()
     {
-        EyeOuter.Stroke = GreenBrush;
-        EyePupil.Fill = GreenBrush;
-        EyePupil.Opacity = 0.3;
-        EyeGlow.BeginAnimation(OpacityProperty, null);
-        EyeGlow.Opacity = 0;
+        // Switch back to tier-appropriate eye based on current pyramid level
+        var normalEye = PyramidSpriteSheetLoader.GetEyeIcon(pyramidLevel: _currentPyramidLevel);
+        if (normalEye != null) EyeImage.Source = normalEye;
+
+        // Restore glow colors based on current pyramid level (matches eye tier thresholds)
+        Color glowColor = _currentPyramidLevel switch
+        {
+            <= 11 => Color.FromRgb(0, 255, 65),      // Green (eye_basic)
+            <= 17 => Color.FromRgb(200, 220, 100),   // Yellow-green (eye_golden)
+            <= 23 => Color.FromRgb(150, 100, 255),   // Purple (eye_cosmic)
+            _ => Color.FromRgb(220, 150, 255),       // Light purple/pink (eye_omega)
+        };
+
+        EyeGlow.Color = glowColor;
+        EyeGlow.BeginAnimation(DropShadowEffect.BlurRadiusProperty, null);
+        EyeGlow.BlurRadius = 20;
+
+        PyramidGlow.Color = glowColor;
+        PyramidGlow.BeginAnimation(DropShadowEffect.BlurRadiusProperty, null);
+        PyramidGlow.BlurRadius = 15;
+        PyramidGlow.Opacity = 0.4;
+
+        EyeAmbientGlow.Fill = new RadialGradientBrush(glowColor, Colors.Transparent);
+
         FlavorTextDisplay.Text = FlavorText.GetRandomClickMessage();
     }
 
-    private void OnQuestComplete(string questId, bool success, double evidence, int tinfoil)
+    private void OnQuestComplete(string questId, bool success, double evidence, long tinfoil)
     {
         var quest = QuestData.GetById(questId);
         if (quest == null) return;
@@ -2114,18 +2752,48 @@ public partial class MainWindow : Window
         AddNotification("Prestige is now available! The Illuminati awaits...", PurpleBrush);
     }
 
-    private void ShowToast(string icon, string message, double durationSeconds = 5)
+    private void ShowToast(string icon, string message, double displaySeconds = 3)
     {
         ToastIcon.Text = icon;
         ToastMessage.Text = message;
+
+        // Stop any existing animation and reset
+        ToastNotification.BeginAnimation(OpacityProperty, null);
+        ToastNotification.Opacity = 0;
         ToastNotification.Visibility = Visibility.Visible;
 
-        var fadeIn = new DoubleAnimation { From = 0, To = 1, Duration = TimeSpan.FromMilliseconds(200) };
-        var fadeOut = new DoubleAnimation { From = 1, To = 0, BeginTime = TimeSpan.FromSeconds(durationSeconds), Duration = TimeSpan.FromMilliseconds(500) };
-        fadeOut.Completed += (s, e) => ToastNotification.Visibility = Visibility.Collapsed;
+        // Create storyboard with fade in, hold, fade out
+        var storyboard = new Storyboard();
 
-        ToastNotification.BeginAnimation(OpacityProperty, fadeIn);
-        ToastNotification.BeginAnimation(OpacityProperty, fadeOut);
+        // Fade in over 0.5 seconds
+        var fadeIn = new DoubleAnimation
+        {
+            From = 0,
+            To = 1,
+            Duration = TimeSpan.FromMilliseconds(500)
+        };
+        Storyboard.SetTarget(fadeIn, ToastNotification);
+        Storyboard.SetTargetProperty(fadeIn, new PropertyPath(OpacityProperty));
+        storyboard.Children.Add(fadeIn);
+
+        // Fade out after display time
+        var fadeOut = new DoubleAnimation
+        {
+            From = 1,
+            To = 0,
+            BeginTime = TimeSpan.FromSeconds(0.5 + displaySeconds), // After fade in + display
+            Duration = TimeSpan.FromMilliseconds(500)
+        };
+        Storyboard.SetTarget(fadeOut, ToastNotification);
+        Storyboard.SetTargetProperty(fadeOut, new PropertyPath(OpacityProperty));
+        storyboard.Children.Add(fadeOut);
+
+        storyboard.Completed += (s, e) =>
+        {
+            ToastNotification.Visibility = Visibility.Collapsed;
+        };
+
+        storyboard.Begin();
     }
 
     private void AddNotification(string message, SolidColorBrush color)
@@ -2192,12 +2860,12 @@ public partial class MainWindow : Window
         double centerX = ClickCanvas.ActualWidth / 2;
         double centerY = ClickCanvas.ActualHeight / 2;
 
-        // Green pulse on eye
-        var pulseAnim = new DoubleAnimation { From = 1.2, To = 1.0, Duration = TimeSpan.FromMilliseconds(200) };
-        var scaleTransform = new ScaleTransform(1, 1, EyeOuter.Width / 2, EyeOuter.Height / 2);
-        EyeOuter.RenderTransform = scaleTransform;
-        scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, pulseAnim);
-        scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, pulseAnim);
+        // Green pulse on eye - scale up then back to current combo-based size
+        double comboProgress = Math.Min(_engine.State.ComboMeter, 1.0);
+        double baseScale = 1.0 + 0.25 * comboProgress;
+        var pulseAnim = new DoubleAnimation { From = baseScale + 0.15, To = baseScale, Duration = TimeSpan.FromMilliseconds(200) };
+        EyeScale.BeginAnimation(ScaleTransform.ScaleXProperty, pulseAnim);
+        EyeScale.BeginAnimation(ScaleTransform.ScaleYProperty, pulseAnim);
 
         // Gold sparkle shower
         for (int i = 0; i < 15; i++)
@@ -2270,7 +2938,10 @@ public partial class MainWindow : Window
         if (sender is Button btn && btn.Tag is string conspiracyId)
         {
             if (_engine.ProveConspiracy(conspiracyId))
+            {
                 SoundManager.Play("upgrade");
+                UpdatePyramidLevel(); // Immediately update pyramid appearance
+            }
         }
     }
 
@@ -2280,36 +2951,26 @@ public partial class MainWindow : Window
 
         EvidenceDisplay.Text = $"{NumberFormatter.Format(state.Evidence)} Evidence";
         EpsDisplay.Text = NumberFormatter.FormatPerSecond(_engine.CalculateEvidencePerSecond());
-        TinfoilDisplay.Text = state.Tinfoil.ToString();
-        IlluminatiTokenDisplay.Text = state.IlluminatiTokens.ToString();
+        TinfoilDisplay.Text = NumberFormatter.FormatInteger(state.Tinfoil);
+        IlluminatiTokenDisplay.Text = NumberFormatter.FormatInteger(state.IlluminatiTokens);
         TokensPanel.Visibility = state.IlluminatiTokens > 0 ? Visibility.Visible : Visibility.Collapsed;
-        BelieversDisplay.Text = NumberFormatter.Format(state.Believers);
-        AvailableBelieversDisplay.Text = NumberFormatter.Format(state.AvailableBelievers);
-
-        // Click power label
-        double clickPower = _engine.CalculateClickPower();
-        double critChance = _engine.GetCriticalChance();
-        string clickText = $"+{NumberFormatter.Format(clickPower)}/click";
-        if (critChance > 0) clickText += $" ({critChance:P0} crit)";
-        ClickPowerLabel.Text = clickText;
+        BelieversDisplay.Text = NumberFormatter.FormatInteger(state.Believers);
+        AvailableBelieversDisplay.Text = NumberFormatter.FormatInteger(state.AvailableBelievers);
 
         double autoRate = _engine.GetAutoClickRate();
         if (autoRate > 0)
             EpsDisplay.Text += $" (+{autoRate}/s auto)";
 
-        // Combo visual - pupil grows and changes color
-        // Clear any running animations so we can set size directly
-        EyePupil.BeginAnimation(WidthProperty, null);
-        EyePupil.BeginAnimation(HeightProperty, null);
-
+        // Combo visual - eye grows bigger and changes color with combo
         double comboProgress = Math.Min(state.ComboMeter, 1.0);
-        double pupilSize = PUPIL_MIN_SIZE + (PUPIL_MAX_SIZE - PUPIL_MIN_SIZE) * comboProgress;
-        EyePupil.Width = pupilSize;
-        EyePupil.Height = pupilSize;
 
         // Color gradient: green (0%) -> yellow (50%) -> gold (100%)
         Color comboColor;
-        if (comboProgress < 0.5)
+        if (state.GoldenEyeActive)
+        {
+            comboColor = Colors.Gold;
+        }
+        else if (comboProgress < 0.5)
         {
             // Green to Yellow
             double t = comboProgress * 2;
@@ -2329,14 +2990,38 @@ public partial class MainWindow : Window
                 (byte)0                    // B: 0
             );
         }
-        EyePupil.Fill = new SolidColorBrush(comboColor);
-        EyePupil.Opacity = 0.3 + 0.5 * comboProgress; // Gets brighter as combo builds
+
+        // Update eye size based on combo (grows from 1.0 to 1.25 as combo builds) + idle pulse
+        if (!state.GoldenEyeActive)
+        {
+            // Add subtle idle pulse (oscillates ±4% over 1.5 seconds)
+            double pulsePhase = (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond) % 3000 / 3000.0;
+            double pulseFactor = 1.0 + 0.04 * Math.Sin(pulsePhase * 2 * Math.PI);
+
+            double targetScale = (1.0 + 0.25 * comboProgress) * pulseFactor;
+            EyeScale.ScaleX = targetScale;
+            EyeScale.ScaleY = targetScale;
+
+            // Update glow effect - color and intensity
+            EyeGlow.Color = comboColor;
+            EyeGlow.BlurRadius = 20 + 20 * comboProgress;
+            EyeGlow.Opacity = 0.6 + 0.4 * comboProgress;
+
+            // Also update ambient glow color and size
+            EyeAmbientGlow.Fill = new RadialGradientBrush(comboColor, Colors.Transparent);
+            EyeAmbientGlow.Width = 200 + 40 * comboProgress;
+            EyeAmbientGlow.Height = 200 + 40 * comboProgress;
+            EyeAmbientGlow.Opacity = 0.2 + 0.3 * comboProgress;
+        }
+
+        // Update pyramid based on proven conspiracies
+        UpdatePyramidLevel();
 
         // Combo label
         ComboLabel.Text = state.ComboClicks > 0 ? $"x{state.ComboClicks} COMBO" : "";
 
         TotalEvidenceDisplay.Text = NumberFormatter.Format(state.TotalEvidenceEarned);
-        TotalClicksDisplay.Text = state.TotalClicks.ToString("N0");
+        TotalClicksDisplay.Text = NumberFormatter.FormatInteger(state.TotalClicks);
 
         // Show click power breakdown
         var (clickBase, clickMult, clickEps) = _engine.GetClickPowerBreakdown();
@@ -2368,10 +3053,169 @@ public partial class MainWindow : Window
         UpdateDailyChallengesPanel();
         UpdatePrestigePanel();
         UpdateMatrixPanel();
-        UpdateChallengeModePanel();
         UpdateStatisticsPanel();
         UpdateTabVisibility();
         UpdateTabHighlights();
+    }
+
+    private void UpdatePyramidLevel()
+    {
+        int conspiracyCount = _engine.State.ProvenConspiracies.Count;
+
+        // Update rank display
+        UpdateRankDisplay(conspiracyCount);
+
+        // Each conspiracy increases level, max at 25 for pyramid icons
+        int level = Math.Min(conspiracyCount, 25);
+
+        // Only update pyramid if level changed
+        if (level == _currentPyramidLevel) return;
+
+        bool isLevelUp = level > _currentPyramidLevel && _currentPyramidLevel >= 0;
+        _currentPyramidLevel = level;
+
+        // Update pyramid icon from sprite sheet
+        var pyramidIcon = PyramidSpriteSheetLoader.GetPyramidIcon(level);
+        if (pyramidIcon != null)
+        {
+            PyramidImage.Source = pyramidIcon;
+        }
+
+        // Glow color tiers - eye changes when glow color tier changes
+        Color glowColor = level switch
+        {
+            <= 11 => Color.FromRgb(0, 255, 65),      // Green (eye_basic)
+            <= 17 => Color.FromRgb(200, 220, 100),   // Yellow-green (eye_golden)
+            <= 23 => Color.FromRgb(150, 100, 255),   // Purple (eye_cosmic)
+            _ => Color.FromRgb(220, 150, 255),       // Light purple/pink (eye_omega)
+        };
+
+        // Update glow color and eye tier (only when not in golden eye mode)
+        if (!_engine.State.GoldenEyeActive)
+        {
+            // Update eye icon to match glow color tier
+            var eyeIcon = PyramidSpriteSheetLoader.GetEyeIcon(pyramidLevel: level);
+            if (eyeIcon != null) EyeImage.Source = eyeIcon;
+
+            PyramidGlow.Color = glowColor;
+            EyeAmbientGlow.Fill = new RadialGradientBrush(glowColor, Colors.Transparent);
+        }
+
+        // Scale pyramid gradually with each level (1.0 at level 0, up to 2.0 at level 25)
+        double baseScale = 1.0 + (level * 0.04); // Each level adds 4% size
+        PyramidScale.ScaleX = baseScale;
+        PyramidScale.ScaleY = baseScale;
+
+        // Also scale the click button and ambient glow
+        ClickButton.Width = 180 * baseScale;
+        ClickButton.Height = 180 * baseScale;
+
+        // Increase eye size with progression
+        double eyeSize = 50 + (level * 2.4); // 50 to 110 over 25 levels
+        EyeImage.Width = eyeSize;
+        EyeImage.Height = eyeSize;
+
+        // Flash effect on level up
+        if (isLevelUp)
+        {
+            PlayPyramidLevelUpEffect();
+        }
+    }
+
+    private void UpdateRankDisplay(int conspiracyCount)
+    {
+        var rank = RankData.GetRankForConspiracies(conspiracyCount);
+
+        // Only update if rank changed
+        if (rank.Id == _currentRankId) return;
+        _currentRankId = rank.Id;
+
+        // Show/hide rank panel based on whether player has proven any conspiracies
+        if (conspiracyCount == 0)
+        {
+            RankDisplayPanel.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        RankDisplayPanel.Visibility = Visibility.Visible;
+        RankSocietyDisplay.Text = $"{rank.Society}:";
+        RankTitleDisplay.Text = rank.Title;
+
+        // Set color based on rank
+        try
+        {
+            var color = (Color)ColorConverter.ConvertFromString(rank.Color);
+            RankTitleDisplay.Foreground = new SolidColorBrush(color);
+        }
+        catch
+        {
+            RankTitleDisplay.Foreground = GreenBrush;
+        }
+
+        // Show rank up notification if not first rank
+        if (conspiracyCount > 1)
+        {
+            AddNotification($"Rank Up! You are now {rank.Title} of the {rank.Society}!", new SolidColorBrush((Color)ColorConverter.ConvertFromString(rank.Color)));
+            if (!string.IsNullOrEmpty(rank.FlavorText))
+            {
+                ShowToast(rank.Icon, rank.FlavorText);
+            }
+        }
+    }
+
+    private void PlayPyramidLevelUpEffect()
+    {
+        // Create a white flash overlay
+        var flash = new Ellipse
+        {
+            Width = 300,
+            Height = 300,
+            Fill = new RadialGradientBrush(
+                Color.FromArgb(200, 255, 255, 255),
+                Colors.Transparent),
+            IsHitTestVisible = false,
+            Opacity = 0
+        };
+
+        // Center it on the pyramid
+        flash.HorizontalAlignment = HorizontalAlignment.Center;
+        flash.VerticalAlignment = VerticalAlignment.Center;
+        EyeContainer.Children.Insert(0, flash);
+
+        // Animate flash in and out
+        var fadeIn = new DoubleAnimation
+        {
+            From = 0,
+            To = 1,
+            Duration = TimeSpan.FromMilliseconds(150)
+        };
+
+        var fadeOut = new DoubleAnimation
+        {
+            From = 1,
+            To = 0,
+            BeginTime = TimeSpan.FromMilliseconds(150),
+            Duration = TimeSpan.FromMilliseconds(400)
+        };
+
+        fadeOut.Completed += (s, e) => EyeContainer.Children.Remove(flash);
+
+        flash.BeginAnimation(OpacityProperty, fadeIn);
+        flash.BeginAnimation(OpacityProperty, fadeOut);
+
+        // Also pulse the pyramid scale
+        var scaleUp = new DoubleAnimation
+        {
+            To = PyramidScale.ScaleX * 1.15,
+            Duration = TimeSpan.FromMilliseconds(150),
+            AutoReverse = true
+        };
+
+        PyramidScale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleUp);
+        PyramidScale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleUp);
+
+        // Play a sound
+        SoundManager.Play("achievement");
     }
 
     private static readonly SolidColorBrush TabGlowBrush = new(Color.FromRgb(0, 255, 65));
@@ -2433,23 +3277,31 @@ public partial class MainWindow : Window
     private void UpdateTabVisibility()
     {
         var state = _engine.State;
+        int conspiracyCount = state.ProvenConspiracies.Count;
 
-        // Tinfoil Shop: show when user has earned any tinfoil or has 10+ tinfoil shop purchases available
-        // ~50% of usefulness = having some tinfoil to spend
-        TinfoilShopTab.Visibility = (state.Tinfoil > 0 || state.TinfoilShopPurchases.Count > 0)
+        // Tinfoil Shop: show after proving 1+ conspiracies (they reward tinfoil)
+        // OR if player has tinfoil/purchases from previous sessions
+        TinfoilShopTab.Visibility = (conspiracyCount >= 1 || state.Tinfoil > 0 || state.TinfoilShopPurchases.Count > 0)
             ? Visibility.Visible : Visibility.Collapsed;
 
-        // Quests: show when user has ~10 believers (first quest needs 20)
-        QuestsTab.Visibility = state.Believers >= 10
+        // Quests: show after proving 2+ conspiracies (unlocks the believer network)
+        // OR if player has 50+ believers (backup path for slow conspiracy provers)
+        QuestsTab.Visibility = (conspiracyCount >= 2 || state.Believers >= 50)
             ? Visibility.Visible : Visibility.Collapsed;
 
-        // Skills: show when user has 5+ achievements (halfway to first skill point at 10)
-        // OR has any skill points, OR has unlocked skills
-        SkillsTab.Visibility = (state.UnlockedAchievements.Count >= 5 || _engine.GetTotalSkillPoints() > 0 || state.UnlockedSkills.Count > 0)
+        // Skills: show after proving 3+ conspiracies
+        // OR if player has earned skill points/unlocked skills from previous sessions
+        SkillsTab.Visibility = (conspiracyCount >= 3 || _engine.GetTotalSkillPoints() > 0 || state.UnlockedSkills.Count > 0)
             ? Visibility.Visible : Visibility.Collapsed;
 
-        // Illuminati: show when user has 500B+ total evidence (prestige useful at 1T)
-        IlluminatiTab.Visibility = state.TotalEvidenceEarned >= 500_000_000_000 || state.IlluminatiTokens > 0 || state.TimesAscended > 0
+        // Daily Challenges: show after proving 2+ conspiracies
+        DailyTab.Visibility = conspiracyCount >= 2
+            ? Visibility.Visible : Visibility.Collapsed;
+
+        // Illuminati: show after proving 5+ conspiracies AND have 500B+ evidence
+        // OR if player already has tokens/ascended
+        IlluminatiTab.Visibility = ((conspiracyCount >= 5 && state.TotalEvidenceEarned >= 500_000_000_000) ||
+            state.IlluminatiTokens > 0 || state.TimesAscended > 0)
             ? Visibility.Visible : Visibility.Collapsed;
     }
 
@@ -2470,16 +3322,26 @@ public partial class MainWindow : Window
             // Always update enabled state (depends on evidence which changes constantly)
             button.IsEnabled = state.Evidence >= cost;
 
-            // Dirty-check: skip text updates if nothing changed
-            var newState = (cost, owned, multipliedProduction);
-            if (_lastGenState.TryGetValue(gen.Id, out var lastState) && lastState == newState)
-                continue;
-            _lastGenState[gen.Id] = newState;
-
             // Per-generator production (with multipliers)
             double perGenBase = gen.BaseProduction;
             double perGenMultiplied = perGenBase * epsMult;
 
+            // State tuple for dirty-checking text updates
+            var newState = (cost, owned, multipliedProduction);
+
+            // Always update upgrade panel (affordability depends on evidence which changes constantly)
+            // Upgrade panel is now stored separately (outside the button)
+            if (_generatorUpgradePanels.TryGetValue(gen.Id, out var upgradePanel))
+            {
+                UpdateGeneratorUpgradePanel(gen.Id, owned, upgradePanel);
+            }
+
+            // Skip text updates if nothing changed (dirty check)
+            if (_lastGenState.TryGetValue(gen.Id, out var lastState) && lastState == newState)
+                continue;
+            _lastGenState[gen.Id] = newState;
+
+            // Button content is now a Grid directly (not wrapped in StackPanel)
             if (button.Content is Grid grid)
             {
                 foreach (var child in grid.Children)
@@ -2504,6 +3366,144 @@ public partial class MainWindow : Window
                     }
                 }
             }
+        }
+    }
+
+    private void UpdateGeneratorUpgradePanel(string generatorId, int owned, WrapPanel panel)
+    {
+        var availableUpgrades = _engine.GetAvailableGeneratorUpgrades(generatorId).ToList();
+        var purchasedUpgrades = _engine.GetPurchasedGeneratorUpgrades(generatorId).ToList();
+        var allUpgrades = GeneratorUpgradeData.GetUpgradesForGenerator(generatorId).ToList();
+
+        // Show panel if there are any upgrades to display
+        bool hasContent = availableUpgrades.Count > 0 || purchasedUpgrades.Count > 0 || allUpgrades.Any(u => owned >= 10);
+        panel.Visibility = hasContent ? Visibility.Visible : Visibility.Collapsed;
+
+        var state = _engine.State;
+
+        // Build state hash to check if we need to rebuild
+        var stateBuilder = new System.Text.StringBuilder();
+        stateBuilder.Append(owned).Append('|');
+        foreach (var u in allUpgrades)
+        {
+            bool purchased = purchasedUpgrades.Any(p => p.Id == u.Id);
+            bool available = availableUpgrades.Any(a => a.Id == u.Id);
+            bool canAfford = state.Evidence >= _engine.GetGeneratorUpgradeCost(u.Id);
+            stateBuilder.Append(u.Id).Append(':').Append(purchased).Append(':').Append(available).Append(':').Append(canAfford).Append(';');
+        }
+        var currentState = stateBuilder.ToString();
+
+        // Only rebuild if state changed
+        if (_lastUpgradePanelState.TryGetValue(generatorId, out var lastState) && lastState == currentState)
+            return;
+        _lastUpgradePanelState[generatorId] = currentState;
+
+        panel.Children.Clear();
+
+        // Show all 4 upgrade slots
+        foreach (var upgrade in allUpgrades)
+        {
+            bool isPurchased = purchasedUpgrades.Any(u => u.Id == upgrade.Id);
+            bool isAvailable = availableUpgrades.Any(u => u.Id == upgrade.Id);
+            bool isLocked = owned < upgrade.UnlockLevel;
+            double cost = _engine.GetGeneratorUpgradeCost(upgrade.Id);
+            bool canAfford = state.Evidence >= cost;
+
+            var border = new Border
+            {
+                Background = isPurchased ? new SolidColorBrush(Color.FromRgb(20, 60, 20)) :
+                             isAvailable && canAfford ? new SolidColorBrush(Color.FromRgb(40, 40, 60)) :
+                             new SolidColorBrush(Color.FromRgb(30, 30, 35)),
+                BorderBrush = isPurchased ? GreenBrush :
+                              isAvailable && canAfford ? GoldBrush :
+                              isAvailable ? new SolidColorBrush(Color.FromRgb(120, 100, 60)) :
+                              DimBrush,
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(4),
+                Padding = new Thickness(8, 4, 8, 4),
+                Margin = new Thickness(0, 0, 6, 0),
+                Cursor = isAvailable && canAfford ? Cursors.Hand : Cursors.Arrow,
+                Tag = upgrade.Id
+            };
+
+            var stack = new StackPanel { Orientation = Orientation.Horizontal };
+
+            var levelText = new TextBlock
+            {
+                Text = $"Lv{upgrade.UnlockLevel}",
+                FontSize = 12,
+                FontWeight = FontWeights.Bold,
+                Foreground = isPurchased ? GreenBrush : isAvailable && canAfford ? GoldBrush : DimBrush,
+                Margin = new Thickness(0, 0, 6, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            var iconText = new TextBlock
+            {
+                Text = upgrade.Icon,
+                FontSize = 14,
+                Margin = new Thickness(0, 0, 4, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            string displayText;
+            if (isPurchased)
+                displayText = upgrade.Name;
+            else if (isLocked)
+                displayText = $"Unlock at {upgrade.UnlockLevel}";
+            else
+                displayText = $"{NumberFormatter.Format(cost)}";
+
+            var descText = new TextBlock
+            {
+                Text = displayText,
+                FontSize = 12,
+                Foreground = isPurchased ? LightBrush :
+                            isAvailable && canAfford ? GoldBrush :
+                            isAvailable ? new SolidColorBrush(Color.FromRgb(180, 150, 100)) :
+                            DimBrush,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            stack.Children.Add(levelText);
+            stack.Children.Add(iconText);
+            stack.Children.Add(descText);
+            border.Child = stack;
+
+            if (isAvailable && canAfford)
+            {
+                var normalBg = new SolidColorBrush(Color.FromRgb(40, 40, 60));
+                var hoverBg = new SolidColorBrush(Color.FromRgb(60, 60, 90));
+
+                border.MouseEnter += (s, e) =>
+                {
+                    if (s is Border b) b.Background = hoverBg;
+                };
+                border.MouseLeave += (s, e) =>
+                {
+                    if (s is Border b) b.Background = normalBg;
+                };
+                border.PreviewMouseLeftButtonDown += (s, e) =>
+                {
+                    e.Handled = true; // Prevent button click from starting
+                    var upgradeId = (s as Border)?.Tag as string;
+                    if (upgradeId != null && _engine.PurchaseGeneratorUpgrade(upgradeId))
+                    {
+                        ShowFlavorMessage($"Unlocked: {upgrade.Name}!");
+                    }
+                };
+                // Also handle MouseUp to prevent button Click event from firing
+                border.PreviewMouseLeftButtonUp += (s, e) =>
+                {
+                    e.Handled = true;
+                };
+            }
+
+            // Add tooltip
+            string? costText = !isPurchased && !isLocked ? $"Cost: {NumberFormatter.Format(cost)}" : null;
+            border.ToolTip = CreateStyledTooltip(upgrade.Name, upgrade.Description, costText);
+
+            panel.Children.Add(border);
         }
     }
 
@@ -2532,15 +3532,16 @@ public partial class MainWindow : Window
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-                var iconText = IconData.UpgradeIcons.TryGetValue(upgrade.Id, out var icon) ? icon : "?";
-                var iconBlock = new TextBlock { Text = iconText, FontSize = 16, Foreground = GoldBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+                var fallbackText = IconData.UpgradeIcons.TryGetValue(upgrade.Id, out var icon) ? icon : "?";
+                var iconElement = CreateStyledIconBorder(upgrade.Id, fallbackText, 32, GoldBrush);
+                iconElement.Margin = new Thickness(0, 0, 10, 0);
                 var stack = new StackPanel();
                 stack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = GoldBrush });
                 stack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 10, Foreground = DimBrush });
 
-                Grid.SetColumn(iconBlock, 0);
+                Grid.SetColumn(iconElement, 0);
                 Grid.SetColumn(stack, 1);
-                grid.Children.Add(iconBlock);
+                grid.Children.Add(iconElement);
                 grid.Children.Add(stack);
                 border.Child = grid;
                 PurchasedUpgradesPanel.Children.Add(border);
@@ -2563,23 +3564,24 @@ public partial class MainWindow : Window
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-                var iconText = IconData.UpgradeIcons.TryGetValue(upgrade.Id, out var icon) ? icon : "?";
-                var iconBlock = new TextBlock { Text = iconText, FontSize = 18, Foreground = GreenBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+                var fallbackText = IconData.UpgradeIcons.TryGetValue(upgrade.Id, out var icon) ? icon : "?";
+                var iconElement = CreateStyledIconBorder(upgrade.Id, fallbackText, 64, GreenBrush);
+                iconElement.Margin = new Thickness(0, 0, 15, 0);
 
                 var leftStack = new StackPanel();
-                leftStack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush });
-                leftStack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 12, Foreground = LightBrush });
-                leftStack.Children.Add(new TextBlock { Text = upgrade.FlavorText, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic, TextWrapping = TextWrapping.Wrap, MaxWidth = 280 });
+                leftStack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush, FontSize = 21 });
+                leftStack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 18, Foreground = LightBrush });
+                leftStack.Children.Add(new TextBlock { Text = upgrade.FlavorText, FontSize = 15, Foreground = DimBrush, FontStyle = FontStyles.Italic, TextWrapping = TextWrapping.Wrap, MaxWidth = 420 });
 
                 var costText = upgrade.TinfoilCost > 0 ? $"{upgrade.TinfoilCost} Tinfoil" : NumberFormatter.Format(upgrade.EvidenceCost);
                 var costBrush = upgrade.TinfoilCost > 0 ? SilverBrush : GoldBrush;
-                var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0, 0, 0) };
-                rightStack.Children.Add(new TextBlock { Text = costText, FontWeight = FontWeights.Bold, Foreground = costBrush, HorizontalAlignment = HorizontalAlignment.Right });
+                var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(15, 0, 0, 0) };
+                rightStack.Children.Add(new TextBlock { Text = costText, FontWeight = FontWeights.Bold, Foreground = costBrush, HorizontalAlignment = HorizontalAlignment.Right, FontSize = 21 });
 
-                Grid.SetColumn(iconBlock, 0);
+                Grid.SetColumn(iconElement, 0);
                 Grid.SetColumn(leftStack, 1);
                 Grid.SetColumn(rightStack, 2);
-                grid.Children.Add(iconBlock);
+                grid.Children.Add(iconElement);
                 grid.Children.Add(leftStack);
                 grid.Children.Add(rightStack);
 
@@ -2617,14 +3619,15 @@ public partial class MainWindow : Window
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-                var iconBlock = new TextBlock { Text = upgrade.Icon, FontSize = 16, Foreground = SilverBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+                var iconElement = CreateStyledIconBorder(upgrade.Icon, "◆", 48, SilverBrush);
+                iconElement.Margin = new Thickness(0, 0, 15, 0);
                 var stack = new StackPanel();
-                stack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = SilverBrush });
-                stack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 10, Foreground = DimBrush });
+                stack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = SilverBrush, FontSize = 21 });
+                stack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 15, Foreground = DimBrush });
 
-                Grid.SetColumn(iconBlock, 0);
+                Grid.SetColumn(iconElement, 0);
                 Grid.SetColumn(stack, 1);
-                grid.Children.Add(iconBlock);
+                grid.Children.Add(iconElement);
                 grid.Children.Add(stack);
                 border.Child = grid;
                 PurchasedTinfoilPanel.Children.Add(border);
@@ -2644,20 +3647,22 @@ public partial class MainWindow : Window
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-                var iconBlock = new TextBlock { Text = upgrade.Icon, FontSize = 18, Foreground = SilverBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0), Tag = "icon" };
+                var iconElement = CreateStyledIconBorder(upgrade.Icon, "◆", 64, SilverBrush);
+                iconElement.Margin = new Thickness(0, 0, 15, 0);
+                iconElement.Tag = "icon";
 
                 var leftStack = new StackPanel();
-                leftStack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = SilverBrush, Tag = "name" });
-                leftStack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 12, Foreground = LightBrush, Tag = "desc" });
-                leftStack.Children.Add(new TextBlock { Text = upgrade.FlavorText, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic, TextWrapping = TextWrapping.Wrap, MaxWidth = 280 });
+                leftStack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = SilverBrush, Tag = "name", FontSize = 21 });
+                leftStack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 18, Foreground = LightBrush, Tag = "desc" });
+                leftStack.Children.Add(new TextBlock { Text = upgrade.FlavorText, FontSize = 15, Foreground = DimBrush, FontStyle = FontStyles.Italic, TextWrapping = TextWrapping.Wrap, MaxWidth = 420 });
 
-                var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0, 0, 0) };
-                rightStack.Children.Add(new TextBlock { Text = $"{upgrade.TinfoilCost} Tinfoil", FontWeight = FontWeights.Bold, Foreground = SilverBrush, HorizontalAlignment = HorizontalAlignment.Right, Tag = "cost" });
+                var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(15, 0, 0, 0) };
+                rightStack.Children.Add(new TextBlock { Text = $"{NumberFormatter.FormatInteger(upgrade.TinfoilCost)} Tinfoil", FontWeight = FontWeights.Bold, Foreground = SilverBrush, HorizontalAlignment = HorizontalAlignment.Right, Tag = "cost", FontSize = 21 });
 
-                Grid.SetColumn(iconBlock, 0);
+                Grid.SetColumn(iconElement, 0);
                 Grid.SetColumn(leftStack, 1);
                 Grid.SetColumn(rightStack, 2);
-                grid.Children.Add(iconBlock);
+                grid.Children.Add(iconElement);
                 grid.Children.Add(leftStack);
                 grid.Children.Add(rightStack);
 
@@ -2688,35 +3693,129 @@ public partial class MainWindow : Window
             ConspiracyPanel.Children.Clear();
             _conspiracyButtons.Clear();
 
-            foreach (var conspiracy in ConspiracyData.AllConspiracies.Where(c => state.ProvenConspiracies.Contains(c.Id)))
+            // Show progress summary
+            int totalConspiracies = ConspiracyData.AllConspiracies.Count;
+            int provenCount = state.ProvenConspiracies.Count;
+
+            var progressPanel = new StackPanel { Margin = new Thickness(5, 0, 5, 10) };
+            progressPanel.Children.Add(new TextBlock
             {
-                var border = new Border { Background = new SolidColorBrush(Color.FromRgb(15, 52, 96)), BorderBrush = GreenBrush, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(4), Padding = new Thickness(10, 8, 10, 8), Margin = new Thickness(5) };
-                var grid = new Grid();
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                Text = $"Conspiracies Proven: {provenCount} / {totalConspiracies}",
+                FontWeight = FontWeights.Bold,
+                Foreground = GreenBrush,
+                FontSize = 18,
+                HorizontalAlignment = HorizontalAlignment.Center
+            });
 
-                var fallbackText = IconData.ConspiracyIcons.TryGetValue(conspiracy.Id, out var icon) ? icon : "?";
-                var iconElement = IconHelper.CreateIconWithFallback(conspiracy.Id, fallbackText, 32, GreenBrush);
-                iconElement.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-                iconElement.SetValue(MarginProperty, new Thickness(0, 0, 12, 0));
+            // Progress bar - uses Grid with star sizing for proper scaling
+            double progressRatio = provenCount / (double)totalConspiracies;
+            var progressBorder = new Border
+            {
+                Background = new SolidColorBrush(Color.FromRgb(30, 30, 40)),
+                CornerRadius = new CornerRadius(4),
+                Height = 12,
+                Margin = new Thickness(0, 5, 0, 0),
+                ClipToBounds = true
+            };
+            var progressGrid = new Grid();
+            progressGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(progressRatio, GridUnitType.Star) });
+            progressGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1 - progressRatio, GridUnitType.Star) });
+            var progressFill = new Border
+            {
+                Background = GreenBrush,
+                CornerRadius = new CornerRadius(4, 0, 0, 4)
+            };
+            Grid.SetColumn(progressFill, 0);
+            progressGrid.Children.Add(progressFill);
+            progressBorder.Child = progressGrid;
+            progressPanel.Children.Add(progressBorder);
+            ConspiracyPanel.Children.Add(progressPanel);
 
-                var stack = new StackPanel();
-                stack.Children.Add(new TextBlock { Text = $"[PROVEN] {conspiracy.Name}", FontWeight = FontWeights.Bold, Foreground = GreenBrush });
-                stack.Children.Add(new TextBlock { Text = conspiracy.FlavorText, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic });
-                var bonusText = conspiracy.MultiplierBonus > 1.0 ? $"x{conspiracy.MultiplierBonus} all production" : $"+{conspiracy.ClickBonus} click power";
-                stack.Children.Add(new TextBlock { Text = bonusText, FontSize = 11, Foreground = GoldBrush, Margin = new Thickness(0, 3, 0, 0) });
+            // Show all proven conspiracies
+            var provenConspiracies = ConspiracyData.AllConspiracies.Where(c => state.ProvenConspiracies.Contains(c.Id)).ToList();
+            if (provenConspiracies.Count > 0)
+            {
+                // Header for proven section
+                ConspiracyPanel.Children.Add(new TextBlock
+                {
+                    Text = "PROVEN",
+                    FontWeight = FontWeights.Bold,
+                    Foreground = GreenBrush,
+                    FontSize = 14,
+                    Margin = new Thickness(5, 10, 5, 5)
+                });
 
-                Grid.SetColumn(iconElement, 0);
-                Grid.SetColumn(stack, 1);
-                grid.Children.Add(iconElement);
-                grid.Children.Add(stack);
-                border.Child = grid;
-                ConspiracyPanel.Children.Add(border);
+                foreach (var proven in provenConspiracies)
+                {
+                    var border = new Border
+                    {
+                        Background = new SolidColorBrush(Color.FromRgb(15, 45, 30)),
+                        BorderBrush = GreenBrush,
+                        BorderThickness = new Thickness(1),
+                        CornerRadius = new CornerRadius(4),
+                        Padding = new Thickness(10, 6, 10, 6),
+                        Margin = new Thickness(5, 2, 5, 2)
+                    };
+
+                    var grid = new Grid();
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+                    var fallbackText = IconData.ConspiracyIcons.TryGetValue(proven.Id, out var icon) ? icon : "?";
+                    var iconElement = CreateStyledIconBorder(proven.Id, fallbackText, 72, GreenBrush);
+                    iconElement.Margin = new Thickness(0, 0, 10, 0);
+
+                    var nameText = new TextBlock
+                    {
+                        Text = proven.Name,
+                        FontWeight = FontWeights.Bold,
+                        Foreground = GreenBrush,
+                        FontSize = 18,
+                        VerticalAlignment = VerticalAlignment.Center
+                    };
+
+                    var bonusText = proven.MultiplierBonus > 1.0 ? $"x{proven.MultiplierBonus} production" : $"+{proven.ClickBonus} click power";
+                    var bonusBlock = new TextBlock
+                    {
+                        Text = bonusText,
+                        FontSize = 14,
+                        Foreground = GoldBrush,
+                        VerticalAlignment = VerticalAlignment.Center
+                    };
+
+                    Grid.SetColumn(iconElement, 0);
+                    Grid.SetColumn(nameText, 1);
+                    Grid.SetColumn(bonusBlock, 2);
+                    grid.Children.Add(iconElement);
+                    grid.Children.Add(nameText);
+                    grid.Children.Add(bonusBlock);
+                    border.Child = grid;
+
+                    // Tooltip with full details
+                    border.ToolTip = CreateStyledTooltip(proven.Name, proven.FlavorText,
+                        proven.MultiplierBonus > 1.0 ? $"x{proven.MultiplierBonus} all production" : $"+{proven.ClickBonus} click power");
+
+                    ConspiracyPanel.Children.Add(border);
+                }
             }
 
-            foreach (var conspiracy in available)
+            // Show only the next available conspiracy (first one in the list)
+            if (available.Count > 0)
             {
-                var button = new Button { Style = buttonStyle, Tag = conspiracy.Id, HorizontalContentAlignment = HorizontalAlignment.Stretch };
+                // Header for next section
+                ConspiracyPanel.Children.Add(new TextBlock
+                {
+                    Text = "NEXT",
+                    FontWeight = FontWeights.Bold,
+                    Foreground = GoldBrush,
+                    FontSize = 14,
+                    Margin = new Thickness(5, 10, 5, 5)
+                });
+
+                var nextConspiracy = available.First();
+
+                var button = new Button { Style = buttonStyle, Tag = nextConspiracy.Id, HorizontalContentAlignment = HorizontalAlignment.Stretch };
                 button.Click += ConspiracyButton_Click;
 
                 var grid = new Grid();
@@ -2724,22 +3823,21 @@ public partial class MainWindow : Window
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-                var fallbackText2 = IconData.ConspiracyIcons.TryGetValue(conspiracy.Id, out var icon2) ? icon2 : "?";
-                var iconElement2 = IconHelper.CreateIconWithFallback(conspiracy.Id, fallbackText2, 28, DimBrush);
-                iconElement2.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-                iconElement2.SetValue(MarginProperty, new Thickness(0, 0, 10, 0));
+                var fallbackText2 = IconData.ConspiracyIcons.TryGetValue(nextConspiracy.Id, out var icon2) ? icon2 : "?";
+                var iconElement2 = CreateStyledIconBorder(nextConspiracy.Id, fallbackText2, 96, DimBrush);
+                iconElement2.Margin = new Thickness(0, 0, 15, 0);
 
                 var leftStack = new StackPanel();
-                leftStack.Children.Add(new TextBlock { Text = conspiracy.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush });
-                leftStack.Children.Add(new TextBlock { Text = conspiracy.Description, FontSize = 11, Foreground = LightBrush });
-                leftStack.Children.Add(new TextBlock { Text = conspiracy.FlavorText, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic, TextWrapping = TextWrapping.Wrap, MaxWidth = 280 });
-                var bonusText2 = conspiracy.MultiplierBonus > 1.0 ? $"Reward: x{conspiracy.MultiplierBonus} all + {conspiracy.TinfoilReward} Tinfoil" : $"Reward: +{conspiracy.ClickBonus} click + {conspiracy.TinfoilReward} Tinfoil";
-                leftStack.Children.Add(new TextBlock { Text = bonusText2, FontSize = 10, Foreground = GoldBrush, Margin = new Thickness(0, 3, 0, 0) });
+                leftStack.Children.Add(new TextBlock { Text = nextConspiracy.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush, FontSize = 21 });
+                leftStack.Children.Add(new TextBlock { Text = nextConspiracy.Description, FontSize = 17, Foreground = LightBrush });
+                leftStack.Children.Add(new TextBlock { Text = nextConspiracy.FlavorText, FontSize = 15, Foreground = DimBrush, FontStyle = FontStyles.Italic, TextWrapping = TextWrapping.Wrap, MaxWidth = 420 });
+                var bonusText2 = nextConspiracy.MultiplierBonus > 1.0 ? $"Reward: x{nextConspiracy.MultiplierBonus} all + {NumberFormatter.FormatInteger(nextConspiracy.TinfoilReward)} Tinfoil" : $"Reward: +{NumberFormatter.FormatInteger(nextConspiracy.ClickBonus)} click + {NumberFormatter.FormatInteger(nextConspiracy.TinfoilReward)} Tinfoil";
+                leftStack.Children.Add(new TextBlock { Text = bonusText2, FontSize = 15, Foreground = GoldBrush, Margin = new Thickness(0, 5, 0, 0) });
 
-                var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0, 0, 0) };
-                bool canClaim = state.TotalEvidenceEarned >= conspiracy.EvidenceCost;
-                rightStack.Children.Add(new TextBlock { Text = canClaim ? "✓ CLAIM" : $"Need {NumberFormatter.Format(conspiracy.EvidenceCost)}", FontWeight = FontWeights.Bold, Foreground = canClaim ? GreenBrush : DimBrush });
-                rightStack.Children.Add(new TextBlock { Text = "total evidence", FontSize = 9, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Center });
+                var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(15, 0, 0, 0) };
+                bool canClaim = state.TotalEvidenceEarned >= nextConspiracy.EvidenceCost;
+                rightStack.Children.Add(new TextBlock { Text = canClaim ? "✓ CLAIM" : $"Need {NumberFormatter.Format(nextConspiracy.EvidenceCost)}", FontWeight = FontWeights.Bold, Foreground = canClaim ? GreenBrush : DimBrush, FontSize = 21 });
+                rightStack.Children.Add(new TextBlock { Text = "total evidence", FontSize = 14, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Center });
 
                 Grid.SetColumn(iconElement2, 0);
                 Grid.SetColumn(leftStack, 1);
@@ -2750,10 +3848,20 @@ public partial class MainWindow : Window
 
                 button.Content = grid;
                 ConspiracyPanel.Children.Add(button);
-                _conspiracyButtons[conspiracy.Id] = button;
+                _conspiracyButtons[nextConspiracy.Id] = button;
+            }
+            else if (provenCount == totalConspiracies)
+            {
+                // All conspiracies proven!
+                var completeBorder = new Border { Background = new SolidColorBrush(Color.FromRgb(20, 60, 20)), BorderBrush = GoldBrush, BorderThickness = new Thickness(2), CornerRadius = new CornerRadius(8), Padding = new Thickness(20), Margin = new Thickness(5) };
+                var completeStack = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
+                completeStack.Children.Add(new TextBlock { Text = "🏆 ALL CONSPIRACIES PROVEN! 🏆", FontWeight = FontWeights.Bold, Foreground = GoldBrush, FontSize = 24, HorizontalAlignment = HorizontalAlignment.Center });
+                completeStack.Children.Add(new TextBlock { Text = "You have uncovered the ultimate truth.", FontSize = 16, Foreground = LightBrush, FontStyle = FontStyles.Italic, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 10, 0, 0) });
+                completeBorder.Child = completeStack;
+                ConspiracyPanel.Children.Add(completeBorder);
             }
 
-            if (ConspiracyPanel.Children.Count == 0)
+            if (ConspiracyPanel.Children.Count == 1) // Only progress bar
                 ConspiracyPanel.Children.Add(new TextBlock { Text = "Keep gathering evidence to uncover conspiracies...", Foreground = DimBrush, FontStyle = FontStyles.Italic, Margin = new Thickness(10) });
         }
 
@@ -2780,7 +3888,9 @@ public partial class MainWindow : Window
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-            var iconBlock = new TextBlock { Text = quest.Icon, FontSize = 20, Foreground = GoldBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+            var iconBlock = CreateStyledIconBorder(quest.Id, quest.Icon, 48, GoldBrush);
+            iconBlock.Margin = new Thickness(0, 0, 10, 0);
+            iconBlock.VerticalAlignment = VerticalAlignment.Center;
 
             var stack = new StackPanel();
             stack.Children.Add(new TextBlock { Text = quest.Name, FontWeight = FontWeights.Bold, Foreground = GoldBrush });
@@ -2792,10 +3902,15 @@ public partial class MainWindow : Window
             var progress = Math.Max(0, Math.Min(1, elapsed / totalDuration));
             var timeText = remaining.TotalSeconds > 0 ? $"{(int)remaining.TotalMinutes}:{remaining.Seconds:D2} remaining" : "Completing...";
 
-            // Fixed width progress bar
-            var progressBar = new Border { Background = DarkBrush, CornerRadius = new CornerRadius(3), Height = 8, Margin = new Thickness(0, 4, 0, 0), Width = 200 };
-            var progressFill = new Border { Background = GoldBrush, CornerRadius = new CornerRadius(3), HorizontalAlignment = HorizontalAlignment.Left, Width = progress * 200 };
-            progressBar.Child = progressFill;
+            // Scalable progress bar using Grid with star sizing
+            var progressBar = new Border { Background = DarkBrush, CornerRadius = new CornerRadius(3), Height = 8, Margin = new Thickness(0, 4, 0, 0), HorizontalAlignment = HorizontalAlignment.Stretch, ClipToBounds = true };
+            var progressGrid = new Grid();
+            progressGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(progress, GridUnitType.Star) });
+            progressGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1 - progress, GridUnitType.Star) });
+            var progressFill = new Border { Background = GoldBrush, CornerRadius = new CornerRadius(3, 0, 0, 3) };
+            Grid.SetColumn(progressFill, 0);
+            progressGrid.Children.Add(progressFill);
+            progressBar.Child = progressGrid;
             stack.Children.Add(progressBar);
             stack.Children.Add(new TextBlock { Text = $"{progress:P0} complete", FontSize = 10, Foreground = DimBrush, Margin = new Thickness(0, 2, 0, 0) });
 
@@ -2822,7 +3937,7 @@ public partial class MainWindow : Window
             AvailableQuestsPanel.Children.Clear();
             _questButtons.Clear();
 
-            foreach (var quest in QuestData.AllQuests)
+            foreach (var quest in QuestData.AllQuests.OrderBy(q => q.BelieversRequired))
             {
                 if (state.ActiveQuests.Any(q => q.QuestId == quest.Id)) continue;
 
@@ -2836,23 +3951,25 @@ public partial class MainWindow : Window
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-                var qIconBlock = new TextBlock { Text = quest.Icon, FontSize = 18, Foreground = riskColor, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+                var qIconBlock = CreateStyledIconBorder(quest.Id, quest.Icon, 56, riskColor);
+                qIconBlock.Margin = new Thickness(0, 0, 12, 0);
+                qIconBlock.VerticalAlignment = VerticalAlignment.Center;
 
                 var leftStack = new StackPanel();
-                leftStack.Children.Add(new TextBlock { Text = quest.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush });
-                leftStack.Children.Add(new TextBlock { Text = quest.Description, FontSize = 11, Foreground = LightBrush });
-                leftStack.Children.Add(new TextBlock { Text = quest.FlavorText, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic });
+                leftStack.Children.Add(new TextBlock { Text = quest.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush, FontSize = 18 });
+                leftStack.Children.Add(new TextBlock { Text = quest.Description, FontSize = 14, Foreground = LightBrush });
+                leftStack.Children.Add(new TextBlock { Text = quest.FlavorText, FontSize = 12, Foreground = DimBrush, FontStyle = FontStyles.Italic });
 
                 var riskText = quest.Risk switch { QuestRisk.Low => "LOW RISK", QuestRisk.Medium => "MEDIUM RISK", QuestRisk.High => "HIGH RISK", _ => "" };
                 double adjustedChance = Math.Min(quest.SuccessChance + _engine.GetTinfoilQuestSuccessBonus(), 0.95);
-                leftStack.Children.Add(new TextBlock { Text = $"{riskText} ({adjustedChance:P0})", FontSize = 10, Foreground = riskColor, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 3, 0, 0) });
+                leftStack.Children.Add(new TextBlock { Text = $"{riskText} ({adjustedChance:P0})", FontSize = 12, Foreground = riskColor, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 3, 0, 0) });
 
                 var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0, 0, 0) };
-                rightStack.Children.Add(new TextBlock { Text = $"{quest.BelieversRequired} believers", FontWeight = FontWeights.Bold, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right });
+                rightStack.Children.Add(new TextBlock { Text = $"{quest.BelieversRequired} believers", FontWeight = FontWeights.Bold, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right, FontSize = 16 });
                 var duration = TimeSpan.FromSeconds(quest.DurationSeconds);
-                rightStack.Children.Add(new TextBlock { Text = duration.TotalMinutes >= 1 ? $"{(int)duration.TotalMinutes}m" : $"{duration.Seconds}s", FontSize = 11, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Right });
+                rightStack.Children.Add(new TextBlock { Text = duration.TotalMinutes >= 1 ? $"{(int)duration.TotalMinutes}m" : $"{duration.Seconds}s", FontSize = 13, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Right });
                 var rewardText = quest.TinfoilReward > 0 ? $"+{quest.TinfoilReward} tinfoil" : $"~{quest.EvidenceMultiplier}s EPS";
-                rightStack.Children.Add(new TextBlock { Text = rewardText, FontSize = 10, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right });
+                rightStack.Children.Add(new TextBlock { Text = rewardText, FontSize = 12, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right });
 
                 Grid.SetColumn(qIconBlock, 0);
                 Grid.SetColumn(leftStack, 1);
@@ -2872,6 +3989,22 @@ public partial class MainWindow : Window
             button.IsEnabled = _engine.CanStartQuest(id);
     }
 
+    private string GetAchievementIconKey(Achievement achievement)
+    {
+        return achievement.Type switch
+        {
+            AchievementType.TotalEvidence => "achievement_evidence",
+            AchievementType.TotalClicks => "achievement_clicks",
+            AchievementType.GeneratorOwned or AchievementType.TotalGenerators => "achievement_generators",
+            AchievementType.ConspiraciesProven => "achievement_conspiracies",
+            AchievementType.PlayTime => "achievement_playtime",
+            AchievementType.TimesAscended or AchievementType.TimesMatrixBroken => "achievement_prestige",
+            AchievementType.QuestsCompleted => "achievement_quests",
+            AchievementType.TotalTinfoil or AchievementType.CriticalClicks or AchievementType.TotalTokensEarned => "achievement_meta",
+            _ => "achievement_evidence"
+        };
+    }
+
     private void UpdateAchievementPanel()
     {
         var state = _engine.State;
@@ -2883,11 +4016,22 @@ public partial class MainWindow : Window
 
         foreach (var achievement in _engine.GetUnlockedAchievements())
         {
-            var border = new Border { Background = new SolidColorBrush(Color.FromRgb(15, 52, 96)), BorderBrush = GoldBrush, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(4), Padding = new Thickness(10, 6, 10, 6), Margin = new Thickness(5) };
-            var stack = new StackPanel();
-            stack.Children.Add(new TextBlock { Text = achievement.Name, FontWeight = FontWeights.Bold, Foreground = GoldBrush });
-            stack.Children.Add(new TextBlock { Text = achievement.Description, FontSize = 10, Foreground = LightBrush });
-            border.Child = stack;
+            var border = new Border { Background = new SolidColorBrush(Color.FromRgb(15, 52, 96)), BorderBrush = GoldBrush, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(4), Padding = new Thickness(15, 9, 15, 9), Margin = new Thickness(5) };
+            var mainStack = new StackPanel { Orientation = Orientation.Horizontal };
+
+            // Add icon
+            var iconKey = GetAchievementIconKey(achievement);
+            var iconBorder = CreateStyledIconBorder(iconKey, "★", 48, GoldBrush);
+            iconBorder.Margin = new Thickness(0, 0, 12, 0);
+            iconBorder.VerticalAlignment = VerticalAlignment.Center;
+            mainStack.Children.Add(iconBorder);
+
+            var textStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            textStack.Children.Add(new TextBlock { Text = achievement.Name, FontWeight = FontWeights.Bold, Foreground = GoldBrush, FontSize = 21 });
+            textStack.Children.Add(new TextBlock { Text = achievement.Description, FontSize = 15, Foreground = LightBrush });
+            mainStack.Children.Add(textStack);
+
+            border.Child = mainStack;
             AchievementPanel.Children.Add(border);
         }
 
@@ -2900,16 +4044,34 @@ public partial class MainWindow : Window
                 AchievementType.GeneratorOwned => achievement.TargetId != null ? state.GetGeneratorCount(achievement.TargetId) : 0,
                 AchievementType.ConspiraciesProven => state.ProvenConspiracies.Count,
                 AchievementType.PlayTime => state.TotalPlayTimeSeconds,
+                AchievementType.TimesAscended => state.TimesAscended,
+                AchievementType.TimesMatrixBroken => state.TimesMatrixBroken,
+                AchievementType.QuestsCompleted => state.QuestsCompleted,
+                AchievementType.TotalTinfoil => state.Tinfoil,
+                AchievementType.CriticalClicks => state.CriticalClicks,
+                AchievementType.TotalTokensEarned => state.TotalIlluminatiTokensEarned,
                 _ => 0
             };
             double progress = Math.Min(current / achievement.Threshold, 1.0);
 
-            var border = new Border { Background = DarkBrush, BorderBrush = DimBrush, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(4), Padding = new Thickness(10, 6, 10, 6), Margin = new Thickness(5) };
-            var stack = new StackPanel();
-            stack.Children.Add(new TextBlock { Text = achievement.Name, FontWeight = FontWeights.Bold, Foreground = DimBrush });
-            stack.Children.Add(new TextBlock { Text = achievement.Description, FontSize = 10, Foreground = new SolidColorBrush(Color.FromRgb(100, 100, 100)) });
-            stack.Children.Add(new TextBlock { Text = $"Progress: {progress:P0}", FontSize = 9, Foreground = DimBrush, Margin = new Thickness(0, 2, 0, 0) });
-            border.Child = stack;
+            var border = new Border { Background = DarkBrush, BorderBrush = DimBrush, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(4), Padding = new Thickness(15, 9, 15, 9), Margin = new Thickness(5) };
+            var mainStack = new StackPanel { Orientation = Orientation.Horizontal };
+
+            // Add dimmed icon
+            var iconKey = GetAchievementIconKey(achievement);
+            var iconBorder = CreateStyledIconBorder(iconKey, "★", 48, DimBrush);
+            iconBorder.Margin = new Thickness(0, 0, 12, 0);
+            iconBorder.VerticalAlignment = VerticalAlignment.Center;
+            iconBorder.Opacity = 0.5;
+            mainStack.Children.Add(iconBorder);
+
+            var textStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            textStack.Children.Add(new TextBlock { Text = achievement.Name, FontWeight = FontWeights.Bold, Foreground = DimBrush, FontSize = 21 });
+            textStack.Children.Add(new TextBlock { Text = achievement.Description, FontSize = 15, Foreground = new SolidColorBrush(Color.FromRgb(100, 100, 100)) });
+            textStack.Children.Add(new TextBlock { Text = $"Progress: {progress:P0}", FontSize = 14, Foreground = DimBrush, Margin = new Thickness(0, 3, 0, 0) });
+            mainStack.Children.Add(textStack);
+
+            border.Child = mainStack;
             AchievementPanel.Children.Add(border);
         }
     }
@@ -2947,7 +4109,7 @@ public partial class MainWindow : Window
             {
                 var gen = GeneratorData.GetById(genId);
                 if (gen != null)
-                    OwnedGeneratorsPanel.Children.Add(new TextBlock { Text = $"{gen.Name}: +{NumberFormatter.Format(believers)}", Foreground = DimBrush, FontSize = 11, Margin = new Thickness(0, 1, 0, 1) });
+                    OwnedGeneratorsPanel.Children.Add(new TextBlock { Text = $"{gen.Name}: +{NumberFormatter.FormatInteger(believers)}", Foreground = DimBrush, FontSize = 11, Margin = new Thickness(0, 1, 0, 1) });
             }
 
             double tinfoilMultiplier = _engine.GetTinfoilBelieverMultiplier();
@@ -2957,6 +4119,90 @@ public partial class MainWindow : Window
     }
 
     private void ShowFlavorMessage(string message) => FlavorTextDisplay.Text = message;
+
+    private ToolTip CreateStyledTooltip(string title, string description, string? bonus = null)
+    {
+        var stack = new StackPanel { MaxWidth = 300 };
+        stack.Children.Add(new TextBlock
+        {
+            Text = title,
+            FontWeight = FontWeights.Bold,
+            Foreground = GoldBrush,
+            TextWrapping = TextWrapping.Wrap
+        });
+        stack.Children.Add(new TextBlock
+        {
+            Text = description,
+            Foreground = LightBrush,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 4, 0, 0)
+        });
+        if (!string.IsNullOrEmpty(bonus))
+        {
+            stack.Children.Add(new TextBlock
+            {
+                Text = bonus,
+                Foreground = GreenBrush,
+                FontWeight = FontWeights.SemiBold,
+                Margin = new Thickness(0, 4, 0, 0)
+            });
+        }
+
+        return new ToolTip
+        {
+            Content = stack,
+            Background = new SolidColorBrush(Color.FromArgb(230, 30, 30, 40)), // ~90% opacity
+            BorderBrush = new SolidColorBrush(Color.FromArgb(200, 255, 215, 0)), // Semi-transparent gold
+            BorderThickness = new Thickness(1),
+            Padding = new Thickness(10)
+        };
+    }
+
+    /// <summary>
+    /// Creates a styled icon with rounded corners, drop shadow, and proper clipping.
+    /// </summary>
+    private Border CreateStyledIconBorder(string iconKey, string fallbackText, double size, Brush foreground)
+    {
+        var iconImage = IconHelper.CreateIconWithFallback(iconKey, fallbackText, size - 4, foreground);
+
+        var iconBorder = new Border
+        {
+            Width = size,
+            Height = size,
+            CornerRadius = new CornerRadius(6),
+            Background = new SolidColorBrush(Color.FromArgb(40, 0, 0, 0)),
+            BorderBrush = new SolidColorBrush(Color.FromArgb(60, 0, 255, 65)),
+            BorderThickness = new Thickness(1),
+            VerticalAlignment = VerticalAlignment.Center,
+            Effect = new System.Windows.Media.Effects.DropShadowEffect
+            {
+                Color = Colors.Black,
+                BlurRadius = 8,
+                ShadowDepth = 2,
+                Opacity = 0.4,
+                Direction = 315
+            }
+        };
+
+        // If it's an Image, use ImageBrush as background to clip to rounded corners
+        if (iconImage is Image img && img.Source != null)
+        {
+            iconBorder.Background = new ImageBrush
+            {
+                ImageSource = img.Source,
+                Stretch = Stretch.Uniform,
+                AlignmentX = AlignmentX.Center,
+                AlignmentY = AlignmentY.Center
+            };
+        }
+        else
+        {
+            // For TextBlock fallback, keep as child
+            iconBorder.Child = iconImage;
+        }
+
+        return iconBorder;
+    }
 
     private void ShowAchievementUnlocked(Achievement achievement)
     {
@@ -2987,10 +4233,17 @@ public partial class MainWindow : Window
         string message = $"Welcome back! While you were away ({timeText}):\n";
         message += $"+{NumberFormatter.Format(evidenceEarned)} Evidence";
         if (believersGained >= 1)
-            message += $"\n+{NumberFormatter.Format(believersGained)} Believers";
+            message += $"\n+{NumberFormatter.FormatInteger(believersGained)} Believers";
 
         ShowToast("WELCOME BACK!", $"+{NumberFormatter.Format(evidenceEarned)} Evidence");
         AddNotification($"Offline progress ({timeText}): +{NumberFormatter.Format(evidenceEarned)} evidence", GoldBrush);
+    }
+
+    private void OnSaveError(string errorMessage)
+    {
+        // Show error toast to user
+        ShowToast("⚠️", errorMessage, 5);
+        AddNotification($"⚠️ {errorMessage}", RedBrush);
     }
 
     private void PrestigeButton_Click(object sender, RoutedEventArgs e)
@@ -3177,117 +4430,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ClaimChallengeBtn_Click(object sender, RoutedEventArgs e)
-    {
-        var challenge = _engine.GetActiveChallenge();
-        if (challenge != null && _engine.CompleteChallenge())
-        {
-            SoundManager.Play("achievement");
-            ShowToast("CHALLENGE COMPLETE!", $"+{challenge.TinfoilReward} Tinfoil");
-            AddNotification($"Challenge '{challenge.Name}' completed! Rewards claimed.", GreenBrush);
-        }
-    }
-
-    private void AbandonChallengeBtn_Click(object sender, RoutedEventArgs e)
-    {
-        if (System.Windows.MessageBox.Show(
-            "Abandon this challenge?\n\nYou will lose all progress.",
-            "Abandon Challenge",
-            System.Windows.MessageBoxButton.YesNo,
-            System.Windows.MessageBoxImage.Warning) == System.Windows.MessageBoxResult.Yes)
-        {
-            _engine.AbandonChallenge();
-            AddNotification("Challenge abandoned.", RedBrush);
-        }
-    }
-
-    private string _lastChallengeState = "";
-
-    private void UpdateChallengeModePanel()
-    {
-        var state = _engine.State;
-        var activeChallenge = _engine.GetActiveChallenge();
-
-        // Update active challenge display
-        if (activeChallenge != null)
-        {
-            ActiveChallengePanel.Visibility = Visibility.Visible;
-            NoChallengeText.Visibility = Visibility.Collapsed;
-            ActiveChallengeTitle.Text = $"{activeChallenge.Icon} {activeChallenge.Name}";
-            ActiveChallengeRules.Text = activeChallenge.Rules;
-
-            var (completed, progress, timeRemaining) = _engine.GetChallengeStatus();
-            ChallengeProgressFill.Width = progress * 200;
-            ChallengeProgressText.Text = $"{progress:P0} Complete";
-
-            if (activeChallenge.TimeLimit > 0)
-            {
-                if (timeRemaining > 0)
-                {
-                    var time = TimeSpan.FromSeconds(timeRemaining);
-                    ChallengeTimeText.Text = $"Time remaining: {time:mm\\:ss}";
-                    ChallengeTimeText.Foreground = timeRemaining < 60 ? RedBrush : DimBrush;
-                }
-                else
-                {
-                    ChallengeTimeText.Text = "TIME'S UP!";
-                    ChallengeTimeText.Foreground = RedBrush;
-                }
-            }
-            else
-            {
-                ChallengeTimeText.Text = "No time limit";
-            }
-
-            ClaimChallengeBtn.Visibility = completed ? Visibility.Visible : Visibility.Collapsed;
-        }
-        else
-        {
-            ActiveChallengePanel.Visibility = Visibility.Collapsed;
-            NoChallengeText.Visibility = Visibility.Visible;
-        }
-
-        // Check if state changed for panel rebuild
-        string currentState = $"{state.CompletedChallenges.Count}:{(activeChallenge?.Id ?? "none")}";
-        if (currentState == _lastChallengeState) return;
-        _lastChallengeState = currentState;
-
-        // Completed challenges
-        CompletedChallengesPanel.Children.Clear();
-        CompletedChallengesHeader.Visibility = state.CompletedChallenges.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
-        foreach (var challengeId in state.CompletedChallenges)
-        {
-            var challenge = ChallengeModeData.GetById(challengeId);
-            if (challenge == null) continue;
-
-            var border = new Border
-            {
-                Background = new SolidColorBrush(Color.FromRgb(20, 40, 20)),
-                BorderBrush = GreenBrush,
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(4),
-                Padding = new Thickness(10, 6, 10, 6),
-                Margin = new Thickness(5)
-            };
-
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            var iconBlock = new TextBlock { Text = challenge.Icon, FontSize = 16, Foreground = GreenBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
-            var stack = new StackPanel();
-            stack.Children.Add(new TextBlock { Text = $"[COMPLETED] {challenge.Name}", FontWeight = FontWeights.Bold, Foreground = GreenBrush });
-            stack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 10, Foreground = DimBrush });
-
-            Grid.SetColumn(iconBlock, 0);
-            Grid.SetColumn(stack, 1);
-            grid.Children.Add(iconBlock);
-            grid.Children.Add(stack);
-            border.Child = grid;
-            CompletedChallengesPanel.Children.Add(border);
-        }
-    }
-
     // === STATISTICS PANEL ===
     private string _lastStatsState = "";
 
@@ -3305,11 +4447,11 @@ public partial class MainWindow : Window
         StatPlaytime.Text = playTime.TotalHours >= 1
             ? $"{(int)playTime.TotalHours}h {playTime.Minutes}m"
             : $"{playTime.Minutes}m {playTime.Seconds}s";
-        StatClicks.Text = state.TotalClicks.ToString("N0");
-        StatCritClicks.Text = state.CriticalClicks.ToString("N0");
+        StatClicks.Text = NumberFormatter.FormatInteger(state.TotalClicks);
+        StatCritClicks.Text = NumberFormatter.FormatInteger(state.CriticalClicks);
         StatTotalEvidence.Text = NumberFormatter.Format(state.TotalEvidenceEarned);
         StatCurrentEPS.Text = NumberFormatter.FormatPerSecond(_engine.CalculateEvidencePerSecond());
-        StatAscensions.Text = state.TimesAscended.ToString();
+        StatAscensions.Text = NumberFormatter.FormatInteger(state.TimesAscended);
 
         // Production Breakdown
         double totalEps = _engine.CalculateEvidencePerSecond();
@@ -3318,16 +4460,31 @@ public partial class MainWindow : Window
         ProductionBarsPanel.Children.Clear();
         var productions = new List<(string name, double eps, Color color)>();
 
-        // Calculate per-generator production (base production, owned count determines tier color by index)
+        // Build generator multipliers from upgrades (same logic as GameEngine.CalculateBaseEps)
+        var generatorMultipliers = new Dictionary<string, double>();
+        foreach (var upgradeId in state.PurchasedUpgrades)
+        {
+            var upgrade = UpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == UpgradeType.GeneratorBoost && upgrade.TargetGeneratorId != null)
+            {
+                if (!generatorMultipliers.ContainsKey(upgrade.TargetGeneratorId))
+                    generatorMultipliers[upgrade.TargetGeneratorId] = 1.0;
+                generatorMultipliers[upgrade.TargetGeneratorId] *= upgrade.Value;
+            }
+        }
+
+        // Calculate per-generator production with proper multipliers
+        double totalBaseEps = 0;
         int genIndex = 0;
         foreach (var gen in GeneratorData.AllGenerators)
         {
             int owned = state.GetGeneratorCount(gen.Id);
             if (owned > 0)
             {
-                // Simple production calculation (base * count)
-                double genEps = gen.BaseProduction * owned;
-                int tier = genIndex / 4; // Roughly 4 generators per tier
+                double genMultiplier = generatorMultipliers.TryGetValue(gen.Id, out var m) ? m : 1.0;
+                double genEps = gen.GetProduction(owned) * genMultiplier;
+                totalBaseEps += genEps;
+                int tier = genIndex / 4;
                 productions.Add((gen.Name, genEps, GetGeneratorColor(tier)));
             }
             genIndex++;
@@ -3338,7 +4495,7 @@ public partial class MainWindow : Window
 
         foreach (var (name, eps, color) in productions)
         {
-            double percentage = totalEps > 0 ? eps / totalEps : 0;
+            double percentage = totalBaseEps > 0 ? eps / totalBaseEps : 0;
 
             var barContainer = new Grid { Margin = new Thickness(0, 4, 0, 4) };
             barContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
@@ -3358,17 +4515,26 @@ public partial class MainWindow : Window
                 Background = new SolidColorBrush(Color.FromRgb(30, 30, 50)),
                 CornerRadius = new CornerRadius(4),
                 Height = 24,
-                Margin = new Thickness(10, 0, 10, 0)
+                Margin = new Thickness(10, 0, 10, 0),
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
 
+            // Use a grid to properly size the fill relative to the container
+            var barGrid = new Grid();
             var barFill = new Border
             {
                 Background = new SolidColorBrush(color),
                 CornerRadius = new CornerRadius(4),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Width = Math.Max(2, percentage * 200)
+                HorizontalAlignment = HorizontalAlignment.Left
             };
-            barBg.Child = barFill;
+
+            // Bind the fill width to a percentage of the container
+            barGrid.SizeChanged += (s, e) =>
+            {
+                barFill.Width = Math.Max(2, percentage * e.NewSize.Width);
+            };
+            barGrid.Children.Add(barFill);
+            barBg.Child = barGrid;
 
             var valueBlock = new TextBlock
             {
@@ -3390,20 +4556,27 @@ public partial class MainWindow : Window
         }
 
         // Quest Statistics
-        StatQuestsCompleted.Text = state.QuestsCompleted.ToString();
-        StatQuestsFailed.Text = state.QuestsFailed.ToString();
+        StatQuestsCompleted.Text = NumberFormatter.FormatInteger(state.QuestsCompleted);
+        StatQuestsFailed.Text = NumberFormatter.FormatInteger(state.QuestsFailed);
         int totalQuests = state.QuestsCompleted + state.QuestsFailed;
         double successRate = totalQuests > 0 ? (double)state.QuestsCompleted / totalQuests : 0;
         StatQuestSuccessRate.Text = $"{successRate:P0}";
 
-        // Quest success/fail bar
-        double barWidth = 300; // Approximate width
-        QuestSuccessBar.Width = totalQuests > 0 ? successRate * barWidth : 0;
-        QuestFailBar.Width = totalQuests > 0 ? (1 - successRate) * barWidth : 0;
+        // Quest success/fail bar (using star sizing for proper scaling)
+        if (totalQuests > 0)
+        {
+            QuestSuccessColumn.Width = new GridLength(successRate, GridUnitType.Star);
+            QuestFailColumn.Width = new GridLength(1 - successRate, GridUnitType.Star);
+        }
+        else
+        {
+            QuestSuccessColumn.Width = new GridLength(0);
+            QuestFailColumn.Width = new GridLength(0);
+        }
 
         // Believer Stats
-        StatCurrentBelievers.Text = NumberFormatter.Format(state.Believers);
-        StatBelieversLost.Text = NumberFormatter.Format(state.BelieversLost);
+        StatCurrentBelievers.Text = NumberFormatter.FormatInteger(state.Believers);
+        StatBelieversLost.Text = NumberFormatter.FormatInteger(state.BelieversLost);
 
         // Achievement Progress
         int unlockedAchievements = state.UnlockedAchievements.Count;
@@ -3411,12 +4584,13 @@ public partial class MainWindow : Window
         double achievementPercent = totalAchievements > 0 ? (double)unlockedAchievements / totalAchievements : 0;
         StatAchievementProgress.Text = $"{unlockedAchievements}/{totalAchievements}";
         StatAchievementPercent.Text = $"{achievementPercent:P0} Complete";
-        AchievementProgressBar.Width = achievementPercent * 300; // Approximate width
+        AchievementFilledColumn.Width = new GridLength(achievementPercent, GridUnitType.Star);
+        AchievementEmptyColumn.Width = new GridLength(1 - achievementPercent, GridUnitType.Star);
 
         // Prestige Stats
-        StatIlluminatiTokens.Text = state.IlluminatiTokens.ToString();
-        StatTotalTokensEarned.Text = NumberFormatter.Format(state.TotalIlluminatiTokensEarned);
-        StatMatrixBreaks.Text = state.TimesMatrixBroken.ToString();
+        StatIlluminatiTokens.Text = NumberFormatter.FormatInteger(state.IlluminatiTokens);
+        StatTotalTokensEarned.Text = NumberFormatter.FormatInteger(state.TotalIlluminatiTokensEarned);
+        StatMatrixBreaks.Text = NumberFormatter.FormatInteger(state.TimesMatrixBroken);
     }
 
     private static Color GetGeneratorColor(int tier)
@@ -3461,24 +4635,62 @@ public partial class MainWindow : Window
     {
         ChallengeModeCombo.Items.Clear();
 
-        // Add Normal Mode option
-        var normalItem = new ComboBoxItem
+        // Add Normal Mode option with emoji
+        var normalStack = new StackPanel { Orientation = Orientation.Horizontal };
+        normalStack.Children.Add(new TextBlock
         {
-            Content = "🎮 Normal Mode",
-            Tag = "",
-            IsSelected = true
-        };
-        ChallengeModeCombo.Items.Add(normalItem);
+            Text = "🎮",
+            FontFamily = EmojiFont,
+            FontSize = 24,
+            Margin = new Thickness(0, 0, 10, 0),
+            VerticalAlignment = VerticalAlignment.Center
+        });
+        normalStack.Children.Add(new StackPanel
+        {
+            Children =
+            {
+                new TextBlock { Text = "Normal Mode", FontSize = 18, Foreground = LightBrush },
+                new TextBlock { Text = "Standard gameplay, no restrictions", FontSize = 13, Foreground = DimBrush }
+            }
+        });
+        ChallengeModeCombo.Items.Add(new ComboBoxItem { Content = normalStack, Tag = "", IsSelected = true });
 
-        // Add all challenge modes
+        // Add all challenge modes with proper icons
         foreach (var challenge in ChallengeModeData.AllChallenges)
         {
-            var item = new ComboBoxItem
+            var stack = new StackPanel { Orientation = Orientation.Horizontal };
+
+            // Try to get the sprite sheet icon, fall back to trophy emoji
+            var iconElement = IconHelper.CreateIconWithFallback(challenge.Icon, "🏆", 28, LightBrush);
+            if (iconElement is Image img)
             {
-                Content = $"{challenge.Icon} {challenge.Name}",
-                Tag = challenge.Id
-            };
-            ChallengeModeCombo.Items.Add(item);
+                img.Margin = new Thickness(0, 0, 10, 0);
+                img.VerticalAlignment = VerticalAlignment.Center;
+                stack.Children.Add(img);
+            }
+            else
+            {
+                var tb = iconElement as TextBlock;
+                if (tb != null)
+                {
+                    tb.FontFamily = EmojiFont;
+                    tb.Margin = new Thickness(0, 0, 10, 0);
+                    tb.VerticalAlignment = VerticalAlignment.Center;
+                }
+                stack.Children.Add(iconElement);
+            }
+
+            // Add name and description
+            stack.Children.Add(new StackPanel
+            {
+                Children =
+                {
+                    new TextBlock { Text = challenge.Name, FontSize = 18, Foreground = LightBrush },
+                    new TextBlock { Text = challenge.Description, FontSize = 13, Foreground = DimBrush }
+                }
+            });
+
+            ChallengeModeCombo.Items.Add(new ComboBoxItem { Content = stack, Tag = challenge.Id });
         }
     }
 
@@ -3645,7 +4857,7 @@ public partial class MainWindow : Window
         }
 
         MainMenuOverlay.Visibility = Visibility.Collapsed;
-        _gameStarted = true;
+        InitializeZenMode(); // Restore zen mode from saved state
         UpdateUI();
         _engine.Start();
         SoundManager.Play("achievement");
@@ -3776,6 +4988,19 @@ public partial class MainWindow : Window
 
     private string _lastDailyChallengeState = "";
 
+    private string GetDailyChallengeIconKey(ChallengeType type)
+    {
+        return type switch
+        {
+            ChallengeType.ClickCount => "challenge_clicks",
+            ChallengeType.CriticalHits => "challenge_crits",
+            ChallengeType.ComboCount => "challenge_combos",
+            ChallengeType.CompleteQuests => "challenge_quests",
+            ChallengeType.CollectEvidence => "challenge_evidence",
+            _ => "challenge_clicks"
+        };
+    }
+
     private void UpdateDailyChallengesPanel()
     {
         var buttonStyle = (Style)FindResource("GeneratorButton");
@@ -3811,13 +5036,25 @@ public partial class MainWindow : Window
                     BorderBrush = GreenBrush,
                     BorderThickness = new Thickness(1),
                     CornerRadius = new CornerRadius(4),
-                    Padding = new Thickness(10, 6, 10, 6),
+                    Padding = new Thickness(15, 9, 15, 9),
                     Margin = new Thickness(5)
                 };
-                var stack = new StackPanel();
-                stack.Children.Add(new TextBlock { Text = $"[CLAIMED] {challenge.Name}", FontWeight = FontWeights.Bold, Foreground = GreenBrush });
-                stack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 10, Foreground = DimBrush });
-                border.Child = stack;
+                var mainStack = new StackPanel { Orientation = Orientation.Horizontal };
+
+                // Add icon
+                var iconKey = GetDailyChallengeIconKey(challenge.Type);
+                var iconBorder = CreateStyledIconBorder(iconKey, "✓", 48, GreenBrush);
+                iconBorder.Margin = new Thickness(0, 0, 12, 0);
+                iconBorder.VerticalAlignment = VerticalAlignment.Center;
+                iconBorder.Opacity = 0.7;
+                mainStack.Children.Add(iconBorder);
+
+                var textStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+                textStack.Children.Add(new TextBlock { Text = $"[CLAIMED] {challenge.Name}", FontWeight = FontWeights.Bold, Foreground = GreenBrush, FontSize = 21 });
+                textStack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 15, Foreground = DimBrush });
+                mainStack.Children.Add(textStack);
+
+                border.Child = mainStack;
                 DailyChallengesPanel.Children.Add(border);
             }
             else if (challenge.Completed)
@@ -3825,24 +5062,34 @@ public partial class MainWindow : Window
                 var button = new Button { Style = buttonStyle, Tag = challenge.Id, HorizontalContentAlignment = HorizontalAlignment.Stretch };
                 button.Click += DailyChallengeButton_Click;
 
-                var grid = new Grid();
+                var mainStack = new StackPanel { Orientation = Orientation.Horizontal };
+
+                // Add icon
+                var iconKey = GetDailyChallengeIconKey(challenge.Type);
+                var iconBorder = CreateStyledIconBorder(iconKey, "★", 48, GoldBrush);
+                iconBorder.Margin = new Thickness(0, 0, 12, 0);
+                iconBorder.VerticalAlignment = VerticalAlignment.Center;
+                mainStack.Children.Add(iconBorder);
+
+                var grid = new Grid { VerticalAlignment = VerticalAlignment.Center };
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
                 var stack = new StackPanel();
-                stack.Children.Add(new TextBlock { Text = $"[COMPLETE!] {challenge.Name}", FontWeight = FontWeights.Bold, Foreground = GoldBrush });
-                stack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 10, Foreground = LightBrush });
-                stack.Children.Add(new TextBlock { Text = "Click to claim reward!", FontSize = 10, Foreground = GreenBrush, FontWeight = FontWeights.Bold });
+                stack.Children.Add(new TextBlock { Text = $"[COMPLETE!] {challenge.Name}", FontWeight = FontWeights.Bold, Foreground = GoldBrush, FontSize = 21 });
+                stack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 15, Foreground = LightBrush });
+                stack.Children.Add(new TextBlock { Text = "Click to claim reward!", FontSize = 15, Foreground = GreenBrush, FontWeight = FontWeights.Bold });
 
                 var rewardStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
-                rewardStack.Children.Add(new TextBlock { Text = $"+{challenge.TinfoilReward} Tinfoil", FontWeight = FontWeights.Bold, Foreground = SilverBrush });
+                rewardStack.Children.Add(new TextBlock { Text = $"+{challenge.TinfoilReward} Tinfoil", FontWeight = FontWeights.Bold, Foreground = SilverBrush, FontSize = 21 });
 
                 Grid.SetColumn(stack, 0);
                 Grid.SetColumn(rewardStack, 1);
                 grid.Children.Add(stack);
                 grid.Children.Add(rewardStack);
 
-                button.Content = grid;
+                mainStack.Children.Add(grid);
+                button.Content = mainStack;
                 DailyChallengesPanel.Children.Add(button);
             }
             else
@@ -3853,23 +5100,39 @@ public partial class MainWindow : Window
                     BorderBrush = DimBrush,
                     BorderThickness = new Thickness(1),
                     CornerRadius = new CornerRadius(4),
-                    Padding = new Thickness(10, 6, 10, 6),
+                    Padding = new Thickness(15, 9, 15, 9),
                     Margin = new Thickness(5)
                 };
 
-                var stack = new StackPanel();
-                stack.Children.Add(new TextBlock { Text = challenge.Name, FontWeight = FontWeights.Bold, Foreground = LightBrush });
-                stack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 10, Foreground = DimBrush });
+                var mainStack = new StackPanel { Orientation = Orientation.Horizontal };
 
-                var progressBar = new Border { Background = new SolidColorBrush(Color.FromRgb(30, 30, 40)), CornerRadius = new CornerRadius(3), Height = 8, Width = 200, Margin = new Thickness(0, 4, 0, 0) };
-                var progressFill = new Border { Background = GreenBrush, CornerRadius = new CornerRadius(3), HorizontalAlignment = HorizontalAlignment.Left, Width = progressPercent * 200 };
-                progressBar.Child = progressFill;
-                stack.Children.Add(progressBar);
+                // Add icon
+                var iconKey = GetDailyChallengeIconKey(challenge.Type);
+                var iconBorder = CreateStyledIconBorder(iconKey, "○", 48, DimBrush);
+                iconBorder.Margin = new Thickness(0, 0, 12, 0);
+                iconBorder.VerticalAlignment = VerticalAlignment.Center;
+                iconBorder.Opacity = 0.7;
+                mainStack.Children.Add(iconBorder);
 
-                stack.Children.Add(new TextBlock { Text = $"{NumberFormatter.Format(challenge.Progress)} / {NumberFormatter.Format(challenge.Target)} ({progressPercent:P0})", FontSize = 10, Foreground = DimBrush, Margin = new Thickness(0, 2, 0, 0) });
-                stack.Children.Add(new TextBlock { Text = $"Reward: +{challenge.TinfoilReward} Tinfoil", FontSize = 10, Foreground = SilverBrush });
+                var textStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+                textStack.Children.Add(new TextBlock { Text = challenge.Name, FontWeight = FontWeights.Bold, Foreground = LightBrush, FontSize = 21 });
+                textStack.Children.Add(new TextBlock { Text = challenge.Description, FontSize = 15, Foreground = DimBrush });
 
-                border.Child = stack;
+                var progressBar = new Border { Background = new SolidColorBrush(Color.FromRgb(30, 30, 40)), CornerRadius = new CornerRadius(5), Height = 12, Margin = new Thickness(0, 6, 0, 0), HorizontalAlignment = HorizontalAlignment.Stretch, ClipToBounds = true };
+                var progressGrid = new Grid();
+                progressGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(progressPercent, GridUnitType.Star) });
+                progressGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1 - progressPercent, GridUnitType.Star) });
+                var progressFill = new Border { Background = GreenBrush, CornerRadius = new CornerRadius(5, 0, 0, 5) };
+                Grid.SetColumn(progressFill, 0);
+                progressGrid.Children.Add(progressFill);
+                progressBar.Child = progressGrid;
+                textStack.Children.Add(progressBar);
+
+                textStack.Children.Add(new TextBlock { Text = $"{NumberFormatter.Format(challenge.Progress)} / {NumberFormatter.Format(challenge.Target)} ({progressPercent:P0})", FontSize = 15, Foreground = DimBrush, Margin = new Thickness(0, 3, 0, 0) });
+                textStack.Children.Add(new TextBlock { Text = $"Reward: +{challenge.TinfoilReward} Tinfoil", FontSize = 15, Foreground = SilverBrush });
+
+                mainStack.Children.Add(textStack);
+                border.Child = mainStack;
                 DailyChallengesPanel.Children.Add(border);
             }
         }
@@ -3920,15 +5183,17 @@ public partial class MainWindow : Window
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-            var iconBlock = new TextBlock { Text = upgrade.Icon, FontSize = 20, Foreground = PurpleBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+            var iconBlock = CreateStyledIconBorder(upgrade.Id, upgrade.Icon, 56, PurpleBrush);
+            iconBlock.Margin = new Thickness(0, 0, 12, 0);
+            iconBlock.VerticalAlignment = VerticalAlignment.Center;
 
             var stack = new StackPanel();
-            stack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = PurpleBrush });
-            stack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 11, Foreground = LightBrush });
-            stack.Children.Add(new TextBlock { Text = upgrade.FlavorText, FontSize = 10, Foreground = DimBrush, FontStyle = FontStyles.Italic });
+            stack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = PurpleBrush, FontSize = 18 });
+            stack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 14, Foreground = LightBrush });
+            stack.Children.Add(new TextBlock { Text = upgrade.FlavorText, FontSize = 12, Foreground = DimBrush, FontStyle = FontStyles.Italic });
 
             var costStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
-            costStack.Children.Add(new TextBlock { Text = $"{upgrade.TokenCost} Token(s)", FontWeight = FontWeights.Bold, Foreground = PurpleBrush, HorizontalAlignment = HorizontalAlignment.Right });
+            costStack.Children.Add(new TextBlock { Text = $"{upgrade.TokenCost} Token(s)", FontWeight = FontWeights.Bold, Foreground = PurpleBrush, HorizontalAlignment = HorizontalAlignment.Right, FontSize = 18 });
 
             Grid.SetColumn(iconBlock, 0);
             Grid.SetColumn(stack, 1);
@@ -3962,7 +5227,9 @@ public partial class MainWindow : Window
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            var iconBlock = new TextBlock { Text = upgrade.Icon, FontSize = 16, Foreground = PurpleBrush, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+            var iconBlock = CreateStyledIconBorder(upgrade.Id, upgrade.Icon, 40, PurpleBrush);
+            iconBlock.Margin = new Thickness(0, 0, 10, 0);
+            iconBlock.VerticalAlignment = VerticalAlignment.Center;
             var stack = new StackPanel();
             stack.Children.Add(new TextBlock { Text = upgrade.Name, FontWeight = FontWeights.Bold, Foreground = PurpleBrush });
             stack.Children.Add(new TextBlock { Text = upgrade.Description, FontSize = 10, Foreground = DimBrush });
@@ -3982,7 +5249,188 @@ public partial class MainWindow : Window
     private void SoundToggle_Click(object sender, RoutedEventArgs e)
     {
         SoundManager.Enabled = !SoundManager.Enabled;
+        _settings.SoundEnabled = SoundManager.Enabled;
+        _settings.Save();
         UpdateSoundIcon();
+    }
+
+    // === FULLSCREEN ===
+    private bool _isFullscreen = false;
+    private WindowState _previousWindowState;
+    private WindowStyle _previousWindowStyle;
+    private ResizeMode _previousResizeMode;
+    private Rect _previousBounds;
+
+    private void FullscreenToggle_Click(object sender, RoutedEventArgs e)
+    {
+        ToggleFullscreen();
+    }
+
+    private void ToggleFullscreen()
+    {
+        if (_isFullscreen)
+        {
+            // Exit fullscreen
+            WindowStyle = _previousWindowStyle;
+            ResizeMode = _previousResizeMode;
+            WindowState = _previousWindowState;
+            Left = _previousBounds.Left;
+            Top = _previousBounds.Top;
+            Width = _previousBounds.Width;
+            Height = _previousBounds.Height;
+            Topmost = false;
+            _isFullscreen = false;
+        }
+        else
+        {
+            // Enter fullscreen - save current state first
+            _previousWindowState = WindowState;
+            _previousWindowStyle = WindowStyle;
+            _previousResizeMode = ResizeMode;
+
+            // If maximized, get the restore bounds; otherwise use current bounds
+            if (WindowState == WindowState.Maximized)
+            {
+                _previousBounds = new Rect(RestoreBounds.Left, RestoreBounds.Top, RestoreBounds.Width, RestoreBounds.Height);
+            }
+            else
+            {
+                _previousBounds = new Rect(Left, Top, Width, Height);
+            }
+
+            // Set fullscreen - order matters!
+            WindowState = WindowState.Normal; // Must be normal first to set size
+            WindowStyle = WindowStyle.None;
+            ResizeMode = ResizeMode.NoResize;
+            Topmost = true; // Ensures we're above taskbar
+
+            // Use primary screen full bounds (including taskbar area)
+            Left = 0;
+            Top = 0;
+            Width = SystemParameters.PrimaryScreenWidth;
+            Height = SystemParameters.PrimaryScreenHeight;
+
+            _isFullscreen = true;
+        }
+        UpdateFullscreenIcon();
+    }
+
+    private void UpdateFullscreenIcon()
+    {
+        if (TryFindResource(_isFullscreen ? "Icon_fullscreen_exit" : "Icon_fullscreen") is ImageSource icon)
+        {
+            FullscreenToggleIcon.Source = icon;
+        }
+        FullscreenToggleButton.ToolTip = _isFullscreen ? "Exit Fullscreen (F11)" : "Toggle Fullscreen (F11)";
+    }
+
+    // === ZEN MODE ===
+    private bool _zenMode = false;
+
+    private void InitializeZenMode()
+    {
+        _zenMode = _engine.State.ZenMode;
+        UpdateZenModeIcon();
+    }
+
+    private void ZenModeToggle_Click(object sender, RoutedEventArgs e)
+    {
+        _zenMode = !_zenMode;
+        _engine.State.ZenMode = _zenMode; // Save to game state
+        UpdateZenModeIcon();
+
+        if (_zenMode)
+        {
+            // Clear any active random events when entering zen mode
+            ClearActiveEvents();
+            ShowToast("ZEN MODE", "Random events disabled");
+        }
+        else
+        {
+            ShowToast("ZEN MODE OFF", "Random events enabled");
+        }
+    }
+
+    private void ClearActiveEvents()
+    {
+        // Clear golden eye state and restore normal eye visuals
+        if (_engine.State.GoldenEyeActive)
+        {
+            _engine.State.GoldenEyeActive = false;
+            OnGoldenEyeEnd(); // Properly restore eye visuals
+        }
+
+        // Clear debunker
+        if (_activeDebunker != null)
+        {
+            if (InteractiveCanvas.Children.Contains(_activeDebunker.Element))
+                InteractiveCanvas.Children.Remove(_activeDebunker.Element);
+            _activeDebunker = null;
+        }
+
+        // Clear evidence thief
+        if (_activeEvidenceThief != null)
+        {
+            if (InteractiveCanvas.Children.Contains(_activeEvidenceThief.Element))
+                InteractiveCanvas.Children.Remove(_activeEvidenceThief.Element);
+            _activeEvidenceThief = null;
+        }
+
+        // Clear tinfoil thief
+        if (_activeTinfoilThief != null)
+        {
+            if (InteractiveCanvas.Children.Contains(_activeTinfoilThief.Element))
+                InteractiveCanvas.Children.Remove(_activeTinfoilThief.Element);
+            _activeTinfoilThief = null;
+        }
+
+        // Clear lucky drops from InteractiveCanvas
+        foreach (var drop in _luckyDrops.ToList())
+        {
+            if (InteractiveCanvas.Children.Contains(drop.Element))
+                InteractiveCanvas.Children.Remove(drop.Element);
+        }
+        _luckyDrops.Clear();
+
+        // Clear escaped document
+        if (_escapedDocument != null)
+        {
+            if (InteractiveCanvas.Children.Contains(_escapedDocument.Element))
+                InteractiveCanvas.Children.Remove(_escapedDocument.Element);
+            _escapedDocument = null;
+        }
+
+        // Clear evidence trail
+        foreach (var orb in _evidenceTrail.ToList())
+        {
+            if (InteractiveCanvas.Children.Contains(orb.Element))
+                InteractiveCanvas.Children.Remove(orb.Element);
+        }
+        _evidenceTrail.Clear();
+
+        // Clear connection pins
+        foreach (var pin in _connectionPins.ToList())
+        {
+            if (InteractiveCanvas.Children.Contains(pin.Element))
+                InteractiveCanvas.Children.Remove(pin.Element);
+        }
+        _connectionPins.Clear();
+
+        // Reset spawn timers so events don't spawn immediately when zen mode is turned off
+        _debunkerSpawnTimer = 0;
+        _evidenceThiefTimer = 0;
+        _tinfoilThiefTimer = 0;
+        _luckyDropTimer = 0;
+        _specialEventTimer = 0;
+    }
+
+    private void UpdateZenModeIcon()
+    {
+        if (TryFindResource(_zenMode ? "Icon_zen" : "Icon_zen_off") is ImageSource icon)
+        {
+            ZenModeToggleIcon.Source = icon;
+        }
+        ZenModeToggleButton.ToolTip = _zenMode ? "Zen Mode ON - Click to enable random events" : "Zen Mode - Disable random events";
     }
 
     // === MINIGAMES ===
@@ -4022,9 +5470,9 @@ public partial class MainWindow : Window
 
         string minigameName = _currentMinigame switch
         {
-            MinigameType.ClickFrenzy => "Click Frenzy",
+            MinigameType.ClickFrenzy => "Document Shredder",
             MinigameType.DocumentCatch => "Document Catch",
-            MinigameType.MemoryMatrix => "Memory Matrix",
+            MinigameType.MemoryMatrix => "Security Access",
             _ => "Minigame"
         };
         AddNotification($"🎮 {minigameName} minigame appeared!", PurpleBrush);
@@ -4064,30 +5512,56 @@ public partial class MainWindow : Window
 
     private void SetupClickFrenzy()
     {
-        // Big click target in center
+        // "Document Shredder" themed - shred leaked documents
+        var shredderPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
+
+        // Document icon that changes with each click
+        var docText = new TextBlock
+        {
+            Text = "📄",
+            FontSize = 50,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            FontFamily = EmojiFont,
+            Margin = new Thickness(0, 0, 0, 5)
+        };
+        shredderPanel.Children.Add(docText);
+
         var target = new Button
         {
-            Content = "👁️",
-            FontSize = 60,
-            Width = 150,
-            Height = 150,
-            Background = new SolidColorBrush(Color.FromRgb(15, 52, 96)),
-            Foreground = GreenBrush,
-            BorderBrush = GreenBrush,
+            Width = 180,
+            Height = 80,
+            Background = new SolidColorBrush(Color.FromRgb(40, 20, 20)),
+            Foreground = RedBrush,
+            BorderBrush = new SolidColorBrush(Color.FromRgb(100, 50, 50)),
             BorderThickness = new Thickness(3),
-            Cursor = Cursors.Hand
+            Cursor = Cursors.Hand,
+            FontSize = 16,
+            FontWeight = FontWeights.Bold,
+            Content = "🔥 SHRED DOCUMENT 🔥"
         };
         target.Click += ClickFrenzyTarget_Click;
-        Canvas.SetLeft(target, (MinigameCanvas.Width - 150) / 2);
-        Canvas.SetTop(target, (MinigameCanvas.Height - 150) / 2);
-        MinigameCanvas.Children.Add(target);
+        shredderPanel.Children.Add(target);
+
+        shredderPanel.Children.Add(new TextBlock
+        {
+            Text = "[CLASSIFIED LEAKS DETECTED]",
+            FontSize = 11,
+            Foreground = RedBrush,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            FontFamily = new FontFamily("Consolas"),
+            Margin = new Thickness(0, 8, 0, 0)
+        });
+
+        Canvas.SetLeft(shredderPanel, (MinigameCanvas.Width - 180) / 2);
+        Canvas.SetTop(shredderPanel, (MinigameCanvas.Height - 160) / 2);
+        MinigameCanvas.Children.Add(shredderPanel);
     }
 
     private void ClickFrenzyTarget_Click(object sender, RoutedEventArgs e)
     {
         if (!_minigameActive) return;
         _minigameScore++;
-        MinigameStatus.Text = $"Clicks: {_minigameScore}";
+        MinigameStatus.Text = $"Documents Shredded: {_minigameScore}";
         SoundManager.Play("click");
     }
 
@@ -4097,37 +5571,77 @@ public partial class MainWindow : Window
         _memoryPattern = new int[_memoryDifficulty]; // Use current difficulty
         _memoryIndex = 0;
 
-        // Create 3x3 grid
+        // "Security Keypad" themed - enter access code
+        var keypadPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
+
+        // Header
+        keypadPanel.Children.Add(new TextBlock
+        {
+            Text = "🔐 SECURITY ACCESS",
+            FontSize = 14,
+            Foreground = GreenBrush,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            FontWeight = FontWeights.Bold,
+            FontFamily = new FontFamily("Consolas"),
+            Margin = new Thickness(0, 0, 0, 8)
+        });
+
+        // Create 3x3 numeric keypad (1-9)
+        var keypadGrid = new Grid();
+        for (int i = 0; i < 3; i++)
+        {
+            keypadGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(55) });
+            keypadGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(70) });
+        }
+
         for (int i = 0; i < 9; i++)
         {
             int row = i / 3;
             int col = i % 3;
+            int keyNum = i + 1; // 1-9
 
             var cell = new Border
             {
-                Width = 80,
-                Height = 50,
-                Background = new SolidColorBrush(Color.FromRgb(42, 42, 62)),
-                BorderBrush = DimBrush,
+                Width = 60,
+                Height = 45,
+                Background = new SolidColorBrush(Color.FromRgb(25, 25, 40)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(60, 60, 80)),
                 BorderThickness = new Thickness(2),
-                CornerRadius = new CornerRadius(4),
+                CornerRadius = new CornerRadius(6),
                 Tag = i,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Margin = new Thickness(3),
+                Child = new TextBlock
+                {
+                    Text = keyNum.ToString(),
+                    FontSize = 22,
+                    Foreground = LightBrush,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    FontWeight = FontWeights.Bold,
+                    FontFamily = new FontFamily("Consolas")
+                }
             };
             cell.MouseDown += MemoryCell_Click;
 
-            Canvas.SetLeft(cell, 50 + col * 90);
-            Canvas.SetTop(cell, 20 + row * 60);
-            MinigameCanvas.Children.Add(cell);
+            Grid.SetRow(cell, row);
+            Grid.SetColumn(cell, col);
+            keypadGrid.Children.Add(cell);
             _minigameElements.Add(cell);
         }
+
+        keypadPanel.Children.Add(keypadGrid);
+
+        Canvas.SetLeft(keypadPanel, (MinigameCanvas.Width - 210) / 2);
+        Canvas.SetTop(keypadPanel, 5);
+        MinigameCanvas.Children.Add(keypadPanel);
 
         // Generate random pattern
         for (int i = 0; i < _memoryPattern.Length; i++)
             _memoryPattern[i] = _random.Next(9);
 
         // Show pattern with delay
-        MinigameStatus.Text = "Watch the pattern...";
+        MinigameStatus.Text = "Memorize the access code...";
         ShowMemoryPattern(0);
     }
 
@@ -4135,7 +5649,7 @@ public partial class MainWindow : Window
     {
         if (index >= _memoryPattern!.Length)
         {
-            MinigameStatus.Text = "Your turn! Repeat the pattern.";
+            MinigameStatus.Text = "Enter the access code!";
             _minigameTimer = 10.0;
             return;
         }
@@ -4145,7 +5659,7 @@ public partial class MainWindow : Window
         {
             cell.Background = GreenBrush;
             await Task.Delay(400);
-            cell.Background = new SolidColorBrush(Color.FromRgb(42, 42, 62));
+            cell.Background = new SolidColorBrush(Color.FromRgb(25, 25, 40));
             await Task.Delay(200);
         }
 
@@ -4168,7 +5682,7 @@ public partial class MainWindow : Window
                 var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(200) };
                 timer.Tick += (s, ev) =>
                 {
-                    cell.Background = new SolidColorBrush(Color.FromRgb(42, 42, 62));
+                    cell.Background = new SolidColorBrush(Color.FromRgb(25, 25, 40));
                     timer.Stop();
                 };
                 timer.Start();
@@ -4374,5 +5888,50 @@ public partial class MainWindow : Window
         MinigameCloseButton.Content = "Claim & Close";
     }
 
-    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => _engine.Stop();
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+        _engine.Stop();
+        SaveWindowSettings();
+    }
+
+    private void ApplyWindowSettings()
+    {
+        // Apply window size
+        if (_settings.WindowWidth > 0 && _settings.WindowHeight > 0)
+        {
+            this.Width = _settings.WindowWidth;
+            this.Height = _settings.WindowHeight;
+        }
+
+        // Apply window position (if not default)
+        if (_settings.WindowLeft >= 0 && _settings.WindowTop >= 0)
+        {
+            this.Left = _settings.WindowLeft;
+            this.Top = _settings.WindowTop;
+            this.WindowStartupLocation = WindowStartupLocation.Manual;
+        }
+
+        // Apply maximized state
+        if (_settings.WindowMaximized)
+        {
+            this.WindowState = WindowState.Maximized;
+        }
+    }
+
+    private void SaveWindowSettings()
+    {
+        // Save window state
+        _settings.WindowMaximized = this.WindowState == WindowState.Maximized;
+
+        // Only save size/position if not maximized
+        if (this.WindowState == WindowState.Normal)
+        {
+            _settings.WindowWidth = this.Width;
+            _settings.WindowHeight = this.Height;
+            _settings.WindowLeft = this.Left;
+            _settings.WindowTop = this.Top;
+        }
+
+        _settings.Save();
+    }
 }

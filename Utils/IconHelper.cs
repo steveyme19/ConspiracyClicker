@@ -84,7 +84,7 @@ public static class IconHelper
     }
 
     /// <summary>
-    /// Creates an icon element - returns Image if SVG icon exists, otherwise falls back to TextBlock.
+    /// Creates an icon element - prioritizes sprite sheet icons, then SVG icons, then falls back to TextBlock.
     /// </summary>
     /// <param name="iconKey">The icon key</param>
     /// <param name="fallbackText">Fallback text if icon not found</param>
@@ -93,9 +93,258 @@ public static class IconHelper
     /// <returns>UIElement containing the icon</returns>
     public static UIElement CreateIconWithFallback(string iconKey, string fallbackText, double size, Brush foreground)
     {
+        // First try generator sprite sheet
+        var spriteIcon = SpriteSheetLoader.GetGeneratorIcon(iconKey);
+        if (spriteIcon != null)
+        {
+            return new Image
+            {
+                Source = spriteIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try generator sprite sheet 2 (final tier generators)
+        var generatorIcon2 = GeneratorSpriteSheetLoader2.GetGeneratorIcon(iconKey);
+        if (generatorIcon2 != null)
+        {
+            return new Image
+            {
+                Source = generatorIcon2,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try generator sprite sheet 3 (information/timeline generators)
+        var generatorIcon3 = GeneratorSpriteSheetLoader3.GetGeneratorIcon(iconKey);
+        if (generatorIcon3 != null)
+        {
+            return new Image
+            {
+                Source = generatorIcon3,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try conspiracy sprite sheet
+        var conspiracyIcon = ConspiracySpriteSheetLoader.GetConspiracyIcon(iconKey);
+        if (conspiracyIcon != null)
+        {
+            return new Image
+            {
+                Source = conspiracyIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try conspiracy sprite sheet 2 (advanced conspiracies)
+        var conspiracyIcon2 = ConspiracySpriteSheetLoader2.GetConspiracyIcon(iconKey);
+        if (conspiracyIcon2 != null)
+        {
+            return new Image
+            {
+                Source = conspiracyIcon2,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try upgrade sprite sheet
+        var upgradeIcon = UpgradeSpriteSheetLoader.GetUpgradeIcon(iconKey);
+        if (upgradeIcon != null)
+        {
+            return new Image
+            {
+                Source = upgradeIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try upgrade sprite sheet 2
+        var upgradeIcon2 = UpgradeSpriteSheetLoader2.GetUpgradeIcon(iconKey);
+        if (upgradeIcon2 != null)
+        {
+            return new Image
+            {
+                Source = upgradeIcon2,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try quest sprite sheet
+        var questIcon = QuestSpriteSheetLoader.GetQuestIcon(iconKey);
+        if (questIcon != null)
+        {
+            return new Image
+            {
+                Source = questIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try tinfoil shop sprite sheet
+        var shopIcon = TinfoilShopSpriteSheetLoader.GetShopIcon(iconKey);
+        if (shopIcon != null)
+        {
+            return new Image
+            {
+                Source = shopIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try tinfoil shop sprite sheet 2 (ultra tier)
+        var shopIcon2 = TinfoilShopSpriteSheetLoader2.GetShopIcon(iconKey);
+        if (shopIcon2 != null)
+        {
+            return new Image
+            {
+                Source = shopIcon2,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try tinfoil shop sprite sheet 3 (transcendent/omega tier)
+        var shopIcon3 = TinfoilShopSpriteSheetLoader3.GetShopIcon(iconKey);
+        if (shopIcon3 != null)
+        {
+            return new Image
+            {
+                Source = shopIcon3,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try event sprite sheet
+        var eventIcon = EventSpriteSheetLoader.GetEventIcon(iconKey);
+        if (eventIcon != null)
+        {
+            return new Image
+            {
+                Source = eventIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try matrix/prestige sprite sheet
+        var matrixIcon = MatrixSpriteSheetLoader.GetMatrixIcon(iconKey);
+        if (matrixIcon != null)
+        {
+            return new Image
+            {
+                Source = matrixIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try Illuminati sprite sheet
+        var illuminatiIcon = IlluminatiSpriteSheetLoader.GetIlluminatiIcon(iconKey);
+        if (illuminatiIcon != null)
+        {
+            return new Image
+            {
+                Source = illuminatiIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try achievement sprite sheet
+        var achievementIcon = AchievementSpriteSheetLoader.GetAchievementIcon(iconKey);
+        if (achievementIcon != null)
+        {
+            return new Image
+            {
+                Source = achievementIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try achievement sprite sheet 2 (expanded achievements)
+        var achievementIcon2 = AchievementSpriteSheetLoader2.GetAchievementIcon(iconKey);
+        if (achievementIcon2 != null)
+        {
+            return new Image
+            {
+                Source = achievementIcon2,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try challenge/skills sprite sheet
+        var challengeIcon = ChallengeSpriteSheetLoader.GetChallengeIcon(iconKey);
+        if (challengeIcon != null)
+        {
+            return new Image
+            {
+                Source = challengeIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try daily challenge sprite sheet
+        var dailyChallengeIcon = DailyChallengeSpriteSheetLoader.GetDailyChallengeIcon(iconKey);
+        if (dailyChallengeIcon != null)
+        {
+            return new Image
+            {
+                Source = dailyChallengeIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Try UI sprite sheet (fullscreen, sound, menu, orbit icons, utility items)
+        var uiIcon = UISpriteSheetLoader.GetUIIcon(iconKey);
+        if (uiIcon != null)
+        {
+            return new Image
+            {
+                Source = uiIcon,
+                Width = size,
+                Height = size,
+                Stretch = Stretch.Uniform
+            };
+        }
+
+        // Then try vector icons
         var icon = CreateIcon(iconKey, size);
         if (icon != null) return icon;
 
+        // Fall back to text
         return new TextBlock
         {
             Text = fallbackText,

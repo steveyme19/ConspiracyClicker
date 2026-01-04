@@ -13,7 +13,8 @@ public enum AchievementType
     TimesMatrixBroken,
     QuestsCompleted,
     TotalTinfoil,
-    CriticalClicks
+    CriticalClicks,
+    TotalTokensEarned
 }
 
 public class Achievement

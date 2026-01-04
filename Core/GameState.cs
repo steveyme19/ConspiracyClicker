@@ -10,7 +10,7 @@ public class GameState
     public double TotalEvidenceEarned { get; set; }
     public double Believers { get; set; }
     public double BusyBelievers { get; set; } // On quests
-    public int Tinfoil { get; set; }
+    public long Tinfoil { get; set; }
 
     // Prestige currencies
     public int IlluminatiTokens { get; set; }
@@ -39,6 +39,9 @@ public class GameState
     // Tinfoil Shop purchases
     public HashSet<string> TinfoilShopPurchases { get; set; } = new();
 
+    // Generator-specific upgrades (unlocked at levels 25, 50, 75, 100)
+    public HashSet<string> GeneratorUpgrades { get; set; } = new();
+
     // Critical hit stats
     public long CriticalClicks { get; set; }
 
@@ -49,7 +52,7 @@ public class GameState
     // Prestige stats
     public int TimesAscended { get; set; }
     public int TimesMatrixBroken { get; set; }
-    public double TotalIlluminatiTokensEarned { get; set; }
+    public int TotalIlluminatiTokensEarned { get; set; }
 
     // Skill tree
     public HashSet<string> UnlockedSkills { get; set; } = new();
@@ -89,6 +92,9 @@ public class GameState
     public int ChallengeClickCount { get; set; }
     public int ChallengeHighRiskQuestsCompleted { get; set; }
     public HashSet<string> CompletedChallenges { get; set; } = new();
+
+    // Settings
+    public bool ZenMode { get; set; }
 
     public double AvailableBelievers => Math.Max(0, Believers - BusyBelievers);
 

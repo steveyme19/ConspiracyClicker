@@ -514,6 +514,394 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <!-- Void Whispers - Dark whispers from the void -->
+    <DrawingImage x:Key="Icon_void_whispers">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#0a0a15" Geometry="M4,4 L60,4 L60,60 L4,60 Z"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,32 A20,20 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M20,24 Q32,20 44,24 M18,32 Q32,28 46,32 M20,40 Q32,36 44,40">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc66ff" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Stargate Array - Portal rings -->
+    <DrawingImage x:Key="Icon_stargate_array">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M32,8 A24,24 0 1,1 32.01,8">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,16 A16,16 0 1,1 32.01,16">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#0066ff" Geometry="M32,24 A8,8 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#00ccff" Geometry="M32,32 A3,3 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Quantum Entangler - Entangled particles -->
+    <DrawingImage x:Key="Icon_quantum_entangler">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#00ff41" Geometry="M20,20 A6,6 0 1,1 20.01,20"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M44,44 A6,6 0 1,1 44.01,44"/>
+                <GeometryDrawing Geometry="M20,20 Q32,32 44,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#9933ff" Geometry="M44,20 A6,6 0 1,1 44.01,20"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M20,44 A6,6 0 1,1 20.01,44"/>
+                <GeometryDrawing Geometry="M44,20 Q32,32 20,44">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Akashic Terminal - Ancient knowledge terminal -->
+    <DrawingImage x:Key="Icon_akashic_terminal">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M12,8 L52,8 L52,56 L12,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M18,16 L46,16 M18,24 L42,24 M18,32 L44,32 M18,40 L40,40 M18,48 L46,48">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,8 L28,8 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Probability Weaver - Dice and probability -->
+    <DrawingImage x:Key="Icon_probability_weaver">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M16,16 L48,16 L48,48 L16,48 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M24,24 A2,2 0 1,1 24.01,24"/>
+                <GeometryDrawing Brush="#fff" Geometry="M40,24 A2,2 0 1,1 40.01,24"/>
+                <GeometryDrawing Brush="#fff" Geometry="M32,32 A2,2 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#fff" Geometry="M24,40 A2,2 0 1,1 24.01,40"/>
+                <GeometryDrawing Brush="#fff" Geometry="M40,40 A2,2 0 1,1 40.01,40"/>
+                <GeometryDrawing Geometry="M8,8 L16,16 M56,8 L48,16 M8,56 L16,48 M56,56 L48,48">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Paradox Engine - Infinity paradox -->
+    <DrawingImage x:Key="Icon_paradox_engine">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M16,32 Q16,16 32,16 Q48,16 48,32 Q48,48 32,48 Q16,48 16,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M48,32 Q48,16 32,16 Q16,16 16,32 Q16,48 32,48 Q48,48 48,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Information Nexus - Network hub -->
+    <DrawingImage x:Key="Icon_information_nexus">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,32 A8,8 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M32,24 L32,8 M32,40 L32,56 M24,32 L8,32 M40,32 L56,32 M26,26 L14,14 M38,26 L50,14 M26,38 L14,50 M38,38 L50,50">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,8 A3,3 0 1,1 32.01,8"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,56 A3,3 0 1,1 32.01,56"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M8,32 A3,3 0 1,1 8.01,32"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M56,32 A3,3 0 1,1 56.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Timeline Harvester - Hourglass with streams -->
+    <DrawingImage x:Key="Icon_timeline_harvester">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M16,8 L48,8 L48,12 L36,28 L36,36 L48,52 L48,56 L16,56 L16,52 L28,36 L28,28 L16,12 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#9933ff" Geometry="M20,12 L44,12 L32,24 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M20,52 L44,52 L44,48 L32,40 L20,48 Z"/>
+                <GeometryDrawing Geometry="M32,28 L32,36">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Entropy Reverser - Reversed arrows -->
+    <DrawingImage x:Key="Icon_entropy_reverser">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M32,56 L32,8">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,8 L24,20 L32,16 L40,20 Z"/>
+                <GeometryDrawing Geometry="M16,40 Q32,48 48,40">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#9933ff" Geometry="M48,40 L52,32 L44,36 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M16,40 L12,32 L20,36 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Probability Matrix - Grid matrix -->
+    <DrawingImage x:Key="Icon_probability_matrix">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M8,8 L56,8 L56,56 L8,56 Z M8,24 L56,24 M8,40 L56,40 M24,8 L24,56 M40,8 L40,56">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M16,16 A3,3 0 1,1 16.01,16"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,32 A3,3 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M48,48 A3,3 0 1,1 48.01,48"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Existence Compiler - Code compilation -->
+    <DrawingImage x:Key="Icon_existence_compiler">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M8,8 L56,8 L56,56 L8,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M16,20 L24,28 L16,36">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M28,36 L44,36">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M16,44 L48,44">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Causality Loop - Cause effect loop -->
+    <DrawingImage x:Key="Icon_causality_loop">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M32,8 A24,24 0 1,1 8,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M8,32 A24,24 0 1,1 32,56">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,8 L28,16 L36,16 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,56 L28,48 L36,48 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Absolute Truth - Truth beacon -->
+    <DrawingImage x:Key="Icon_absolute_truth">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,20 L52,20 L40,30 L44,48 L32,38 L20,48 L24,30 L12,20 L28,20 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M32,16 A6,6 0 1,1 32.01,16"/>
+                <GeometryDrawing Geometry="M32,56 L32,48">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Omega Point - Omega symbol -->
+    <DrawingImage x:Key="Icon_omega_point">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M16,48 L16,32 Q16,12 32,12 Q48,12 48,32 L48,48">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M8,48 L24,48 M40,48 L56,48">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,28 A6,6 0 1,1 32.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Void Architect - Building in void -->
+    <DrawingImage x:Key="Icon_void_architect">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#0a0a15" Geometry="M4,4 L60,4 L60,60 L4,60 Z"/>
+                <GeometryDrawing Geometry="M20,56 L20,32 L32,20 L44,32 L44,56">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M20,44 L44,44 M20,38 L44,38">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,20 A4,4 0 1,1 32.01,20"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Cosmic Forge - Cosmic hammer -->
+    <DrawingImage x:Key="Icon_cosmic_forge">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#888" Geometry="M24,8 L40,8 L40,24 L24,24 Z"/>
+                <GeometryDrawing Brush="#5c4033" Geometry="M30,24 L34,24 L34,56 L30,56 Z"/>
+                <GeometryDrawing Brush="#ff6600" Geometry="M16,52 L48,52 L48,60 L16,60 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M20,54 A2,2 0 1,1 20.01,54"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,54 A2,2 0 1,1 32.01,54"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M44,54 A2,2 0 1,1 44.01,54"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Dimension Weaver - Weaving threads -->
+    <DrawingImage x:Key="Icon_dimension_weaver">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M8,16 Q32,8 56,16 M8,32 Q32,24 56,32 M8,48 Q32,40 56,48">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M16,8 Q24,32 16,56 M32,8 Q40,32 32,56 M48,8 Q56,32 48,56">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Eternity Engine - Eternal gears -->
+    <DrawingImage x:Key="Icon_eternity_engine">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M32,12 A20,20 0 1,1 32.01,12">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,24 A8,8 0 1,1 32.01,24"/>
+                <GeometryDrawing Geometry="M32,4 L32,12 M32,52 L32,60 M4,32 L12,32 M52,32 L60,32">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,32 A3,3 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Primordial Truth - Ancient truth -->
+    <DrawingImage x:Key="Icon_primordial_truth">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#5c4033" Geometry="M20,56 L44,56 L40,24 L24,24 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,8 A12,12 0 1,1 32.01,8">
+                    <GeometryDrawing.Pen><Pen Brush="#cc9900" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M32,12 A4,4 0 1,1 32.01,12"/>
+                <GeometryDrawing Geometry="M24,24 L24,20 M32,24 L32,20 M40,24 L40,20">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Consciousness Merger - Merging minds -->
+    <DrawingImage x:Key="Icon_consciousness_merger">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#9933ff" Geometry="M20,20 A10,10 0 1,1 20.01,20"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M44,20 A10,10 0 1,1 44.01,20"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,44 A12,12 0 1,1 32.01,44"/>
+                <GeometryDrawing Geometry="M20,28 Q32,36 32,44 M44,28 Q32,36 32,44">
+                    <GeometryDrawing.Pen><Pen Brush="#fff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Reality Seed - Seed of reality -->
+    <DrawingImage x:Key="Icon_reality_seed">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#5c4033" Geometry="M28,40 Q32,52 36,40 Q40,28 32,24 Q24,28 28,40 Z"/>
+                <GeometryDrawing Geometry="M32,24 L32,8">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M24,12 Q32,4 40,12 Q32,16 24,12 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,32 A3,3 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M20,52 Q32,56 44,52">
+                    <GeometryDrawing.Pen><Pen Brush="#5c4033" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Omni Fabricator - Universal fabrication -->
+    <DrawingImage x:Key="Icon_omni_fabricator">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#888" Geometry="M16,16 L48,16 L48,48 L16,48 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,20 A12,12 0 1,1 32.01,20">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M24,28 L40,28 M24,36 L40,36 M28,24 L28,40 M36,24 L36,40">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Infinity Conduit - Infinity flow -->
+    <DrawingImage x:Key="Icon_infinity_conduit">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M16,32 Q16,16 28,16 Q40,16 32,32 Q24,48 36,48 Q48,48 48,32 Q48,16 36,16 Q24,16 32,32 Q40,48 28,48 Q16,48 16,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Existence Core - Heart of being -->
+    <DrawingImage x:Key="Icon_existence_core">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,52 L16,36 Q8,24 20,16 Q32,8 32,20 Q32,8 44,16 Q56,24 48,36 Z"/>
+                <GeometryDrawing Geometry="M32,24 A12,12 0 1,1 32.01,24">
+                    <GeometryDrawing.Pen><Pen Brush="#ff6666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Final Revelation Generator - Ultimate truth -->
+    <DrawingImage x:Key="Icon_final_revelation_gen">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L40,24 L60,24 L44,36 L52,56 L32,44 L12,56 L20,36 L4,24 L24,24 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#cc9900" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M32,20 A10,10 0 1,1 32.01,20"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,24 A6,6 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,28 A3,3 0 1,1 32.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
     <!-- ==================== CONSPIRACY ICONS ==================== -->
 
     <!-- Birds Aren't Real - Drone bird -->
@@ -691,6 +1079,241 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <!-- ==================== TIER 2 CONSPIRACY ICONS ==================== -->
+
+    <!-- Denver Airport - Creepy horse statue and underground tunnels -->
+    <DrawingImage x:Key="Icon_denver_airport">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M4,56 L60,56 L60,60 L4,60 Z"/>
+                <GeometryDrawing Geometry="M32,8 L20,56 L44,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#1e3a5f" Geometry="M24,28 L40,28 L42,56 L22,56 Z"/>
+                <GeometryDrawing Brush="#0066cc" Geometry="M16,48 L20,40 A8,8 0 1,1 36,40 L40,48 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M28,36 A3,3 0 1,1 28.01,36"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M38,36 A3,3 0 1,1 38.01,36"/>
+                <GeometryDrawing Geometry="M12,56 L12,48 L16,48 M48,56 L48,48 L52,48">
+                    <GeometryDrawing.Pen><Pen Brush="#333" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- CERN Portal - Particle accelerator with portal -->
+    <DrawingImage x:Key="Icon_cern_portal">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M32,32 A24,24 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A16,16 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#809933ff" Geometry="M32,32 A10,10 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M20,20 A2,2 0 1,1 20.01,20 M44,20 A2,2 0 1,1 44.01,20 M44,44 A2,2 0 1,1 44.01,44 M20,44 A2,2 0 1,1 20.01,44"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Mandela Effect - Split memories -->
+    <DrawingImage x:Key="Icon_mandela_effect">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M4,8 L30,8 L30,56 L4,56 Z"/>
+                <GeometryDrawing Brush="#2a2a3e" Geometry="M34,8 L60,8 L60,56 L34,56 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M16,20 A10,10 0 1,1 16.01,20"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M48,20 A10,10 0 1,1 48.01,20"/>
+                <GeometryDrawing Geometry="M32,4 L32,60">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2" DashStyle="{x:Static DashStyles.Dash}"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M8,44 L24,44">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M40,44 L56,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Hollow Moon - Moon cross-section -->
+    <DrawingImage x:Key="Icon_hollow_moon">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#c0c0c0" Geometry="M32,32 A26,26 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#888" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,32 A16,16 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#666" Geometry="M14,24 A4,4 0 1,1 14.01,24 M46,20 A3,3 0 1,1 46.01,20 M50,38 A2,2 0 1,1 50.01,38"/>
+                <GeometryDrawing Geometry="M24,28 L40,36 M28,40 L36,28">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,32 A3,3 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Tartaria - Lost empire architecture -->
+    <DrawingImage x:Key="Icon_tartaria">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#5c4033" Geometry="M8,56 L56,56 L56,60 L8,60 Z"/>
+                <GeometryDrawing Brush="#8B4513" Geometry="M12,32 L52,32 L52,56 L12,56 Z"/>
+                <GeometryDrawing Brush="#daa520" Geometry="M28,4 L32,0 L36,4 L36,32 L28,32 Z"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M18,40 L26,40 L26,56 L18,56 Z M38,40 L46,40 L46,56 L38,56 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,12 A6,6 0 1,1 32.01,12"/>
+                <GeometryDrawing Geometry="M14,28 L50,28">
+                    <GeometryDrawing.Pen><Pen Brush="#daa520" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== TIER 3 CONSPIRACY ICONS ==================== -->
+
+    <!-- Breakaway Civilization - Hidden city -->
+    <DrawingImage x:Key="Icon_breakaway_civilization">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M0,0 L64,0 L64,64 L0,64 Z"/>
+                <GeometryDrawing Geometry="M32,8 L8,56 L56,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#16213e" Geometry="M24,36 L32,28 L40,36 L40,56 L24,56 Z"/>
+                <GeometryDrawing Brush="#1e3a5f" Geometry="M18,44 L24,40 L24,56 L18,56 Z M40,44 L46,40 L46,56 L40,56 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M30,42 L34,42 L34,56 L30,56 Z"/>
+                <GeometryDrawing Geometry="M8,56 L56,56">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Antarctica Treaty - Ice with secrets beneath -->
+    <DrawingImage x:Key="Icon_antarctica_treaty">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#e8f4ff" Geometry="M8,8 L56,8 L60,32 L4,32 Z"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M4,32 L60,32 L56,56 L8,56 Z"/>
+                <GeometryDrawing Geometry="M4,32 L60,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00bfff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#b8d4e8" Geometry="M20,12 L24,8 L28,20 Z M40,14 L44,10 L48,18 Z"/>
+                <GeometryDrawing Geometry="M24,40 L40,40 M28,48 L36,48">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,44 A4,4 0 1,1 32.01,44"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Akashic Records - Infinite library -->
+    <DrawingImage x:Key="Icon_akashic_records">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M8,8 L56,8 L56,56 L8,56 Z"/>
+                <GeometryDrawing Brush="#5c4033" Geometry="M12,16 L18,16 L18,48 L12,48 Z M22,12 L28,12 L28,52 L22,52 Z M32,14 L38,14 L38,50 L32,50 Z M42,16 L48,16 L48,48 L42,48 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M52,20 A16,16 0 1,1 52.01,20"/>
+                <GeometryDrawing Brush="#cc66ff" Geometry="M52,26 A10,10 0 1,1 52.01,26"/>
+                <GeometryDrawing Brush="#fff" Geometry="M52,32 A4,4 0 1,1 52.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- God Committee - Divine council -->
+    <DrawingImage x:Key="Icon_god_committee">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M0,0 L64,0 L64,64 L0,64 Z"/>
+                <GeometryDrawing Geometry="M32,4 L4,56 L60,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M32,24 A8,6 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#00bfff" Geometry="M32,24 A4,4 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M16,44 A3,3 0 1,1 16.01,44 M32,48 A3,3 0 1,1 32.01,48 M48,44 A3,3 0 1,1 48.01,44"/>
+                <GeometryDrawing Geometry="M24,40 L16,44 M40,40 L48,44 M32,38 L32,48">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== TIER 4 CONSPIRACY ICONS ==================== -->
+
+    <!-- Universe Experiment - Petri dish universe -->
+    <DrawingImage x:Key="Icon_universe_experiment">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,32 A28,28 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#9933ff" Geometry="M20,24 A8,8 0 1,1 20.01,24"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M42,28 A6,6 0 1,1 42.01,28"/>
+                <GeometryDrawing Brush="#00bfff" Geometry="M28,40 A4,4 0 1,1 28.01,40"/>
+                <GeometryDrawing Brush="#fff" Geometry="M16,36 A2,2 0 1,1 16.01,36 M44,42 A2,2 0 1,1 44.01,42 M36,18 A1,1 0 1,1 36.01,18"/>
+                <GeometryDrawing Geometry="M8,8 L16,16 M56,8 L48,16">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Multiverse Conspiracy - Overlapping realities -->
+    <DrawingImage x:Key="Icon_multiverse_conspiracy">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M24,32 A18,18 0 1,1 24.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M40,32 A18,18 0 1,1 40.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#809933ff" Geometry="M32,20 A10,14 0 1,1 32,44"/>
+                <GeometryDrawing Brush="#8000ff41" Geometry="M32,20 A10,14 0 1,0 32,44"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Consciousness Prison - Mind trapped in cage -->
+    <DrawingImage x:Key="Icon_consciousness_prison">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M8,8 L56,8 L56,56 L8,56 Z"/>
+                <GeometryDrawing Geometry="M16,8 L16,56 M24,8 L24,56 M32,8 L32,56 M40,8 L40,56 M48,8 L48,56">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M8,16 L56,16 M8,48 L56,48">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,32 A10,10 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#cc66ff" Geometry="M32,32 A6,6 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#fff" Geometry="M32,32 A2,2 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Final Revelation - Ultimate truth eye -->
+    <DrawingImage x:Key="Icon_final_revelation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M0,0 L64,0 L64,64 L0,64 Z"/>
+                <GeometryDrawing Geometry="M32,4 L4,56 L60,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#fff" Geometry="M20,36 A12,8 0 1,1 44,36 A12,8 0 1,1 20,36"/>
+                <GeometryDrawing Brush="#00bfff" Geometry="M26,36 A6,6 0 1,1 38,36 A6,6 0 1,1 26,36"/>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M32,36 A3,3 0 1,1 32.01,36"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,8 A4,4 0 1,1 32.01,8"/>
+                <GeometryDrawing Geometry="M20,20 L26,28 M44,20 L38,28">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
     <!-- ==================== UI ICONS ==================== -->
 
     <!-- Tinfoil Hat -->
@@ -848,6 +1471,120 @@
                 </GeometryDrawing>
                 <GeometryDrawing Geometry="M12,48 L52,48">
                     <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Fullscreen enter icon (expanding arrows) -->
+    <DrawingImage x:Key="Icon_fullscreen">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Top-left corner -->
+                <GeometryDrawing Geometry="M8,24 L8,8 L24,8">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Top-right corner -->
+                <GeometryDrawing Geometry="M40,8 L56,8 L56,24">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Bottom-left corner -->
+                <GeometryDrawing Geometry="M8,40 L8,56 L24,56">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Bottom-right corner -->
+                <GeometryDrawing Geometry="M40,56 L56,56 L56,40">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Fullscreen exit icon (contracting arrows) -->
+    <DrawingImage x:Key="Icon_fullscreen_exit">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Top-left corner -->
+                <GeometryDrawing Geometry="M20,8 L20,20 L8,20">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Top-right corner -->
+                <GeometryDrawing Geometry="M56,20 L44,20 L44,8">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Bottom-left corner -->
+                <GeometryDrawing Geometry="M8,44 L20,44 L20,56">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Bottom-right corner -->
+                <GeometryDrawing Geometry="M44,56 L44,44 L56,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Zen mode icon - peaceful lotus/meditation symbol -->
+    <DrawingImage x:Key="Icon_zen">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Central circle -->
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,28 A8,8 0 1,1 32.01,28"/>
+                <!-- Outer petals -->
+                <GeometryDrawing Geometry="M32,12 Q38,20 32,28 Q26,20 32,12">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M18,18 Q26,22 32,28 Q22,26 18,18">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M46,18 Q38,22 32,28 Q42,26 46,18">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M12,32 Q20,30 32,28 Q20,34 12,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M52,32 Q44,30 32,28 Q44,34 52,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Base/stem -->
+                <GeometryDrawing Geometry="M32,36 L32,52">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M24,48 Q32,44 40,48">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Zen mode off icon - same but dimmed/crossed -->
+    <DrawingImage x:Key="Icon_zen_off">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Central circle -->
+                <GeometryDrawing Brush="#666666" Geometry="M32,28 A8,8 0 1,1 32.01,28"/>
+                <!-- Outer petals -->
+                <GeometryDrawing Geometry="M32,12 Q38,20 32,28 Q26,20 32,12">
+                    <GeometryDrawing.Pen><Pen Brush="#666666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M18,18 Q26,22 32,28 Q22,26 18,18">
+                    <GeometryDrawing.Pen><Pen Brush="#666666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M46,18 Q38,22 32,28 Q42,26 46,18">
+                    <GeometryDrawing.Pen><Pen Brush="#666666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M12,32 Q20,30 32,28 Q20,34 12,32">
+                    <GeometryDrawing.Pen><Pen Brush="#666666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M52,32 Q44,30 32,28 Q44,34 52,32">
+                    <GeometryDrawing.Pen><Pen Brush="#666666" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Base/stem -->
+                <GeometryDrawing Geometry="M32,36 L32,52">
+                    <GeometryDrawing.Pen><Pen Brush="#666666" Thickness="3" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M24,48 Q32,44 40,48">
+                    <GeometryDrawing.Pen><Pen Brush="#666666" Thickness="2" StartLineCap="Round" EndLineCap="Round"/></GeometryDrawing.Pen>
                 </GeometryDrawing>
             </DrawingGroup>
         </DrawingImage.Drawing>
@@ -1512,6 +2249,1027 @@
                 <!-- Eyelid detail lines -->
                 <GeometryDrawing Geometry="M16,32 Q32,22 48,32 M16,32 Q32,42 48,32">
                     <GeometryDrawing.Pen><Pen Brush="#008822" Thickness="0.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Pyramid only (for layered animation) -->
+    <DrawingImage x:Key="Icon_pyramid_only">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Pyramid background (semi-transparent dark fill) -->
+                <GeometryDrawing Brush="#200f3460" Geometry="M32,2 L2,60 L62,60 Z"/>
+                <!-- Pyramid outline in green -->
+                <GeometryDrawing Geometry="M32,2 L2,60 L62,60 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Inner pyramid lines -->
+                <GeometryDrawing Geometry="M32,14 L14,50 L50,50 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#4000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Radiating lines from center -->
+                <GeometryDrawing Geometry="M32,20 L32,10 M22,24 L14,16 M42,24 L50,16">
+                    <GeometryDrawing.Pen><Pen Brush="#5000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Progressive Pyramid Levels (evolves with proven conspiracies) -->
+
+    <!-- Level 0: Basic outline only (0 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_0">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Simple pyramid outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#3000ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 1: Filled pyramid with inner line (1-2 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_1">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Pyramid fill -->
+                <GeometryDrawing Brush="#150f3460" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Pyramid outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Horizontal separation line -->
+                <GeometryDrawing Geometry="M14,42 L50,42">
+                    <GeometryDrawing.Pen><Pen Brush="#5000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 2: Add brick pattern (3-4 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_2">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Pyramid fill -->
+                <GeometryDrawing Brush="#180f3460" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Pyramid outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick lines -->
+                <GeometryDrawing Geometry="M10,50 L54,50 M14,42 L50,42 M20,34 L44,34">
+                    <GeometryDrawing.Pen><Pen Brush="#4000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Vertical brick separators -->
+                <GeometryDrawing Geometry="M32,42 L32,50 M24,50 L24,58 M40,50 L40,58 M18,42 L20,50 M46,42 L44,50">
+                    <GeometryDrawing.Pen><Pen Brush="#3000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 3: Add radiating light rays (5-6 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_3">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Outer glow rays -->
+                <GeometryDrawing Geometry="M32,0 L32,6 M16,4 L20,10 M48,4 L44,10 M4,20 L10,24 M60,20 L54,24">
+                    <GeometryDrawing.Pen><Pen Brush="#40ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid fill -->
+                <GeometryDrawing Brush="#1c0f3460" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Pyramid outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick lines -->
+                <GeometryDrawing Geometry="M10,50 L54,50 M14,42 L50,42 M20,34 L44,34">
+                    <GeometryDrawing.Pen><Pen Brush="#5000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Inner pyramid -->
+                <GeometryDrawing Geometry="M32,16 L18,44 L46,44 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#4000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 4: Add mystical symbols (7-8 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_4">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Outer glow rays -->
+                <GeometryDrawing Geometry="M32,-2 L32,6 M14,2 L20,10 M50,2 L44,10 M2,18 L10,24 M62,18 L54,24 M-2,36 L6,36 M66,36 L58,36">
+                    <GeometryDrawing.Pen><Pen Brush="#60ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid fill with gradient effect -->
+                <GeometryDrawing Brush="#200f3460" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Pyramid outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick pattern -->
+                <GeometryDrawing Geometry="M10,50 L54,50 M14,42 L50,42 M20,34 L44,34">
+                    <GeometryDrawing.Pen><Pen Brush="#6000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Inner pyramid with glow -->
+                <GeometryDrawing Geometry="M32,14 L16,46 L48,46 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#5000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Corner symbols (small triangles) -->
+                <GeometryDrawing Brush="#40ffd700" Geometry="M4,58 L8,58 L6,54 Z M60,58 L56,58 L58,54 Z"/>
+                <!-- Ankh-like symbol at base -->
+                <GeometryDrawing Geometry="M32,52 L32,56 M30,54 L34,54">
+                    <GeometryDrawing.Pen><Pen Brush="#80ffd700" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 5: Full illuminati glory (9-10 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_5">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Outer radiating glory -->
+                <GeometryDrawing Geometry="M32,-4 L32,6 M12,0 L18,10 M52,0 L46,10 M0,16 L10,22 M64,16 L54,22 M-4,34 L6,34 M68,34 L58,34 M0,52 L8,48 M64,52 L56,48">
+                    <GeometryDrawing.Pen><Pen Brush="#80ffd700" Thickness="2.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Secondary rays -->
+                <GeometryDrawing Geometry="M22,-2 L24,8 M42,-2 L40,8 M6,26 L14,28 M58,26 L50,28">
+                    <GeometryDrawing.Pen><Pen Brush="#50ffd700" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid fill -->
+                <GeometryDrawing Brush="#250f3460" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Pyramid outline with strong glow -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Detailed brick pattern -->
+                <GeometryDrawing Geometry="M8,52 L56,52 M12,46 L52,46 M16,40 L48,40 M22,34 L42,34">
+                    <GeometryDrawing.Pen><Pen Brush="#7000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Inner pyramid layers -->
+                <GeometryDrawing Geometry="M32,14 L14,50 L50,50 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#6000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,20 L20,46 L44,46 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#4000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Corner power symbols -->
+                <GeometryDrawing Brush="#70ffd700" Geometry="M4,58 L10,58 L7,52 Z M60,58 L54,58 L57,52 Z"/>
+                <!-- Base mystical symbols -->
+                <GeometryDrawing Geometry="M32,50 L32,56 M29,53 L35,53 M26,56 L26,58 M38,56 L38,58">
+                    <GeometryDrawing.Pen><Pen Brush="#90ffd700" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Floating runes around pyramid -->
+                <GeometryDrawing Geometry="M2,44 L4,48 L6,44 M58,44 L60,48 L62,44">
+                    <GeometryDrawing.Pen><Pen Brush="#509933ff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 6: Ascending power (6 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_6">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Outer radiating glory - more intense -->
+                <GeometryDrawing Geometry="M32,-6 L32,6 M10,-2 L16,10 M54,-2 L48,10 M-2,14 L10,22 M66,14 L54,22 M-6,34 L6,34 M70,34 L58,34 M-2,54 L8,48 M66,54 L56,48">
+                    <GeometryDrawing.Pen><Pen Brush="#90ffd700" Thickness="2.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Secondary rays -->
+                <GeometryDrawing Geometry="M22,-4 L24,8 M42,-4 L40,8 M4,26 L14,28 M60,26 L50,28">
+                    <GeometryDrawing.Pen><Pen Brush="#60ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid fill with purple tint -->
+                <GeometryDrawing Brush="#301a1a3e" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Pyramid outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick pattern -->
+                <GeometryDrawing Geometry="M8,52 L56,52 M12,46 L52,46 M16,40 L48,40 M22,34 L42,34 M26,28 L38,28">
+                    <GeometryDrawing.Pen><Pen Brush="#8000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Inner layers -->
+                <GeometryDrawing Geometry="M32,14 L14,50 L50,50 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#7000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Floating orbs -->
+                <GeometryDrawing Brush="#60ffd700" Geometry="M8,20 A3,3 0 1,1 8.01,20 M56,20 A3,3 0 1,1 56.01,20"/>
+                <!-- Corner symbols -->
+                <GeometryDrawing Brush="#80ffd700" Geometry="M4,58 L10,58 L7,52 Z M60,58 L54,58 L57,52 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 7: Matrix awakening (7 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_7">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Intense radiating glory -->
+                <GeometryDrawing Geometry="M32,-8 L32,6 M8,-4 L16,10 M56,-4 L48,10 M-4,12 L10,22 M68,12 L54,22 M-8,34 L6,34 M72,34 L58,34">
+                    <GeometryDrawing.Pen><Pen Brush="#a0ffd700" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Matrix-like falling symbols -->
+                <GeometryDrawing Geometry="M16,0 L16,12 M24,4 L24,10 M40,4 L40,10 M48,0 L48,12">
+                    <GeometryDrawing.Pen><Pen Brush="#6000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid fill -->
+                <GeometryDrawing Brush="#351a1a4e" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Double pyramid outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,12 L8,56 L56,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#6000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick pattern -->
+                <GeometryDrawing Geometry="M8,52 L56,52 M12,46 L52,46 M16,40 L48,40 M22,34 L42,34 M26,28 L38,28">
+                    <GeometryDrawing.Pen><Pen Brush="#9000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Orbiting particles -->
+                <GeometryDrawing Brush="#80ffd700" Geometry="M6,16 A4,4 0 1,1 6.01,16 M58,16 A4,4 0 1,1 58.01,16 M32,-4 A3,3 0 1,1 32.01,-4"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 8: Temporal mastery (8 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_8">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Intense radiating glory with purple -->
+                <GeometryDrawing Geometry="M32,-10 L32,6 M6,-6 L16,10 M58,-6 L48,10 M-6,10 L10,22 M70,10 L54,22">
+                    <GeometryDrawing.Pen><Pen Brush="#b0ffd700" Thickness="3.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Purple energy arcs -->
+                <GeometryDrawing Geometry="M4,30 Q16,20 32,16 Q48,20 60,30">
+                    <GeometryDrawing.Pen><Pen Brush="#709933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid fill with deeper color -->
+                <GeometryDrawing Brush="#402a1a5e" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Triple layer outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,14 L10,54 L54,54 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#809933ff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick pattern -->
+                <GeometryDrawing Geometry="M8,52 L56,52 M12,46 L52,46 M16,40 L48,40 M22,34 L42,34 M26,28 L38,28">
+                    <GeometryDrawing.Pen><Pen Brush="#a000ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Clock/time symbols at corners -->
+                <GeometryDrawing Geometry="M4,58 A6,6 0 1,1 4.01,58 M60,58 A6,6 0 1,1 60.01,58">
+                    <GeometryDrawing.Pen><Pen Brush="#90ffd700" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Orbiting particles -->
+                <GeometryDrawing Brush="#90ffd700" Geometry="M4,12 A5,5 0 1,1 4.01,12 M60,12 A5,5 0 1,1 60.01,12 M32,-8 A4,4 0 1,1 32.01,-8"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 9: Simulation breach (9 conspiracies) -->
+    <DrawingImage x:Key="Icon_pyramid_level_9">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Maximum radiating glory -->
+                <GeometryDrawing Geometry="M32,-12 L32,6 M4,-8 L16,10 M60,-8 L48,10 M-8,8 L10,22 M72,8 L54,22 M-10,34 L6,34 M74,34 L58,34">
+                    <GeometryDrawing.Pen><Pen Brush="#c0ffd700" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Digital glitch lines -->
+                <GeometryDrawing Geometry="M0,24 L64,24 M8,18 L56,18 M16,12 L48,12">
+                    <GeometryDrawing.Pen><Pen Brush="#400099ff" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Purple energy arcs double -->
+                <GeometryDrawing Geometry="M2,28 Q16,18 32,14 Q48,18 62,28 M6,36 Q20,26 32,22 Q44,26 58,36">
+                    <GeometryDrawing.Pen><Pen Brush="#809933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid fill with simulation color -->
+                <GeometryDrawing Brush="#4530206e" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Glowing outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Inner simulation grid -->
+                <GeometryDrawing Geometry="M32,16 L12,52 L52,52 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#600099ff" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick pattern -->
+                <GeometryDrawing Geometry="M8,52 L56,52 M12,46 L52,46 M16,40 L48,40 M22,34 L42,34 M26,28 L38,28">
+                    <GeometryDrawing.Pen><Pen Brush="#b000ff41" Thickness="1.2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Large orbiting particles -->
+                <GeometryDrawing Brush="#a0ffd700" Geometry="M2,8 A6,6 0 1,1 2.01,8 M62,8 A6,6 0 1,1 62.01,8 M32,-10 A5,5 0 1,1 32.01,-10"/>
+                <GeometryDrawing Brush="#709933ff" Geometry="M-2,44 A4,4 0 1,1 -1.99,44 M66,44 A4,4 0 1,1 66.01,44"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 10: Ultimate conspiracy - YOU ARE THE CONSPIRACY -->
+    <DrawingImage x:Key="Icon_pyramid_level_10">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Ultimate radiating glory - maximum power -->
+                <GeometryDrawing Geometry="M32,-14 L32,6 M2,-10 L16,10 M62,-10 L48,10 M-10,6 L10,22 M74,6 L54,22 M-12,34 L6,34 M76,34 L58,34 M-8,52 L8,46 M72,52 L56,46">
+                    <GeometryDrawing.Pen><Pen Brush="#e0ffd700" Thickness="4.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Secondary glory rays -->
+                <GeometryDrawing Geometry="M18,-10 L22,8 M46,-10 L42,8 M-4,20 L12,26 M68,20 L52,26">
+                    <GeometryDrawing.Pen><Pen Brush="#90ffd700" Thickness="2.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Full purple aura -->
+                <GeometryDrawing Geometry="M0,26 Q16,14 32,10 Q48,14 64,26 M4,34 Q20,22 32,18 Q44,22 60,34 M8,42 Q24,30 32,26 Q40,30 56,42">
+                    <GeometryDrawing.Pen><Pen Brush="#909933ff" Thickness="2.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid fill - ultimate darkness -->
+                <GeometryDrawing Brush="#5040208e" Geometry="M32,8 L4,58 L60,58 Z"/>
+                <!-- Triple layered glowing outline -->
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,8 L4,58 L60,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Inner mystical layers -->
+                <GeometryDrawing Geometry="M32,14 L10,54 L54,54 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#809933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,20 L16,50 L48,50 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#600099ff" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick pattern - fully illuminated -->
+                <GeometryDrawing Geometry="M8,52 L56,52 M12,46 L52,46 M16,40 L48,40 M22,34 L42,34 M26,28 L38,28 M30,22 L34,22">
+                    <GeometryDrawing.Pen><Pen Brush="#d000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- YOU ARE THE CONSPIRACY - all seeing particles -->
+                <GeometryDrawing Brush="#c0ffd700" Geometry="M0,4 A7,7 0 1,1 0.01,4 M64,4 A7,7 0 1,1 64.01,4 M32,-12 A6,6 0 1,1 32.01,-12"/>
+                <GeometryDrawing Brush="#a09933ff" Geometry="M-4,46 A5,5 0 1,1 -3.99,46 M68,46 A5,5 0 1,1 68.01,46"/>
+                <GeometryDrawing Brush="#800099ff" Geometry="M-6,26 A4,4 0 1,1 -5.99,26 M70,26 A4,4 0 1,1 70.01,26"/>
+                <!-- Crown symbol at apex -->
+                <GeometryDrawing Geometry="M26,4 L32,0 L38,4">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 11: Denver Airport - Underground secrets -->
+    <DrawingImage x:Key="Icon_pyramid_level_11">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Underground tunnel glow -->
+                <GeometryDrawing Geometry="M-8,62 L72,62 M-4,66 L68,66">
+                    <GeometryDrawing.Pen><Pen Brush="#609933ff" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Radiant glory -->
+                <GeometryDrawing Geometry="M32,-16 L32,4 M0,-12 L14,8 M64,-12 L50,8 M-12,4 L8,20 M76,4 L56,20 M-14,36 L4,36 M78,36 L60,36">
+                    <GeometryDrawing.Pen><Pen Brush="#e0ffd700" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Purple cosmic aura -->
+                <GeometryDrawing Geometry="M-4,24 Q16,12 32,8 Q48,12 68,24 M0,32 Q20,20 32,16 Q44,20 64,32">
+                    <GeometryDrawing.Pen><Pen Brush="#a09933ff" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#6040208e" Geometry="M32,6 L2,58 L62,58 Z"/>
+                <GeometryDrawing Geometry="M32,6 L2,58 L62,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,6 L2,58 L62,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick layers fully lit -->
+                <GeometryDrawing Geometry="M6,52 L58,52 M10,46 L54,46 M14,40 L50,40 M20,34 L44,34 M24,28 L40,28 M28,22 L36,22">
+                    <GeometryDrawing.Pen><Pen Brush="#e000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Crown with orb -->
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,-2 A4,4 0 1,1 32.01,-2"/>
+                <GeometryDrawing Geometry="M24,2 L32,-4 L40,2">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Corner orbs -->
+                <GeometryDrawing Brush="#c0ffd700" Geometry="M-4,4 A8,8 0 1,1 -3.99,4 M68,4 A8,8 0 1,1 68.01,4"/>
+                <GeometryDrawing Brush="#b09933ff" Geometry="M-6,48 A6,6 0 1,1 -5.99,48 M70,48 A6,6 0 1,1 70.01,48"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 12: CERN Portal - Dimensional rifts -->
+    <DrawingImage x:Key="Icon_pyramid_level_12">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Portal rings -->
+                <GeometryDrawing Geometry="M32,32 A36,36 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#409933ff" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A28,28 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#60ffd700" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays enhanced -->
+                <GeometryDrawing Geometry="M32,-18 L32,2 M-2,-14 L12,6 M66,-14 L52,6 M-14,2 L6,18 M78,2 L58,18 M-16,38 L2,38 M80,38 L62,38">
+                    <GeometryDrawing.Pen><Pen Brush="#e0ffd700" Thickness="5.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#7040208e" Geometry="M32,4 L0,58 L64,58 Z"/>
+                <GeometryDrawing Geometry="M32,4 L0,58 L64,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="7"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,4 L0,58 L64,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Enhanced brick layers -->
+                <GeometryDrawing Geometry="M4,52 L60,52 M8,46 L56,46 M12,40 L52,40 M18,34 L46,34 M22,28 L42,28 M26,22 L38,22 M30,16 L34,16">
+                    <GeometryDrawing.Pen><Pen Brush="#f000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Portal particles -->
+                <GeometryDrawing Brush="#d0ffd700" Geometry="M-6,2 A9,9 0 1,1 -5.99,2 M70,2 A9,9 0 1,1 70.01,2 M32,-14 A7,7 0 1,1 32.01,-14"/>
+                <GeometryDrawing Brush="#c09933ff" Geometry="M-8,50 A7,7 0 1,1 -7.99,50 M72,50 A7,7 0 1,1 72.01,50"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 13: Mandela Effect - Reality splitting -->
+    <DrawingImage x:Key="Icon_pyramid_level_13">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Split reality effect -->
+                <GeometryDrawing Geometry="M32,-20 L32,70">
+                    <GeometryDrawing.Pen><Pen Brush="#60ffd700" Thickness="6" DashStyle="{x:Static DashStyles.Dash}"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-20 L32,0 M-4,-16 L10,4 M68,-16 L54,4 M-16,0 L4,16 M80,0 L60,16 M-18,40 L0,40 M82,40 L64,40">
+                    <GeometryDrawing.Pen><Pen Brush="#e0ffd700" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Purple aura enhanced -->
+                <GeometryDrawing Geometry="M-6,22 Q14,10 32,6 Q50,10 70,22 M-2,30 Q18,18 32,14 Q46,18 66,30">
+                    <GeometryDrawing.Pen><Pen Brush="#b09933ff" Thickness="3.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#8040208e" Geometry="M32,2 L-2,58 L66,58 Z"/>
+                <GeometryDrawing Geometry="M32,2 L-2,58 L66,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,2 L-2,58 L66,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="3.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick layers -->
+                <GeometryDrawing Geometry="M2,52 L62,52 M6,46 L58,46 M10,40 L54,40 M16,34 L48,34 M20,28 L44,28 M24,22 L40,22 M28,16 L36,16">
+                    <GeometryDrawing.Pen><Pen Brush="#f000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Reality glitch particles -->
+                <GeometryDrawing Brush="#e0ffd700" Geometry="M-8,0 A10,10 0 1,1 -7.99,0 M72,0 A10,10 0 1,1 72.01,0 M32,-16 A8,8 0 1,1 32.01,-16"/>
+                <GeometryDrawing Brush="#d09933ff" Geometry="M-10,52 A8,8 0 1,1 -9.99,52 M74,52 A8,8 0 1,1 74.01,52"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 14: Hollow Moon - Lunar secrets -->
+    <DrawingImage x:Key="Icon_pyramid_level_14">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Lunar halo -->
+                <GeometryDrawing Geometry="M32,32 A40,40 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#30c0c0c0" Thickness="8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-22 L32,-2 M-6,-18 L8,2 M70,-18 L56,2 M-18,-2 L2,14 M82,-2 L62,14 M-20,42 L-2,42 M84,42 L66,42">
+                    <GeometryDrawing.Pen><Pen Brush="#e0ffd700" Thickness="6.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Purple cosmic aura -->
+                <GeometryDrawing Geometry="M-8,20 Q12,8 32,4 Q52,8 72,20 M-4,28 Q16,16 32,12 Q48,16 68,28">
+                    <GeometryDrawing.Pen><Pen Brush="#c09933ff" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#9040208e" Geometry="M32,0 L-4,58 L68,58 Z"/>
+                <GeometryDrawing Geometry="M32,0 L-4,58 L68,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="9"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,0 L-4,58 L68,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Brick layers -->
+                <GeometryDrawing Geometry="M0,52 L64,52 M4,46 L60,46 M8,40 L56,40 M14,34 L50,34 M18,28 L46,28 M22,22 L42,22 M26,16 L38,16 M30,10 L34,10">
+                    <GeometryDrawing.Pen><Pen Brush="#f000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Lunar particles -->
+                <GeometryDrawing Brush="#f0ffd700" Geometry="M-10,-2 A11,11 0 1,1 -9.99,-2 M74,-2 A11,11 0 1,1 74.01,-2 M32,-18 A9,9 0 1,1 32.01,-18"/>
+                <GeometryDrawing Brush="#e09933ff" Geometry="M-12,54 A9,9 0 1,1 -11.99,54 M76,54 A9,9 0 1,1 76.01,54"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 15: Tartaria - Lost empire awakened -->
+    <DrawingImage x:Key="Icon_pyramid_level_15">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Empire glow -->
+                <GeometryDrawing Geometry="M32,32 A44,44 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#40daa520" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-24 L32,-4 M-8,-20 L6,0 M72,-20 L58,0 M-20,-4 L0,12 M84,-4 L64,12 M-22,44 L-4,44 M86,44 L68,44">
+                    <GeometryDrawing.Pen><Pen Brush="#f0ffd700" Thickness="7"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Royal purple aura -->
+                <GeometryDrawing Geometry="M-10,18 Q10,6 32,2 Q54,6 74,18 M-6,26 Q14,14 32,10 Q50,14 70,26">
+                    <GeometryDrawing.Pen><Pen Brush="#d09933ff" Thickness="4.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#a040208e" Geometry="M32,-2 L-6,58 L70,58 Z"/>
+                <GeometryDrawing Geometry="M32,-2 L-6,58 L70,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="10"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-2 L-6,58 L70,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="4.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Empire pillars -->
+                <GeometryDrawing Geometry="M-2,52 L66,52 M2,46 L62,46 M6,40 L58,40 M12,34 L52,34 M16,28 L48,28 M20,22 L44,22 M24,16 L40,16 M28,10 L36,10">
+                    <GeometryDrawing.Pen><Pen Brush="#f000ff41" Thickness="1.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Empire crown -->
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,-8 A6,6 0 1,1 32.01,-8"/>
+                <GeometryDrawing Geometry="M22,0 L32,-10 L42,0">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Corner orbs -->
+                <GeometryDrawing Brush="#f0ffd700" Geometry="M-12,-4 A12,12 0 1,1 -11.99,-4 M76,-4 A12,12 0 1,1 76.01,-4"/>
+                <GeometryDrawing Brush="#f09933ff" Geometry="M-14,56 A10,10 0 1,1 -13.99,56 M78,56 A10,10 0 1,1 78.01,56"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 16: Breakaway Civilization - Hidden power -->
+    <DrawingImage x:Key="Icon_pyramid_level_16">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Civilization dome -->
+                <GeometryDrawing Geometry="M-8,58 Q32,-20 72,58">
+                    <GeometryDrawing.Pen><Pen Brush="#5000ff41" Thickness="8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-26 L32,-6 M-10,-22 L4,-2 M74,-22 L60,-2 M-22,-6 L-2,10 M86,-6 L66,10 M-24,46 L-6,46 M88,46 L70,46">
+                    <GeometryDrawing.Pen><Pen Brush="#f0ffd700" Thickness="7.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Purple aura -->
+                <GeometryDrawing Geometry="M-12,16 Q8,4 32,0 Q56,4 76,16 M-8,24 Q12,12 32,8 Q52,12 72,24">
+                    <GeometryDrawing.Pen><Pen Brush="#e09933ff" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#b040208e" Geometry="M32,-4 L-8,58 L72,58 Z"/>
+                <GeometryDrawing Geometry="M32,-4 L-8,58 L72,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="11"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-4 L-8,58 L72,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- City lights -->
+                <GeometryDrawing Geometry="M-4,52 L68,52 M0,46 L64,46 M4,40 L60,40 M10,34 L54,34 M14,28 L50,28 M18,22 L46,22 M22,16 L42,16 M26,10 L38,10">
+                    <GeometryDrawing.Pen><Pen Brush="#f000ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Power orbs -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-14,-6 A13,13 0 1,1 -13.99,-6 M78,-6 A13,13 0 1,1 78.01,-6 M32,-22 A11,11 0 1,1 32.01,-22"/>
+                <GeometryDrawing Brush="#ff9933ff" Geometry="M-16,58 A11,11 0 1,1 -15.99,58 M80,58 A11,11 0 1,1 80.01,58"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 17: Antarctica Treaty - Frozen truth -->
+    <DrawingImage x:Key="Icon_pyramid_level_17">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Ice crystal halo -->
+                <GeometryDrawing Geometry="M32,32 A48,48 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#4000bfff" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-28 L32,-8 M-12,-24 L2,-4 M76,-24 L62,-4 M-24,-8 L-4,8 M88,-8 L68,8 M-26,48 L-8,48 M90,48 L72,48">
+                    <GeometryDrawing.Pen><Pen Brush="#f8ffd700" Thickness="8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ice aura -->
+                <GeometryDrawing Geometry="M-14,14 Q6,2 32,-2 Q58,2 78,14 M-10,22 Q10,10 32,6 Q54,10 74,22">
+                    <GeometryDrawing.Pen><Pen Brush="#a000bfff" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#c040208e" Geometry="M32,-6 L-10,58 L74,58 Z"/>
+                <GeometryDrawing Geometry="M32,-6 L-10,58 L74,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="12"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-6 L-10,58 L74,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="5.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ice crystal layers -->
+                <GeometryDrawing Geometry="M-6,52 L70,52 M-2,46 L66,46 M2,40 L62,40 M8,34 L56,34 M12,28 L52,28 M16,22 L48,22 M20,16 L44,16 M24,10 L40,10 M28,4 L36,4">
+                    <GeometryDrawing.Pen><Pen Brush="#f000ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ice orbs -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-16,-8 A14,14 0 1,1 -15.99,-8 M80,-8 A14,14 0 1,1 80.01,-8 M32,-24 A12,12 0 1,1 32.01,-24"/>
+                <GeometryDrawing Brush="#ff00bfff" Geometry="M-18,60 A12,12 0 1,1 -17.99,60 M82,60 A12,12 0 1,1 82.01,60"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 18: Matrix Source Code - Digital enlightenment -->
+    <DrawingImage x:Key="Icon_pyramid_level_18">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Digital rain -->
+                <GeometryDrawing Geometry="M8,-20 L8,70 M20,-20 L20,70 M44,-20 L44,70 M56,-20 L56,70">
+                    <GeometryDrawing.Pen><Pen Brush="#3000ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-30 L32,-10 M-14,-26 L0,-6 M78,-26 L64,-6 M-26,-10 L-6,6 M90,-10 L70,6 M-28,50 L-10,50 M92,50 L74,50">
+                    <GeometryDrawing.Pen><Pen Brush="#f8ffd700" Thickness="8.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Matrix aura -->
+                <GeometryDrawing Geometry="M-16,12 Q4,0 32,-4 Q60,0 80,12 M-12,20 Q8,8 32,4 Q56,8 76,20">
+                    <GeometryDrawing.Pen><Pen Brush="#f09933ff" Thickness="5.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#d040208e" Geometry="M32,-8 L-12,58 L76,58 Z"/>
+                <GeometryDrawing Geometry="M32,-8 L-12,58 L76,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="13"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-8 L-12,58 L76,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Code layers -->
+                <GeometryDrawing Geometry="M-8,52 L72,52 M-4,46 L68,46 M0,40 L64,40 M6,34 L58,34 M10,28 L54,28 M14,22 L50,22 M18,16 L46,16 M22,10 L42,10 M26,4 L38,4">
+                    <GeometryDrawing.Pen><Pen Brush="#ff00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Matrix particles -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-18,-10 A15,15 0 1,1 -17.99,-10 M82,-10 A15,15 0 1,1 82.01,-10 M32,-26 A13,13 0 1,1 32.01,-26"/>
+                <GeometryDrawing Brush="#ff00ff41" Geometry="M-20,62 A13,13 0 1,1 -19.99,62 M84,62 A13,13 0 1,1 84.01,62"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 19: Akashic Records - Universal knowledge -->
+    <DrawingImage x:Key="Icon_pyramid_level_19">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Knowledge spiral -->
+                <GeometryDrawing Geometry="M32,32 A52,52 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#60cc66ff" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-32 L32,-12 M-16,-28 L-2,-8 M80,-28 L66,-8 M-28,-12 L-8,4 M92,-12 L72,4 M-30,52 L-12,52 M94,52 L76,52">
+                    <GeometryDrawing.Pen><Pen Brush="#ffffd700" Thickness="9"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Knowledge aura -->
+                <GeometryDrawing Geometry="M-18,10 Q2,-2 32,-6 Q62,-2 82,10 M-14,18 Q6,6 32,2 Q58,6 78,18">
+                    <GeometryDrawing.Pen><Pen Brush="#ffcc66ff" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#e040208e" Geometry="M32,-10 L-14,58 L78,58 Z"/>
+                <GeometryDrawing Geometry="M32,-10 L-14,58 L78,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="14"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-10 L-14,58 L78,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="6.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ancient wisdom layers -->
+                <GeometryDrawing Geometry="M-10,52 L74,52 M-6,46 L70,46 M-2,40 L66,40 M4,34 L60,34 M8,28 L56,28 M12,22 L52,22 M16,16 L48,16 M20,10 L44,10 M24,4 L40,4 M28,-2 L36,-2">
+                    <GeometryDrawing.Pen><Pen Brush="#ff00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Wisdom orbs -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-20,-12 A16,16 0 1,1 -19.99,-12 M84,-12 A16,16 0 1,1 84.01,-12 M32,-28 A14,14 0 1,1 32.01,-28"/>
+                <GeometryDrawing Brush="#ffcc66ff" Geometry="M-22,64 A14,14 0 1,1 -21.99,64 M86,64 A14,14 0 1,1 86.01,64"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 20: God Committee - Divine authority -->
+    <DrawingImage x:Key="Icon_pyramid_level_20">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Divine halo -->
+                <GeometryDrawing Geometry="M32,32 A56,56 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#70ffd700" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ultimate glory rays -->
+                <GeometryDrawing Geometry="M32,-34 L32,-14 M-18,-30 L-4,-10 M82,-30 L68,-10 M-30,-14 L-10,2 M94,-14 L74,2 M-32,54 L-14,54 M96,54 L78,54">
+                    <GeometryDrawing.Pen><Pen Brush="#ffffd700" Thickness="9.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Divine aura -->
+                <GeometryDrawing Geometry="M-20,8 Q0,-4 32,-8 Q64,-4 84,8 M-16,16 Q4,4 32,0 Q60,4 80,16">
+                    <GeometryDrawing.Pen><Pen Brush="#ff9933ff" Thickness="6.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#f040208e" Geometry="M32,-12 L-16,58 L80,58 Z"/>
+                <GeometryDrawing Geometry="M32,-12 L-16,58 L80,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="15"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-12 L-16,58 L80,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="7"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Divine layers -->
+                <GeometryDrawing Geometry="M-12,52 L76,52 M-8,46 L72,46 M-4,40 L68,40 M2,34 L62,34 M6,28 L58,28 M10,22 L54,22 M14,16 L50,16 M18,10 L46,10 M22,4 L42,4 M26,-2 L38,-2">
+                    <GeometryDrawing.Pen><Pen Brush="#ff00ff41" Thickness="2.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Divine crown -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M32,-24 A10,10 0 1,1 32.01,-24"/>
+                <GeometryDrawing Geometry="M18,-8 L32,-20 L46,-8">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Celestial orbs -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-22,-14 A17,17 0 1,1 -21.99,-14 M86,-14 A17,17 0 1,1 86.01,-14"/>
+                <GeometryDrawing Brush="#ff9933ff" Geometry="M-24,66 A15,15 0 1,1 -23.99,66 M88,66 A15,15 0 1,1 88.01,66"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 21: Universe Experiment - Cosmic laboratory -->
+    <DrawingImage x:Key="Icon_pyramid_level_21">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Cosmic rings -->
+                <GeometryDrawing Geometry="M32,32 A60,60 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#509933ff" Thickness="7"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A52,52 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#60ffd700" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-36 L32,-16 M-20,-32 L-6,-12 M84,-32 L70,-12 M-32,-16 L-12,0 M96,-16 L76,0 M-34,56 L-16,56 M98,56 L80,56">
+                    <GeometryDrawing.Pen><Pen Brush="#ffffd700" Thickness="10"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Cosmic aura -->
+                <GeometryDrawing Geometry="M-22,6 Q-2,-6 32,-10 Q66,-6 86,6 M-18,14 Q2,2 32,-2 Q62,2 82,14">
+                    <GeometryDrawing.Pen><Pen Brush="#ff9933ff" Thickness="7"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#ff40208e" Geometry="M32,-14 L-18,58 L82,58 Z"/>
+                <GeometryDrawing Geometry="M32,-14 L-18,58 L82,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="16"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-14 L-18,58 L82,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="7.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Experiment layers -->
+                <GeometryDrawing Geometry="M-14,52 L78,52 M-10,46 L74,46 M-6,40 L70,40 M0,34 L64,34 M4,28 L60,28 M8,22 L56,22 M12,16 L52,16 M16,10 L48,10 M20,4 L44,4 M24,-2 L40,-2 M28,-8 L36,-8">
+                    <GeometryDrawing.Pen><Pen Brush="#ff00ff41" Thickness="2.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Cosmic particles -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-24,-16 A18,18 0 1,1 -23.99,-16 M88,-16 A18,18 0 1,1 88.01,-16 M32,-32 A16,16 0 1,1 32.01,-32"/>
+                <GeometryDrawing Brush="#ff9933ff" Geometry="M-26,68 A16,16 0 1,1 -25.99,68 M90,68 A16,16 0 1,1 90.01,68"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 22: Multiverse Conspiracy - Infinite realities -->
+    <DrawingImage x:Key="Icon_pyramid_level_22">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Multiverse rings -->
+                <GeometryDrawing Geometry="M24,32 A40,40 0 1,1 24.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#6000ff41" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M40,32 A40,40 0 1,1 40.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#609933ff" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-38 L32,-18 M-22,-34 L-8,-14 M86,-34 L72,-14 M-34,-18 L-14,-2 M98,-18 L78,-2 M-36,58 L-18,58 M100,58 L82,58">
+                    <GeometryDrawing.Pen><Pen Brush="#ffffd700" Thickness="10.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Multiverse aura -->
+                <GeometryDrawing Geometry="M-24,4 Q-4,-8 32,-12 Q68,-8 88,4 M-20,12 Q0,0 32,-4 Q64,0 84,12">
+                    <GeometryDrawing.Pen><Pen Brush="#ff9933ff" Thickness="7.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#ff40208e" Geometry="M32,-16 L-20,58 L84,58 Z"/>
+                <GeometryDrawing Geometry="M32,-16 L-20,58 L84,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="17"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-16 L-20,58 L84,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Multiverse layers -->
+                <GeometryDrawing Geometry="M-16,52 L80,52 M-12,46 L76,46 M-8,40 L72,40 M-2,34 L66,34 M2,28 L62,28 M6,22 L58,22 M10,16 L54,16 M14,10 L50,10 M18,4 L46,4 M22,-2 L42,-2 M26,-8 L38,-8">
+                    <GeometryDrawing.Pen><Pen Brush="#ff00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Infinity symbol at apex -->
+                <GeometryDrawing Geometry="M26,-12 Q32,-18 38,-12 Q44,-6 38,0 Q32,-6 26,0 Q20,-6 26,-12">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Reality orbs -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-26,-18 A19,19 0 1,1 -25.99,-18 M90,-18 A19,19 0 1,1 90.01,-18"/>
+                <GeometryDrawing Brush="#ff9933ff" Geometry="M-28,70 A17,17 0 1,1 -27.99,70 M92,70 A17,17 0 1,1 92.01,70"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 23: Consciousness Prison - Mind transcendence -->
+    <DrawingImage x:Key="Icon_pyramid_level_23">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Consciousness waves -->
+                <GeometryDrawing Geometry="M-20,32 Q0,12 32,32 Q64,52 84,32 M-20,40 Q0,20 32,40 Q64,60 84,40">
+                    <GeometryDrawing.Pen><Pen Brush="#80cc66ff" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-40 L32,-20 M-24,-36 L-10,-16 M88,-36 L74,-16 M-36,-20 L-16,-4 M100,-20 L80,-4 M-38,60 L-20,60 M102,60 L84,60">
+                    <GeometryDrawing.Pen><Pen Brush="#ffffd700" Thickness="11"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Mind aura -->
+                <GeometryDrawing Geometry="M-26,2 Q-6,-10 32,-14 Q70,-10 90,2 M-22,10 Q-2,-2 32,-6 Q66,-2 86,10">
+                    <GeometryDrawing.Pen><Pen Brush="#ffcc66ff" Thickness="8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#ff40208e" Geometry="M32,-18 L-22,58 L86,58 Z"/>
+                <GeometryDrawing Geometry="M32,-18 L-22,58 L86,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="18"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-18 L-22,58 L86,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="8.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Consciousness layers -->
+                <GeometryDrawing Geometry="M-18,52 L82,52 M-14,46 L78,46 M-10,40 L74,40 M-4,34 L68,34 M0,28 L64,28 M4,22 L60,22 M8,16 L56,16 M12,10 L52,10 M16,4 L48,4 M20,-2 L44,-2 M24,-8 L40,-8 M28,-14 L36,-14">
+                    <GeometryDrawing.Pen><Pen Brush="#ff00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Transcendence particles -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-28,-20 A20,20 0 1,1 -27.99,-20 M92,-20 A20,20 0 1,1 92.01,-20 M32,-36 A18,18 0 1,1 32.01,-36"/>
+                <GeometryDrawing Brush="#ffcc66ff" Geometry="M-30,72 A18,18 0 1,1 -29.99,72 M94,72 A18,18 0 1,1 94.01,72"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 24: Truth Singularity - All knowledge converges -->
+    <DrawingImage x:Key="Icon_pyramid_level_24">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Singularity spiral -->
+                <GeometryDrawing Geometry="M32,32 A68,68 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#80ffd700" Thickness="8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A56,56 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#809933ff" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Glory rays -->
+                <GeometryDrawing Geometry="M32,-42 L32,-22 M-26,-38 L-12,-18 M90,-38 L76,-18 M-38,-22 L-18,-6 M102,-22 L82,-6 M-40,62 L-22,62 M104,62 L86,62">
+                    <GeometryDrawing.Pen><Pen Brush="#ffffd700" Thickness="11.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Convergence aura -->
+                <GeometryDrawing Geometry="M-28,0 Q-8,-12 32,-16 Q72,-12 92,0 M-24,8 Q-4,-4 32,-8 Q68,-4 88,8">
+                    <GeometryDrawing.Pen><Pen Brush="#ff9933ff" Thickness="8.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#ff40208e" Geometry="M32,-20 L-24,58 L88,58 Z"/>
+                <GeometryDrawing Geometry="M32,-20 L-24,58 L88,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="19"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-20 L-24,58 L88,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="9"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Singularity layers -->
+                <GeometryDrawing Geometry="M-20,52 L84,52 M-16,46 L80,46 M-12,40 L76,40 M-6,34 L70,34 M-2,28 L66,28 M2,22 L62,22 M6,16 L58,16 M10,10 L54,10 M14,4 L50,4 M18,-2 L46,-2 M22,-8 L42,-8 M26,-14 L38,-14">
+                    <GeometryDrawing.Pen><Pen Brush="#ff00ff41" Thickness="3.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Singularity point -->
+                <GeometryDrawing Brush="#ffffffff" Geometry="M32,-16 A8,8 0 1,1 32.01,-16"/>
+                <GeometryDrawing Brush="#ffffd700" Geometry="M32,-16 A4,4 0 1,1 32.01,-16"/>
+                <!-- Power orbs -->
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-30,-22 A21,21 0 1,1 -29.99,-22 M94,-22 A21,21 0 1,1 94.01,-22 M32,-38 A19,19 0 1,1 32.01,-38"/>
+                <GeometryDrawing Brush="#ff9933ff" Geometry="M-32,74 A19,19 0 1,1 -31.99,74 M96,74 A19,19 0 1,1 96.01,74"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Level 25: Final Revelation - ULTIMATE COSMIC TRUTH -->
+    <DrawingImage x:Key="Icon_pyramid_level_25">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Ultimate cosmic rings -->
+                <GeometryDrawing Geometry="M32,32 A72,72 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#a0ffd700" Thickness="10"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A60,60 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#a09933ff" Thickness="8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A48,48 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#a000ff41" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ultimate glory rays -->
+                <GeometryDrawing Geometry="M32,-44 L32,-24 M-28,-40 L-14,-20 M92,-40 L78,-20 M-40,-24 L-20,-8 M104,-24 L84,-8 M-42,64 L-24,64 M106,64 L88,64">
+                    <GeometryDrawing.Pen><Pen Brush="#ffffd700" Thickness="12"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Secondary glory -->
+                <GeometryDrawing Geometry="M12,-36 L18,-16 M52,-36 L46,-16 M-32,10 L-14,20 M96,10 L78,20">
+                    <GeometryDrawing.Pen><Pen Brush="#c0ffd700" Thickness="6"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ultimate aura -->
+                <GeometryDrawing Geometry="M-30,-2 Q-10,-14 32,-18 Q74,-14 94,-2 M-26,6 Q-6,-6 32,-10 Q70,-6 90,6 M-22,14 Q-2,2 32,-2 Q66,2 86,14">
+                    <GeometryDrawing.Pen><Pen Brush="#ff9933ff" Thickness="9"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Pyramid body -->
+                <GeometryDrawing Brush="#ff40208e" Geometry="M32,-22 L-26,58 L90,58 Z"/>
+                <GeometryDrawing Geometry="M32,-22 L-26,58 L90,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="20"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,-22 L-26,58 L90,58 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="10"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ultimate enlightenment layers -->
+                <GeometryDrawing Geometry="M-22,52 L86,52 M-18,46 L82,46 M-14,40 L78,40 M-8,34 L72,34 M-4,28 L68,28 M0,22 L64,22 M4,16 L60,16 M8,10 L56,10 M12,4 L52,4 M16,-2 L48,-2 M20,-8 L44,-8 M24,-14 L40,-14 M28,-20 L36,-20">
+                    <GeometryDrawing.Pen><Pen Brush="#ff00ff41" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ultimate crown -->
+                <GeometryDrawing Brush="#ffffffff" Geometry="M32,-28 A12,12 0 1,1 32.01,-28"/>
+                <GeometryDrawing Brush="#ffffd700" Geometry="M32,-28 A8,8 0 1,1 32.01,-28"/>
+                <GeometryDrawing Brush="#ff9933ff" Geometry="M32,-28 A4,4 0 1,1 32.01,-28"/>
+                <GeometryDrawing Geometry="M16,-16 L32,-32 L48,-16">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <!-- Ultimate power orbs -->
+                <GeometryDrawing Brush="#ffffffff" Geometry="M-32,-24 A22,22 0 1,1 -31.99,-24 M96,-24 A22,22 0 1,1 96.01,-24 M32,-40 A20,20 0 1,1 32.01,-40"/>
+                <GeometryDrawing Brush="#ffffd700" Geometry="M-32,-24 A16,16 0 1,1 -31.99,-24 M96,-24 A16,16 0 1,1 96.01,-24 M32,-40 A14,14 0 1,1 32.01,-40"/>
+                <GeometryDrawing Brush="#ff9933ff" Geometry="M-34,76 A20,20 0 1,1 -33.99,76 M98,76 A20,20 0 1,1 98.01,76"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Eye only (for layered animation - this part grows) -->
+    <DrawingImage x:Key="Icon_eye_only">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Eye socket (dark ellipse) -->
+                <GeometryDrawing Brush="#0f3460" Geometry="M14,32 A18,10 0 1,1 50,32 A18,10 0 1,1 14,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Eye white -->
+                <GeometryDrawing Brush="#e8e8e8" Geometry="M18,32 A14,7 0 1,1 46,32 A14,7 0 1,1 18,32"/>
+
+                <!-- Iris -->
+                <GeometryDrawing Brush="#00cc33" Geometry="M26,32 A6,6 0 1,1 38,32 A6,6 0 1,1 26,32"/>
+
+                <!-- Pupil -->
+                <GeometryDrawing Brush="#001100" Geometry="M29,32 A3,3 0 1,1 35,32 A3,3 0 1,1 29,32"/>
+
+                <!-- Eye highlight -->
+                <GeometryDrawing Brush="#80ffffff" Geometry="M30,29 A2,1.5 0 1,1 30.01,29"/>
+
+                <!-- Eyelid detail lines -->
+                <GeometryDrawing Geometry="M16,32 Q32,22 48,32 M16,32 Q32,42 48,32">
+                    <GeometryDrawing.Pen><Pen Brush="#008822" Thickness="0.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Golden Eye only (for golden eye mode) -->
+    <DrawingImage x:Key="Icon_golden_eye_only">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Eye socket -->
+                <GeometryDrawing Brush="#2a1a00" Geometry="M14,32 A18,10 0 1,1 50,32 A18,10 0 1,1 14,32">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Eye white -->
+                <GeometryDrawing Brush="#fff8dc" Geometry="M18,32 A14,7 0 1,1 46,32 A14,7 0 1,1 18,32"/>
+
+                <!-- Golden Iris -->
+                <GeometryDrawing Brush="#ffd700" Geometry="M26,32 A6,6 0 1,1 38,32 A6,6 0 1,1 26,32"/>
+
+                <!-- Pupil -->
+                <GeometryDrawing Brush="#1a0a00" Geometry="M29,32 A3,3 0 1,1 35,32 A3,3 0 1,1 29,32"/>
+
+                <!-- Eye highlight -->
+                <GeometryDrawing Brush="#80ffffff" Geometry="M30,29 A2,1.5 0 1,1 30.01,29"/>
+
+                <!-- Eyelid detail lines -->
+                <GeometryDrawing Geometry="M16,32 Q32,22 48,32 M16,32 Q32,42 48,32">
+                    <GeometryDrawing.Pen><Pen Brush="#aa8800" Thickness="0.5"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Golden Pyramid only -->
+    <DrawingImage x:Key="Icon_golden_pyramid_only">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Outer golden glow -->
+                <GeometryDrawing Brush="#30ffd700" Geometry="M32,32 A30,30 0 1,1 32.01,32"/>
+
+                <!-- Pyramid background -->
+                <GeometryDrawing Brush="#162a1a00" Geometry="M32,2 L2,60 L62,60 Z"/>
+                <GeometryDrawing Geometry="M32,2 L2,60 L62,60 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Inner pyramid lines -->
+                <GeometryDrawing Geometry="M32,14 L14,50 L50,50 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#40ffd700" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- Radiating golden lines -->
+                <GeometryDrawing Geometry="M32,20 L32,10 M22,24 L14,16 M42,24 L50,16">
+                    <GeometryDrawing.Pen><Pen Brush="#50ffd700" Thickness="1.5"/></GeometryDrawing.Pen>
                 </GeometryDrawing>
             </DrawingGroup>
         </DrawingImage.Drawing>
@@ -2773,6 +4531,750 @@
                 <GeometryDrawing Brush="#990000" Geometry="M32,20 L44,32 L32,44 L20,32 Z"/>
                 <GeometryDrawing Brush="#fff" Geometry="M28,24 L32,28 L36,24 L36,28 L32,32 L28,28 Z"/>
                 <GeometryDrawing Brush="#fff" Geometry="M28,36 L32,40 L36,36 L36,40 L32,44 L28,40 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== MISSING UPGRADE ICONS ==================== -->
+
+    <!-- Finger on Pulse - hand with pulse line -->
+    <DrawingImage x:Key="Icon_finger_on_pulse">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M24,40 L40,40 L40,56 L24,56 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M28,20 L36,20 L36,42 L28,42 Z"/>
+                <GeometryDrawing Geometry="M8,32 L16,32 L20,20 L24,44 L28,28 L32,32 L56,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Active Investigation - magnifying glass with footprints -->
+    <DrawingImage x:Key="Icon_active_investigation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M28,28 A12,12 0 1,1 28.01,28">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M36,36 L52,52">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M12,48 A3,5 0 1,1 12.01,48"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M20,52 A3,5 0 1,1 20.01,52"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Clickchain Reaction - chain of clicks -->
+    <DrawingImage x:Key="Icon_clickchain_reaction">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#00ff41" Geometry="M16,16 A8,8 0 1,1 16.01,16"/>
+                <GeometryDrawing Brush="#00cc33" Geometry="M32,28 A6,6 0 1,1 32.01,28"/>
+                <GeometryDrawing Brush="#009922" Geometry="M44,40 A5,5 0 1,1 44.01,40"/>
+                <GeometryDrawing Brush="#006611" Geometry="M52,50 A4,4 0 1,1 52.01,50"/>
+                <GeometryDrawing Geometry="M20,20 L28,24 M36,32 L40,36 M48,44 L50,48">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Premium String - fancy red string spool -->
+    <DrawingImage x:Key="Icon_premium_string">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#8B4513" Geometry="M20,20 L44,20 L44,44 L20,44 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M24,24 L40,24 L40,40 L24,40 Z"/>
+                <GeometryDrawing Geometry="M40,32 Q52,20 56,32 Q52,44 56,56">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Neighborhood Watch - eye in house -->
+    <DrawingImage x:Key="Icon_neighborhood_watch">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#4a4a4a" Geometry="M32,8 L56,28 L56,56 L8,56 L8,28 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M32,8 L56,28 L8,28 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M20,32 A12,6 0 1,1 44,32 A12,6 0 1,1 20,32"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M28,32 A4,4 0 1,1 36,32 A4,4 0 1,1 28,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Ergonomic Chair - gaming chair -->
+    <DrawingImage x:Key="Icon_ergonomic_chair">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M20,12 L44,12 L48,44 L16,44 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M24,16 L40,16 L40,20 L24,20 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M16,44 L48,44 L48,52 L16,52 Z"/>
+                <GeometryDrawing Brush="#222" Geometry="M24,52 L40,52 L40,56 L24,56 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M28,56 A4,4 0 1,1 36,56"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- SEO Optimization - search bar with arrow up -->
+    <DrawingImage x:Key="Icon_seo_optimization">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#fff" Geometry="M8,20 L56,20 L56,36 L8,36 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,44 L40,56 L36,56 L36,64 L28,64 L28,56 L24,56 Z"/>
+                <GeometryDrawing Brush="#888" Geometry="M12,26 L44,26 L44,30 L12,30 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Clickbait Thumbnails - video play with arrow -->
+    <DrawingImage x:Key="Icon_clickbait_thumbnails">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M8,16 L56,16 L56,48 L8,48 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M28,24 L28,40 L44,32 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M48,8 L56,24 L40,24 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Red String Quantum - entangled strings -->
+    <DrawingImage x:Key="Icon_red_string_quantum">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M8,16 Q32,8 56,16">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M8,32 Q32,24 56,32">
+                    <GeometryDrawing.Pen><Pen Brush="#ff4444" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M8,48 Q32,40 56,48">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,32 A6,6 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Red String Infinite - infinity string -->
+    <DrawingImage x:Key="Icon_red_string_infinite">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Geometry="M16,32 Q16,16 32,16 Q48,16 48,32 Q48,48 32,48 Q16,48 16,32 M48,32 Q48,16 32,16">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,28 A4,4 0 1,1 32.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Neighbor Network - connected houses -->
+    <DrawingImage x:Key="Icon_neighbor_network">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#4a4a4a" Geometry="M16,24 L8,32 L8,44 L24,44 L24,32 Z"/>
+                <GeometryDrawing Brush="#4a4a4a" Geometry="M40,24 L32,32 L32,44 L48,44 L48,32 Z"/>
+                <GeometryDrawing Brush="#4a4a4a" Geometry="M56,24 L48,32 L48,44 L64,44 L64,32 Z"/>
+                <GeometryDrawing Geometry="M20,36 L36,36 M44,36 L52,36">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Neighbor Hivemind - brain with houses -->
+    <DrawingImage x:Key="Icon_neighbor_hivemind">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ff69b4" Geometry="M32,16 Q48,16 48,32 Q48,48 32,48 Q16,48 16,32 Q16,16 32,16"/>
+                <GeometryDrawing Geometry="M24,24 Q32,20 40,24 M24,32 Q32,28 40,32 M24,40 Q32,36 40,40">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0066" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Researcher Ascension - person with glow -->
+    <DrawingImage x:Key="Icon_researcher_ascension">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M32,20 A8,8 0 1,1 32.01,20"/>
+                <GeometryDrawing Brush="#333" Geometry="M24,32 L40,32 L44,56 L20,56 Z"/>
+                <GeometryDrawing Geometry="M32,4 L32,12 M24,8 L40,8">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#30ffd700" Geometry="M32,20 A16,16 0 1,1 32.01,20"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Researcher Transcendence - enlightened figure -->
+    <DrawingImage x:Key="Icon_researcher_transcendence">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#20ffffff" Geometry="M32,32 A24,24 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,24 A6,6 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M28,36 L36,36 L38,56 L26,56 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,8 L34,16 L42,16 L36,22 L38,30 L32,26 L26,30 L28,22 L22,16 L30,16 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Blog Empire - multiple screens -->
+    <DrawingImage x:Key="Icon_blog_empire">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M4,20 L28,20 L28,40 L4,40 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M8,24 L24,24 L24,36 L8,36 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M24,12 L48,12 L48,32 L24,32 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M28,16 L44,16 L44,28 L28,28 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M36,24 L60,24 L60,44 L36,44 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M40,28 L56,28 L56,40 L40,40 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Blog Singularity - converging screens -->
+    <DrawingImage x:Key="Icon_blog_singularity">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,32 A12,12 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M8,16 L20,28 M56,16 L44,28 M8,48 L20,36 M56,48 L44,36">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- YouTube Algorithm - play button with gear -->
+    <DrawingImage x:Key="Icon_youtube_algorithm">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M8,16 L56,16 L56,48 L8,48 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M24,24 L24,40 L40,32 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M48,8 A8,8 0 1,1 48.01,8"/>
+                <GeometryDrawing Brush="#cc9900" Geometry="M48,8 A4,4 0 1,1 48.01,8"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- YouTube Monopoly - crown on play button -->
+    <DrawingImage x:Key="Icon_youtube_monopoly">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M8,20 L56,20 L56,52 L8,52 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M24,28 L24,44 L40,36 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M16,8 L20,16 L28,12 L32,20 L36,12 L44,16 L48,8 L48,20 L16,20 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Encrypted USB - USB with lock -->
+    <DrawingImage x:Key="Icon_encrypted_usb">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#444" Geometry="M20,16 L44,16 L44,48 L20,48 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M24,20 L40,20 L40,28 L24,28 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M28,32 L36,32 L36,44 L28,44 Z"/>
+                <GeometryDrawing Geometry="M32,32 A4,4 0 1,1 32,24">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Burner Phone - multiple phones -->
+    <DrawingImage x:Key="Icon_burner_phone">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M8,12 L24,12 L24,52 L8,52 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M10,16 L22,16 L22,40 L10,40 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M28,16 L44,16 L44,56 L28,56 Z"/>
+                <GeometryDrawing Brush="#ff6600" Geometry="M30,20 L42,20 L42,44 L30,44 Z"/>
+                <GeometryDrawing Brush="#555" Geometry="M48,8 L64,8 L64,48 L48,48 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Satellite Dish - DIY dish -->
+    <DrawingImage x:Key="Icon_satellite_dish">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#888" Geometry="M16,16 Q32,48 48,16"/>
+                <GeometryDrawing Brush="#666" Geometry="M32,32 L32,56 L28,56 L28,32 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,24 A4,4 0 1,1 32.01,24"/>
+                <GeometryDrawing Geometry="M32,20 L40,8 M40,8 L44,12 M40,8 L44,4">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Black Light - UV lamp -->
+    <DrawingImage x:Key="Icon_black_light">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#444" Geometry="M24,32 L40,32 L40,56 L24,56 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M20,8 L44,8 L44,32 L20,32 Z"/>
+                <GeometryDrawing Geometry="M12,16 L8,12 M52,16 L56,12 M32,4 L32,0">
+                    <GeometryDrawing.Pen><Pen Brush="#cc66ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Evidence Vault - safe -->
+    <DrawingImage x:Key="Icon_evidence_vault">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#444" Geometry="M8,8 L56,8 L56,56 L8,56 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,32 A10,10 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#444" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M44,28 L52,28 L52,36 L44,36 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Neural Enhancer - brain with circuits -->
+    <DrawingImage x:Key="Icon_neural_enhancer">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ff69b4" Geometry="M32,12 Q52,12 52,32 Q52,52 32,52 Q12,52 12,32 Q12,12 32,12"/>
+                <GeometryDrawing Geometry="M20,24 L28,32 L20,40 M44,24 L36,32 L44,40 M28,20 L32,28 L36,20 M28,44 L32,36 L36,44">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Truth Serum - syringe -->
+    <DrawingImage x:Key="Icon_truth_serum">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ccc" Geometry="M24,8 L40,8 L40,16 L24,16 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M26,16 L38,16 L38,44 L26,44 Z"/>
+                <GeometryDrawing Brush="#888" Geometry="M30,44 L34,44 L34,56 L30,56 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M31,56 L33,56 L33,60 L31,60 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Discord Bots - robot with chat bubble -->
+    <DrawingImage x:Key="Icon_discord_bots">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#5865F2" Geometry="M16,16 L48,16 L48,44 L16,44 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M24,28 A4,4 0 1,1 24.01,28"/>
+                <GeometryDrawing Brush="#fff" Geometry="M40,28 A4,4 0 1,1 40.01,28"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M28,36 L36,36 L36,40 L28,40 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M52,8 L60,8 L60,20 L56,20 L56,24 L52,20 L52,8 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- AM Radio Tower - radio tower -->
+    <DrawingImage x:Key="Icon_am_radio_tower">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M28,8 L36,8 L40,56 L24,56 Z"/>
+                <GeometryDrawing Geometry="M16,20 Q32,8 48,20">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M12,28 Q32,12 52,28">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Podcast Sponsorships - microphone with money -->
+    <DrawingImage x:Key="Icon_podcast_sponsorships">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#888" Geometry="M24,8 L40,8 L40,32 L24,32 Z"/>
+                <GeometryDrawing Brush="#666" Geometry="M30,32 L34,32 L34,44 L30,44 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M20,44 L44,44 L44,48 L20,48 Z"/>
+                <GeometryDrawing Brush="#00aa00" Geometry="M48,20 A12,12 0 1,1 48.01,20"/>
+                <GeometryDrawing Brush="#fff" Geometry="M46,16 L50,16 L50,24 L46,24 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Conference Keynotes - podium with star -->
+    <DrawingImage x:Key="Icon_conference_keynotes">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#8B4513" Geometry="M16,24 L48,24 L52,56 L12,56 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,8 L34,14 L40,14 L35,18 L37,24 L32,20 L27,24 L29,18 L24,14 L30,14 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M24,32 L40,32 L40,36 L24,36 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Netflix Promotion - TV with trending arrow -->
+    <DrawingImage x:Key="Icon_netflix_promotion">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M8,12 L56,12 L56,44 L8,44 Z"/>
+                <GeometryDrawing Brush="#e50914" Geometry="M12,16 L52,16 L52,40 L12,40 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M24,20 L24,36 L20,28 L24,20 M28,20 L32,28 L36,20 L36,36 L32,28 L28,36 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M44,36 L52,24 L52,28 L56,28 L56,36 L52,36 L52,40 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Satellite Network - orbital satellites -->
+    <DrawingImage x:Key="Icon_satellite_network">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#4169E1" Geometry="M32,32 A16,16 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M32,32 A24,24 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ccc" Geometry="M56,32 A4,4 0 1,1 56.01,32"/>
+                <GeometryDrawing Brush="#ccc" Geometry="M8,32 A4,4 0 1,1 8.01,32"/>
+                <GeometryDrawing Brush="#ccc" Geometry="M32,8 A4,4 0 1,1 32.01,8"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Shadow Government Expansion - capitol with shadows -->
+    <DrawingImage x:Key="Icon_shadow_government_expansion">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a1a2e" Geometry="M8,56 L8,36 L16,36 L16,28 L24,28 L24,24 L32,16 L40,24 L40,28 L48,28 L48,36 L56,36 L56,56 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,24 A4,4 0 1,1 32.01,24"/>
+                <GeometryDrawing Geometry="M16,44 L16,56 M28,40 L28,56 M36,40 L36,56 M48,44 L48,56">
+                    <GeometryDrawing.Pen><Pen Brush="#333" Thickness="4"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Collective Consciousness - connected minds -->
+    <DrawingImage x:Key="Icon_collective_consciousness">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ff69b4" Geometry="M16,20 A8,8 0 1,1 16.01,20"/>
+                <GeometryDrawing Brush="#ff69b4" Geometry="M48,20 A8,8 0 1,1 48.01,20"/>
+                <GeometryDrawing Brush="#ff69b4" Geometry="M32,44 A8,8 0 1,1 32.01,44"/>
+                <GeometryDrawing Geometry="M20,24 L28,40 M44,24 L36,40 M24,20 L40,20">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Great Revelation - light rays -->
+    <DrawingImage x:Key="Icon_great_revelation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,32 A12,12 0 1,1 32.01,32"/>
+                <GeometryDrawing Geometry="M32,8 L32,16 M32,48 L32,56 M8,32 L16,32 M48,32 L56,32 M16,16 L22,22 M48,16 L42,22 M16,48 L22,42 M48,48 L42,42">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Ascended Knowledge - floating book with glow -->
+    <DrawingImage x:Key="Icon_ascended_knowledge">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#30ffd700" Geometry="M32,32 A20,20 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#8B4513" Geometry="M16,20 L48,20 L48,44 L16,44 Z"/>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M20,24 L44,24 L44,40 L20,40 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,28 A4,4 0 1,1 32.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Mind Amplifier - brain with waves -->
+    <DrawingImage x:Key="Icon_mind_amplifier">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ff69b4" Geometry="M32,20 Q48,20 48,36 Q48,52 32,52 Q16,52 16,36 Q16,20 32,20"/>
+                <GeometryDrawing Geometry="M8,36 Q4,28 8,20">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M56,36 Q60,28 56,20">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M4,40 Q0,28 4,16">
+                    <GeometryDrawing.Pen><Pen Brush="#00cc33" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M60,40 Q64,28 60,16">
+                    <GeometryDrawing.Pen><Pen Brush="#00cc33" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Weather Dominance - storm cloud -->
+    <DrawingImage x:Key="Icon_weather_dominance">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#666" Geometry="M16,24 A12,12 0 0,1 48,24 A8,8 0 0,1 48,40 L16,40 A8,8 0 0,1 16,24"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M28,44 L32,56 L24,52 L28,44"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M40,44 L44,56 L36,52 L40,44"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,20 A4,4 0 1,1 32.01,20"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Clone Perfection - identical figures -->
+    <DrawingImage x:Key="Icon_clone_perfection">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M16,16 A6,6 0 1,1 16.01,16"/>
+                <GeometryDrawing Brush="#333" Geometry="M12,28 L20,28 L22,48 L10,48 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M32,16 A6,6 0 1,1 32.01,16"/>
+                <GeometryDrawing Brush="#333" Geometry="M28,28 L36,28 L38,48 L26,48 Z"/>
+                <GeometryDrawing Brush="#deb887" Geometry="M48,16 A6,6 0 1,1 48.01,16"/>
+                <GeometryDrawing Brush="#333" Geometry="M44,28 L52,28 L54,48 L42,48 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M32,52 A2,2 0 1,1 32.01,52"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Temporal Mastery - clock with spiral -->
+    <DrawingImage x:Key="Icon_temporal_mastery">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M32,32 A20,20 0 1,1 32.01,32">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 L32,18 M32,32 L44,32">
+                    <GeometryDrawing.Pen><Pen Brush="#ffd700" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M32,32 A8,8 0 0,1 40,40 A12,12 0 0,1 20,40 A16,16 0 0,1 48,24">
+                    <GeometryDrawing.Pen><Pen Brush="#9933ff" Thickness="2"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Inner Earth Network - tunnel network -->
+    <DrawingImage x:Key="Icon_inner_earth_network">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#8B4513" Geometry="M8,8 L56,8 L56,24 L8,24 Z"/>
+                <GeometryDrawing Brush="#654321" Geometry="M8,24 L56,24 L56,56 L8,56 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M16,24 A8,16 0 0,0 32,24 A8,16 0 0,0 48,24"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M24,40 A4,4 0 1,1 24.01,40"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M40,48 A4,4 0 1,1 40.01,48"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Cosmic Awareness - spiral galaxy -->
+    <DrawingImage x:Key="Icon_cosmic_awareness">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,32 A16,8 45 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#6622cc" Geometry="M32,32 A12,6 45 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,32 A4,4 0 1,1 32.01,32"/>
+                <GeometryDrawing Brush="#fff" Geometry="M12,12 A1,1 0 1,1 12.01,12"/>
+                <GeometryDrawing Brush="#fff" Geometry="M52,20 A1,1 0 1,1 52.01,20"/>
+                <GeometryDrawing Brush="#fff" Geometry="M20,48 A1,1 0 1,1 20.01,48"/>
+                <GeometryDrawing Brush="#fff" Geometry="M48,44 A1,1 0 1,1 48.01,44"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Reality Manipulation - hand controlling reality -->
+    <DrawingImage x:Key="Icon_reality_manipulation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M32,48 L36,48 L40,32 L44,32 L44,24 L40,24 L36,20 L28,20 L24,24 L20,24 L20,32 L24,32 L28,48 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M24,8 L28,16 L20,16 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M40,8 L44,16 L36,16 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,4 L36,12 L28,12 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Omnipotent Understanding - all-seeing eye in cosmos -->
+    <DrawingImage x:Key="Icon_omnipotent_understanding">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#1a0a30" Geometry="M0,0 L64,0 L64,64 L0,64 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M16,12 A1,1 0 1,1 16.01,12"/>
+                <GeometryDrawing Brush="#fff" Geometry="M48,8 A1,1 0 1,1 48.01,8"/>
+                <GeometryDrawing Brush="#fff" Geometry="M8,40 A1,1 0 1,1 8.01,40"/>
+                <GeometryDrawing Brush="#fff" Geometry="M56,48 A1,1 0 1,1 56.01,48"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M16,32 A16,8 0 1,1 48,32 A16,8 0 1,1 16,32"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M28,32 A4,4 0 1,1 36,32 A4,4 0 1,1 28,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Universe Mastery - hand holding galaxy -->
+    <DrawingImage x:Key="Icon_universe_mastery">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#deb887" Geometry="M16,40 L48,40 L52,56 L12,56 Z"/>
+                <GeometryDrawing Brush="#1a0a30" Geometry="M32,24 A12,12 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M32,24 A8,4 45 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M32,24 A2,2 0 1,1 32.01,24"/>
+                <GeometryDrawing Brush="#fff" Geometry="M24,20 A1,1 0 1,1 24.01,20"/>
+                <GeometryDrawing Brush="#fff" Geometry="M40,28 A1,1 0 1,1 40.01,28"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Sticky Notes - stack of notes -->
+    <DrawingImage x:Key="Icon_sticky_notes">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffeb3b" Geometry="M12,16 L44,16 L44,48 L12,48 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M16,12 L48,12 L48,44 L16,44 Z"/>
+                <GeometryDrawing Brush="#ffcc00" Geometry="M20,8 L52,8 L52,40 L20,40 Z"/>
+                <GeometryDrawing Geometry="M16,24 L40,24 M16,32 L36,32 M16,40 L32,40">
+                    <GeometryDrawing.Pen><Pen Brush="#666" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Notebook - spiral notebook -->
+    <DrawingImage x:Key="Icon_notebook">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M16,8 L52,8 L52,56 L16,56 Z"/>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M20,8 L52,8 L52,56 L20,56 Z"/>
+                <GeometryDrawing Geometry="M24,16 L48,16 M24,24 L48,24 M24,32 L48,32 M24,40 L48,40 M24,48 L48,48">
+                    <GeometryDrawing.Pen><Pen Brush="#ccc" Thickness="1"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#cc0000" Geometry="M32,16 L32,56"/>
+                <GeometryDrawing Brush="#888" Geometry="M16,12 A2,2 0 1,1 16.01,12"/>
+                <GeometryDrawing Brush="#888" Geometry="M16,24 A2,2 0 1,1 16.01,24"/>
+                <GeometryDrawing Brush="#888" Geometry="M16,36 A2,2 0 1,1 16.01,36"/>
+                <GeometryDrawing Brush="#888" Geometry="M16,48 A2,2 0 1,1 16.01,48"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Flashlight - heavy duty flashlight -->
+    <DrawingImage x:Key="Icon_flashlight">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#444" Geometry="M20,24 L44,24 L44,48 L20,48 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M24,8 L40,8 L44,24 L20,24 Z"/>
+                <GeometryDrawing Brush="#ffff88" Geometry="M28,4 L36,4 L40,8 L24,8 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M24,48 L40,48 L40,56 L24,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Binoculars - surveillance binoculars -->
+    <DrawingImage x:Key="Icon_binoculars">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M8,20 L24,20 L24,44 L8,44 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M40,20 L56,20 L56,44 L40,44 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M24,28 L40,28 L40,36 L24,36 Z"/>
+                <GeometryDrawing Brush="#88ccff" Geometry="M12,24 A4,4 0 1,1 20,24 A4,4 0 1,1 12,24"/>
+                <GeometryDrawing Brush="#88ccff" Geometry="M44,24 A4,4 0 1,1 52,24 A4,4 0 1,1 44,24"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Scanner - document scanner -->
+    <DrawingImage x:Key="Icon_scanner">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#444" Geometry="M8,16 L56,16 L56,48 L8,48 Z"/>
+                <GeometryDrawing Brush="#222" Geometry="M12,20 L52,20 L52,44 L12,44 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M16,32 L48,32 L48,36 L16,36 Z"/>
+                <GeometryDrawing Brush="#f5f5dc" Geometry="M16,24 L40,24 L40,40 L16,40 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Voice Recorder - pen recorder -->
+    <DrawingImage x:Key="Icon_voice_recorder">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#333" Geometry="M28,8 L36,8 L36,48 L28,48 Z"/>
+                <GeometryDrawing Brush="#888" Geometry="M30,8 L34,8 L34,12 L30,12 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M31,16 A2,2 0 1,1 33,16 A2,2 0 1,1 31,16"/>
+                <GeometryDrawing Brush="#222" Geometry="M30,48 L34,48 L33,56 L31,56 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M31,24 L33,24 L33,40 L31,40 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Premium String 2 variant -->
+    <DrawingImage x:Key="Icon_premium_string_2">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffd700" Geometry="M20,20 L44,20 L44,44 L20,44 Z"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M24,24 L40,24 L40,40 L24,40 Z"/>
+                <GeometryDrawing Geometry="M40,32 Q52,20 56,32 Q52,44 56,56">
+                    <GeometryDrawing.Pen><Pen Brush="#cc0000" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Neighborhood Watch 2 variant -->
+    <DrawingImage x:Key="Icon_neighborhood_watch_2">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#4a4a4a" Geometry="M32,4 L56,24 L56,52 L8,52 L8,24 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M32,4 L56,24 L8,24 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M20,28 A12,6 0 1,1 44,28 A12,6 0 1,1 20,28"/>
+                <GeometryDrawing Brush="#cc0000" Geometry="M28,28 A4,4 0 1,1 36,28 A4,4 0 1,1 28,28"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M4,16 L8,20 L4,24 L8,28 L4,32"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M60,16 L56,20 L60,24 L56,28 L60,32"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Ergonomic Chair 2 - gamer pod -->
+    <DrawingImage x:Key="Icon_ergonomic_chair_2">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#222" Geometry="M16,8 L48,8 L52,48 L12,48 Z"/>
+                <GeometryDrawing Brush="#00ff41" Geometry="M20,12 L44,12 L44,20 L20,20 Z"/>
+                <GeometryDrawing Brush="#333" Geometry="M20,24 L44,24 L44,44 L20,44 Z"/>
+                <GeometryDrawing Brush="#444" Geometry="M24,48 L40,48 L40,56 L24,56 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- SEO Optimization 2 - algorithm gaming -->
+    <DrawingImage x:Key="Icon_seo_optimization_2">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#00ff41" Geometry="M8,48 L16,32 L24,40 L32,16 L40,28 L48,8 L56,24"/>
+                <GeometryDrawing Geometry="M8,48 L16,32 L24,40 L32,16 L40,28 L48,8 L56,24">
+                    <GeometryDrawing.Pen><Pen Brush="#00ff41" Thickness="3"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ffd700" Geometry="M48,4 L52,12 L44,12 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Clickbait Thumbnails 2 - AI thumbnails -->
+    <DrawingImage x:Key="Icon_clickbait_thumbnails_2">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#cc0000" Geometry="M8,12 L56,12 L56,44 L8,44 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M24,20 L24,36 L40,28 Z"/>
+                <GeometryDrawing Brush="#9933ff" Geometry="M44,4 L56,4 L56,16 L44,16 Z"/>
+                <GeometryDrawing Brush="#fff" Geometry="M48,8 L52,8 L52,12 L48,12 Z"/>
+                <GeometryDrawing Brush="#ffd700" Geometry="M4,28 L12,20 L12,36 Z"/>
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
