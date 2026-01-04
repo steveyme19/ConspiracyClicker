@@ -198,7 +198,6 @@ Three-column layout:
 ## Build & Run
 
 ```bash
-cd C:\Users\quent\ConspiracyClicker
 dotnet build
 dotnet run
 ```
