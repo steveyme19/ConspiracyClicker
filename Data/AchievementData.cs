@@ -281,16 +281,6 @@ public static class AchievementData
         },
         new Achievement
         {
-            Id = "meta_developer",
-            Name = "Hello, Developer",
-            Description = "We know you're testing this",
-            FlavorText = "Hope the build succeeded!",
-            Type = AchievementType.TotalEvidence,
-            Threshold = 1,
-            TinfoilReward = 0
-        },
-        new Achievement
-        {
             Id = "meta_addiction",
             Name = "Just One More Click",
             Description = "Said 10,000 clicks ago",
