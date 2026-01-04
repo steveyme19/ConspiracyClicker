@@ -963,18 +963,38 @@
                                                         Background="#225522" Foreground="{StaticResource AccentGreen}"
                                                         BorderBrush="{StaticResource AccentGreen}" BorderThickness="1"/>
                                             </Grid>
-                                            <!-- Volume Slider -->
+                                            <!-- Effects Volume Slider -->
+                                            <StackPanel Margin="0,0,0,15">
+                                                <Grid Margin="0,0,0,5">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel>
+                                                        <TextBlock Text="Effects Volume" FontSize="14" Foreground="{StaticResource TextLight}"/>
+                                                        <TextBlock Text="Purchase, upgrade, achievement sounds" FontSize="10" Foreground="{StaticResource TextDim}"/>
+                                                    </StackPanel>
+                                                    <TextBlock x:Name="VolumePercentText" Grid.Column="1" Text="70%" FontSize="14" Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
+                                                </Grid>
+                                                <Slider x:Name="VolumeSlider" Minimum="0" Maximum="100" Value="70"
+                                                        ValueChanged="VolumeSlider_ValueChanged"
+                                                        Background="#333355" Foreground="{StaticResource AccentGreen}"/>
+                                            </StackPanel>
+                                            <!-- Click Volume Slider -->
                                             <StackPanel>
                                                 <Grid Margin="0,0,0,5">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock Text="Volume" FontSize="14" Foreground="{StaticResource TextLight}"/>
-                                                    <TextBlock x:Name="VolumePercentText" Grid.Column="1" Text="70%" FontSize="14" Foreground="{StaticResource AccentGreen}"/>
+                                                    <StackPanel>
+                                                        <TextBlock Text="Click Volume" FontSize="14" Foreground="{StaticResource TextLight}"/>
+                                                        <TextBlock Text="Click, crit, and combo sounds (lower = less annoying)" FontSize="10" Foreground="{StaticResource TextDim}"/>
+                                                    </StackPanel>
+                                                    <TextBlock x:Name="ClickVolumePercentText" Grid.Column="1" Text="30%" FontSize="14" Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
                                                 </Grid>
-                                                <Slider x:Name="VolumeSlider" Minimum="0" Maximum="100" Value="70"
-                                                        ValueChanged="VolumeSlider_ValueChanged"
+                                                <Slider x:Name="ClickVolumeSlider" Minimum="0" Maximum="100" Value="30"
+                                                        ValueChanged="ClickVolumeSlider_ValueChanged"
                                                         Background="#333355" Foreground="{StaticResource AccentGreen}"/>
                                             </StackPanel>
                                         </StackPanel>

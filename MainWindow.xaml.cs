@@ -384,6 +384,7 @@ public partial class MainWindow : Window
 
         // Initialize sound system
         SoundManager.Volume = _settings.SoundVolume; // Set volume before Initialize to apply to generated sounds
+        SoundManager.ClickVolume = _settings.ClickVolume; // Set click volume too
         SoundManager.Initialize();
         SoundManager.Enabled = _settings.SoundEnabled;
         UpdateSoundIcon();
@@ -5340,6 +5341,16 @@ public partial class MainWindow : Window
         VolumePercentText.Text = $"{(int)e.NewValue}%";
     }
 
+    private void ClickVolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (!IsLoaded) return;
+        double volume = e.NewValue / 100.0;
+        SoundManager.ClickVolume = volume;
+        _settings.ClickVolume = volume;
+        _settings.Save();
+        ClickVolumePercentText.Text = $"{(int)e.NewValue}%";
+    }
+
     private void SettingsZenToggle_Click(object sender, RoutedEventArgs e)
     {
         _engine.State.ZenMode = !_engine.State.ZenMode;
@@ -5367,9 +5378,13 @@ public partial class MainWindow : Window
         SettingsSoundToggle.Foreground = soundOn ? GreenBrush : RedBrush;
         SettingsSoundToggle.BorderBrush = soundOn ? GreenBrush : RedBrush;
 
-        // Volume slider
+        // Effects volume slider
         VolumeSlider.Value = SoundManager.Volume * 100;
         VolumePercentText.Text = $"{(int)(SoundManager.Volume * 100)}%";
+
+        // Click volume slider
+        ClickVolumeSlider.Value = SoundManager.ClickVolume * 100;
+        ClickVolumePercentText.Text = $"{(int)(SoundManager.ClickVolume * 100)}%";
 
         // Zen mode toggle
         bool zenOn = _engine.State.ZenMode;

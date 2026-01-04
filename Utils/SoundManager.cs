@@ -7,7 +7,8 @@ namespace ConspiracyClicker.Utils;
 public static class SoundManager
 {
     private static bool _enabled = true;
-    private static double _volume = 0.7; // 0.0 to 1.0
+    private static double _volume = 0.7; // 0.0 to 1.0 (effects volume)
+    private static double _clickVolume = 0.3; // 0.0 to 1.0 (click/crit/combo volume - lower default)
 
     public static bool Enabled
     {
@@ -27,6 +28,23 @@ public static class SoundManager
                 if (_initialized)
                 {
                     RegenerateSounds(); // Regenerate with new volume (only if already initialized)
+                }
+            }
+        }
+    }
+
+    public static double ClickVolume
+    {
+        get => _clickVolume;
+        set
+        {
+            double newVolume = Math.Clamp(value, 0.0, 1.0);
+            if (Math.Abs(newVolume - _clickVolume) > 0.01)
+            {
+                _clickVolume = newVolume;
+                if (_initialized)
+                {
+                    RegenerateSounds();
                 }
             }
         }
@@ -130,12 +148,12 @@ public static class SoundManager
         return ms.ToArray();
     }
 
-    private static short[] GenerateTone(double frequency, double durationMs, double volume = 0.5, bool fadeOut = true)
+    private static short[] GenerateTone(double frequency, double durationMs, double volume = 0.5, bool fadeOut = true, bool useClickVolume = false)
     {
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * durationMs / 1000.0);
         var samples = new short[numSamples];
-        double masterVolume = _volume; // Apply master volume
+        double masterVolume = useClickVolume ? _clickVolume : _volume; // Apply appropriate volume
 
         for (int i = 0; i < numSamples; i++)
         {
@@ -188,7 +206,7 @@ public static class SoundManager
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * 0.045); // 45ms
         var samples = new short[numSamples];
-        double masterVolume = _volume;
+        double clickVol = _clickVolume; // Uses click-specific volume
 
         for (int i = 0; i < numSamples; i++)
         {
@@ -202,7 +220,7 @@ public static class SoundManager
             double fundamental = Math.Sin(2 * Math.PI * 440 * t);
             double harmonic = Math.Sin(2 * Math.PI * 880 * t) * 0.2;
 
-            double sample = (fundamental + harmonic) * 0.25 * envelope * masterVolume;
+            double sample = (fundamental + harmonic) * 0.25 * envelope * clickVol;
             samples[i] = (short)(sample * 32767);
         }
 
@@ -215,7 +233,7 @@ public static class SoundManager
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * 0.08); // 80ms
         var samples = new short[numSamples];
-        double masterVolume = _volume;
+        double clickVol = _clickVolume; // Uses click-specific volume
 
         for (int i = 0; i < numSamples; i++)
         {
@@ -230,7 +248,7 @@ public static class SoundManager
             double e5 = Math.Sin(2 * Math.PI * 659 * t) * 0.7;
             double g5 = Math.Sin(2 * Math.PI * 784 * t) * 0.5;
 
-            double sample = (c5 + e5 + g5) * 0.2 * envelope * masterVolume;
+            double sample = (c5 + e5 + g5) * 0.2 * envelope * clickVol;
             samples[i] = (short)(sample * 32767);
         }
 
@@ -321,10 +339,10 @@ public static class SoundManager
 
     private static byte[] GenerateCombo()
     {
-        // Energetic burst
-        var tone1 = GenerateTone(800, 30, 0.4);
-        var tone2 = GenerateTone(1000, 30, 0.4);
-        var tone3 = GenerateTone(1200, 50, 0.5);
+        // Energetic burst - uses click volume since it's click-related
+        var tone1 = GenerateTone(800, 30, 0.4, true, true);
+        var tone2 = GenerateTone(1000, 30, 0.4, true, true);
+        var tone3 = GenerateTone(1200, 50, 0.5, true, true);
         var samples = SequenceSamples(tone1, tone2, tone3);
         return GenerateWav(samples);
     }
