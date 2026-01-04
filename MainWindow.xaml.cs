@@ -2831,6 +2831,27 @@ public partial class MainWindow : Window
             _engine.StartQuest(questId);
     }
 
+    private void AutoQuestToggle_Click(object sender, RoutedEventArgs e)
+    {
+        _engine.ToggleAutoQuest();
+        UpdateAutoQuestToggle();
+    }
+
+    private void UpdateAutoQuestToggle()
+    {
+        bool hasAutoQuest = _engine.HasAutoQuest();
+        AutoQuestToggle.Visibility = hasAutoQuest ? Visibility.Visible : Visibility.Collapsed;
+
+        if (hasAutoQuest)
+        {
+            bool enabled = _engine.IsAutoQuestEnabled;
+            AutoQuestToggle.Content = enabled ? "Auto: ON" : "Auto: OFF";
+            AutoQuestToggle.Background = enabled ? new SolidColorBrush(Color.FromRgb(34, 85, 34)) : new SolidColorBrush(Color.FromRgb(85, 34, 34));
+            AutoQuestToggle.Foreground = enabled ? GreenBrush : RedBrush;
+            AutoQuestToggle.BorderBrush = enabled ? GreenBrush : RedBrush;
+        }
+    }
+
     private void GeneratorButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is string genId)
@@ -3900,6 +3921,7 @@ public partial class MainWindow : Window
 
     private void UpdateQuestPanel()
     {
+        UpdateAutoQuestToggle();
         var state = _engine.State;
         var buttonStyle = (Style)FindResource("GeneratorButton");
 

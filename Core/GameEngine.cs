@@ -328,6 +328,9 @@ public class GameEngine
         // Apply generator upgrade believer bonus
         totalBelievers *= GetGeneratorUpgradeGlobalBelieverMultiplier();
 
+        // Add permanent bonus believers from quests
+        totalBelievers += _state.BonusBelievers;
+
         _state.Believers = totalBelievers;
     }
 
@@ -682,6 +685,13 @@ public class GameEngine
         return _state.TinfoilShopPurchases.Contains("quest_autopilot");
     }
 
+    public void ToggleAutoQuest()
+    {
+        _state.AutoQuestEnabled = !_state.AutoQuestEnabled;
+    }
+
+    public bool IsAutoQuestEnabled => _state.AutoQuestEnabled;
+
     public IEnumerable<TinfoilUpgrade> GetPurchasedTinfoilUpgrades()
     {
         return TinfoilShopData.AllUpgrades.Where(u => _state.TinfoilShopPurchases.Contains(u.Id));
@@ -752,7 +762,7 @@ public class GameEngine
 
     private void TryAutoStartQuests()
     {
-        if (!HasAutoQuest()) return;
+        if (!HasAutoQuest() || !_state.AutoQuestEnabled) return;
 
         // Get all available quests that can be started
         var availableQuests = QuestData.GetAvailable(_state.AvailableBelievers)
@@ -804,10 +814,10 @@ public class GameEngine
                 _state.TotalEvidenceEarned += evidenceReward;
                 _state.Tinfoil += tinfoilReward;
 
-                // Award bonus believers from quest (recruited during mission)
+                // Award bonus believers from quest (recruited during mission) - permanent addition
                 if (quest.BelieverReward > 0)
                 {
-                    _state.Believers += quest.BelieverReward * rewardMultiplier;
+                    _state.BonusBelievers += quest.BelieverReward * rewardMultiplier;
                 }
 
                 _state.QuestsCompleted++;

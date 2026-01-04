@@ -614,8 +614,19 @@
                         <Border Background="{StaticResource PanelBackground}" CornerRadius="0,8,8,8">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                 <StackPanel>
-                                    <TextBlock Text="ACTIVE QUESTS" FontSize="14" FontWeight="Bold"
-                                               Foreground="{StaticResource AccentGold}" Margin="0,0,0,10"/>
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="ACTIVE QUESTS" FontSize="14" FontWeight="Bold"
+                                                   Foreground="{StaticResource AccentGold}"/>
+                                        <Button x:Name="AutoQuestToggle" Grid.Column="1" Click="AutoQuestToggle_Click"
+                                                Content="Auto: ON" FontSize="12" Padding="8,4"
+                                                Background="#225522" Foreground="{StaticResource AccentGreen}"
+                                                BorderBrush="{StaticResource AccentGreen}" BorderThickness="1"
+                                                Visibility="Collapsed" Cursor="Hand"/>
+                                    </Grid>
                                     <StackPanel x:Name="ActiveQuestsPanel"/>
 
                                     <Separator Background="#333" Margin="0,10,0,10"/>
