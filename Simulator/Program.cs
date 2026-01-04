@@ -40,16 +40,16 @@ class Program
 
 public class SimulationConfig
 {
-    public double SpeedMultiplier { get; set; } = 5000; // 5000x game speed (target: ~1min simulations)
+    public double SpeedMultiplier { get; set; } = 10000; // 10000x game speed for fast simulation
     public double TargetClicksPerSecond { get; set; } = 5; // Human-like CPS
     public double ClickVariance { get; set; } = 0.3; // 30% variance in click timing
-    public BuyStrategy Strategy { get; set; } = BuyStrategy.Balanced;
-    public int MaxRealTimeMinutes { get; set; } = 2; // Max 2 minutes real time (target: ~1min)
+    public BuyStrategy Strategy { get; set; } = BuyStrategy.Optimal;
+    public int MaxRealTimeMinutes { get; set; } = 5; // Max 5 minutes real time
     public string? StopAtConspiracy { get; set; } = null; // Stop when this conspiracy is proven
     public bool Verbose { get; set; } = false;
-    public AscensionMode Ascension { get; set; } = AscensionMode.None; // Ascension strategy
+    public AscensionMode Ascension { get; set; } = AscensionMode.Optimal; // Default to optimal ascension
     public double SimulatedHours { get; set; } = 0; // If > 0, stop after this many simulated hours
-    public int ProgressIntervalMinutes { get; set; } = 5; // Report progress every N simulated minutes
+    public int ProgressIntervalMinutes { get; set; } = 15; // Report progress every N simulated minutes
 
     public static SimulationConfig FromArgs(string[] args)
     {
@@ -204,20 +204,20 @@ public class GameSimulator
         double currentEps = _engine.CalculateEvidencePerSecond();
         var state = _engine.State;
 
-        // Check if EPS is stable (within 10% of last check)
-        if (_lastEps > 0 && Math.Abs(currentEps - _lastEps) / _lastEps < 0.1)
+        // Check if EPS is stable (within 20% of last check)
+        if (_lastEps > 0 && Math.Abs(currentEps - _lastEps) / _lastEps < 0.2)
             _stableEpsCount++;
         else
             _stableEpsCount = 0;
         _lastEps = currentEps;
 
-        // If EPS is stable and high, we can fast-forward
-        if (_stableEpsCount > 10 && currentEps > 1_000_000)
+        // If EPS is stable and reasonable, we can fast-forward
+        if (_stableEpsCount > 5 && currentEps > 100_000)
         {
             // Scale time step based on EPS magnitude
-            // Higher EPS = bigger jumps (up to 60 seconds of game time per step)
+            // Higher EPS = bigger jumps (up to 300 seconds of game time per step)
             double epsMagnitude = Math.Log10(currentEps);
-            double multiplier = Math.Min(60, Math.Pow(2, epsMagnitude - 6));
+            double multiplier = Math.Min(300, Math.Pow(2, epsMagnitude - 5));
             return baseTickSeconds * multiplier;
         }
 
@@ -245,7 +245,7 @@ public class GameSimulator
         Console.WriteLine("─────────────────────────────────────────────────────────────────");
 
         int lastReportedMinute = -1;
-        const int BATCH_SIZE = 500; // Process 500 ticks before checking events
+        const int BATCH_SIZE = 2000; // Process 2000 ticks before checking events (4x faster)
         double baseTickSeconds = gameTickMs / 1000.0;
 
         while (stopwatch.ElapsedMilliseconds < maxRealTimeMs)
@@ -869,13 +869,20 @@ public class GameSimulator
     private double CalculateIlluminatiMultiplier(GameState state)
     {
         double mult = 1.0;
-        // Updated for new 2-ascension optimal balance
-        if (state.IlluminatiUpgrades.Contains("pyramid_scheme")) mult *= 5.0;
-        if (state.IlluminatiUpgrades.Contains("reptilian_dna")) mult *= 5.0;
-        if (state.IlluminatiUpgrades.Contains("ancient_knowledge")) mult *= 4.0;
-        if (state.IlluminatiUpgrades.Contains("cosmic_alignment")) mult *= 5.0;
-        if (state.IlluminatiUpgrades.Contains("illuminati_council_seat")) mult *= 10.0;
-        if (state.IlluminatiUpgrades.Contains("eternal_conspiracy")) mult *= 25.0;
+        // Values from PrestigeData.cs - actual game multipliers
+        if (state.IlluminatiUpgrades.Contains("pyramid_scheme")) mult *= 100.0;
+        if (state.IlluminatiUpgrades.Contains("reptilian_dna")) mult *= 100.0;
+        if (state.IlluminatiUpgrades.Contains("deep_state_connections")) mult *= 50.0;
+        if (state.IlluminatiUpgrades.Contains("ancient_knowledge")) mult *= 100.0;
+        if (state.IlluminatiUpgrades.Contains("parallel_universe_access")) mult *= 10.0;
+        if (state.IlluminatiUpgrades.Contains("cosmic_alignment")) mult *= 200.0;
+        if (state.IlluminatiUpgrades.Contains("illuminati_council_seat")) mult *= 500.0;
+        if (state.IlluminatiUpgrades.Contains("eternal_conspiracy")) mult *= 1000.0;
+        if (state.IlluminatiUpgrades.Contains("reality_overwrite")) mult *= 25.0;
+        if (state.IlluminatiUpgrades.Contains("entropy_mastery")) mult *= 2000.0;
+        if (state.IlluminatiUpgrades.Contains("evidence_singularity")) mult *= 5000.0;
+        if (state.IlluminatiUpgrades.Contains("omnipresent_network")) mult *= 50.0;
+        if (state.IlluminatiUpgrades.Contains("final_truth")) mult *= 200.0;
         return mult;
     }
 
@@ -885,15 +892,22 @@ public class GameSimulator
         double mult = 1.0;
         int tokensRemaining = totalTokens;
 
-        // Priority order for EPS multiplier upgrades (best value first) - REBALANCED
+        // Priority order for EPS multiplier upgrades - actual values from PrestigeData.cs
         var upgradePriority = new (string id, int cost, double multiplier)[]
         {
-            ("pyramid_scheme", 1, 5.0),      // 1 token - x5 EPS
-            ("reptilian_dna", 2, 5.0),       // 2 tokens - x5 EPS
-            ("ancient_knowledge", 4, 4.0),   // 4 tokens - x4 EPS
-            ("cosmic_alignment", 25, 5.0),   // 25 tokens - x5 EPS
-            ("illuminati_council_seat", 75, 10.0),  // 75 tokens - x10 EPS
-            ("eternal_conspiracy", 150, 25.0),      // 150 tokens - x25 EPS
+            ("pyramid_scheme", 1, 100.0),           // 1 token - x100 EPS
+            ("reptilian_dna", 2, 100.0),            // 2 tokens - x100 EPS
+            ("deep_state_connections", 3, 50.0),    // 3 tokens - x50 EPS
+            ("ancient_knowledge", 4, 100.0),        // 4 tokens - x100 EPS
+            ("parallel_universe_access", 18, 10.0), // 18 tokens - x10 EPS
+            ("cosmic_alignment", 25, 200.0),        // 25 tokens - x200 EPS
+            ("illuminati_council_seat", 60, 500.0), // 60 tokens - x500 EPS
+            ("eternal_conspiracy", 125, 1000.0),    // 125 tokens - x1000 EPS
+            ("reality_overwrite", 150, 25.0),       // 150 tokens - x25 ALL
+            ("entropy_mastery", 200, 2000.0),       // 200 tokens - x2000 EPS
+            ("evidence_singularity", 350, 5000.0),  // 350 tokens - x5000 EPS
+            ("omnipresent_network", 450, 50.0),     // 450 tokens - x50 ALL
+            ("final_truth", 600, 200.0),            // 600 tokens - x200 ALL
         };
 
         foreach (var (id, cost, multiplier) in upgradePriority)
@@ -940,45 +954,59 @@ public class GameSimulator
     {
         var state = _engine.State;
 
-        // Priority order for Illuminati upgrades - BOOSTED for 5-hour completion
+        // Priority order for Illuminati upgrades - values from PrestigeData.cs
         var priorityOrder = new string[]
         {
-            // TIER 1: Essential first (1-3 tokens) - Massive 30x boosts
-            "pyramid_scheme",      // 1 token - x30 EPS (CRITICAL FIRST BUY)
-            "reptilian_dna",       // 2 tokens - x30 EPS
-            "secret_handshake",    // 2 tokens - x10 click power
-            "deep_state_connections", // 3 tokens - x15 EPS
-            "new_world_order_discount", // 3 tokens - -75% generator costs
+            // TIER 1: Essential first (1-3 tokens) - Massive boosts
+            "pyramid_scheme",      // 1 token - x100 EPS (CRITICAL FIRST BUY)
+            "reptilian_dna",       // 2 tokens - x100 EPS
+            "secret_handshake",    // 2 tokens - x50 click power
+            "deep_state_connections", // 3 tokens - x50 EPS
+            "new_world_order_discount", // 3 tokens - -90% generator costs
 
             // TIER 2: Secondary boosts (4-10 tokens)
-            "ancient_knowledge",   // 4 tokens - x30 EPS
-            "auto_clicker",        // 4 tokens - +5 auto clicks/sec
-            "time_manipulation",   // 5 tokens - -80% quest duration
-            "moon_base_alpha",     // 5 tokens - +300% quest rewards
-            "golden_eye_magnetism", // 6 tokens - 3x golden eyes, 5x rewards
-            "believer_magnetism",  // 6 tokens - +200% believers
-            "mind_control_mastery", // 7 tokens - 3x faster quest work
-            "all_seeing_investment", // 8 tokens - +15% per token
-            "infinite_tinfoil",    // 10 tokens - +50 tinfoil/min
+            "ancient_knowledge",   // 4 tokens - x100 EPS
+            "auto_clicker",        // 4 tokens - +20 auto clicks/sec
+            "time_manipulation",   // 5 tokens - -90% quest duration
+            "moon_base_alpha",     // 5 tokens - +500% quest rewards
+            "golden_eye_magnetism", // 6 tokens - 5x golden eyes, 10x rewards
+            "believer_magnetism",  // 6 tokens - +500% believers
+            "mind_control_mastery", // 7 tokens - 5x faster quest work
+            "all_seeing_investment", // 8 tokens - +25% per token
+            "infinite_tinfoil",    // 10 tokens - +200 tinfoil/min
 
             // TIER 3: Advanced (12-30 tokens)
-            "third_eye_awakening", // 12 tokens - +100% crit, 3x crit damage
-            "instant_indoctrination", // 14 tokens - 25% instant quests
-            "shadow_network",      // 15 tokens - -90% generator costs
-            "parallel_universe_access", // 18 tokens - x2 all generators
-            "reality_distortion",  // 20 tokens - x20 click power
-            "cosmic_alignment",    // 25 tokens - x60 EPS
-            "conspiracy_cascade",  // 28 tokens - 10 min 10x EPS on conspiracy
-            "global_awakening",    // 30 tokens - +1000% believers
+            "third_eye_awakening", // 12 tokens - +50% crit chance, 10x crit
+            "instant_indoctrination", // 14 tokens - 50% instant quests
+            "shadow_network",      // 15 tokens - -95% generator costs
+            "parallel_universe_access", // 18 tokens - x10 all generators
+            "reality_distortion",  // 20 tokens - x100 click power
+            "cosmic_alignment",    // 25 tokens - x200 EPS
+            "conspiracy_cascade",  // 28 tokens - 10 min 50x EPS on conspiracy
+            "global_awakening",    // 30 tokens - +2000% believers
 
             // TIER 4: Endgame (40+ tokens)
-            "temporal_fold",       // 40 tokens - -95% quest duration
-            "whistle_blower_network", // 50 tokens - 100x whistle-blower rewards
-            "illuminati_council_seat", // 60 tokens - x150 EPS
-            "time_dilation_field", // 75 tokens - 2x game speed
-            "omniscient_vision",   // 100 tokens - 100% quest success, 50% faster
-            "eternal_conspiracy",  // 125 tokens - x300 EPS
-            "reality_overwrite",   // 150 tokens - x5 ALL production
+            "temporal_fold",       // 40 tokens - -98% quest duration
+            "whistle_blower_network", // 50 tokens - 500x whistle-blower, 10x spawn
+            "illuminati_council_seat", // 60 tokens - x500 EPS
+            "time_dilation_field", // 75 tokens - 5x game timers
+            "omniscient_vision",   // 100 tokens - 100% quest success, +80% bonus
+            "eternal_conspiracy",  // 125 tokens - x1000 EPS
+            "reality_overwrite",   // 150 tokens - x25 ALL production
+
+            // TIER 5: Transcendent (200+ tokens)
+            "entropy_mastery",     // 200 tokens - x2000 EPS
+            "probability_control", // 225 tokens - always succeed, 90% faster
+            "tinfoil_transmutation", // 250 tokens - +2000 tinfoil/min
+            "believer_singularity", // 275 tokens - +25000% believers
+            "click_transcendence", // 300 tokens - x500 click, +200 auto/sec
+
+            // TIER 6: Omega (350+ tokens)
+            "evidence_singularity", // 350 tokens - x5000 EPS
+            "temporal_loop",       // 400 tokens - 10x all timers
+            "omnipresent_network", // 450 tokens - x50 ALL production
+            "cosmic_tinfoil",      // 500 tokens - +10000 tinfoil/min, x10 tinfoil
+            "final_truth",         // 600 tokens - x200 ALL production
         };
 
         foreach (var upgradeId in priorityOrder)
@@ -1132,14 +1160,16 @@ public class MilestoneTracker
         (100.0, "100 Evidence"),
         (1_000.0, "1K Evidence"),
         (10_000.0, "10K Evidence"),
+        (50_000.0, "50K Evidence (Prestige Available)"),
         (100_000.0, "100K Evidence"),
+        (500_000.0, "500K Evidence (1st Conspiracy)"),
         (1_000_000.0, "1M Evidence"),
         (10_000_000.0, "10M Evidence"),
         (100_000_000.0, "100M Evidence"),
         (1_000_000_000.0, "1B Evidence"),
         (10_000_000_000.0, "10B Evidence"),
-        (100_000_000_000.0, "100B Evidence"),
-        (1_000_000_000_000.0, "1T Evidence (Prestige Available)"),
+        (100_000_000_000.0, "100B Evidence (5th Conspiracy)"),
+        (1_000_000_000_000.0, "1T Evidence"),
         (10_000_000_000_000.0, "10T Evidence"),
         (100_000_000_000_000.0, "100T Evidence"),
         (1_000_000_000_000_000.0, "1Q Evidence"),

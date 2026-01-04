@@ -211,10 +211,51 @@ dotnet run
 4. **Icon Alignment Fix**: Added AlignmentX/AlignmentY to ImageBrush in CreateStyledIconBorder
 5. **Matrix Stats Removed**: Removed from Statistics tab
 6. **New Generator Icons**: Added GeneratorSpriteSheet3 for information_nexus and timeline_harvester
+7. **Auto-Quest Toggle**: Added toggleable auto-quest feature (enabled by default when unlocked)
+8. **Quest Balance**: Reduced quest rewards to be supplemental (8-120 seconds of EPS instead of minutes/hours)
+
+## Balance Analysis (Simulator Results)
+
+The game balance has been validated through simulation testing:
+
+### Optimal Progression (with Ascensions)
+- **Total time to complete all 25 conspiracies**: ~2 hours 18 minutes
+- **Total ascensions**: 8
+- **Total Illuminati Tokens earned**: 1,037
+- **Final EPS multiplier from Illuminati**: 2.5e21x
+
+### Ascension Timing (Key Milestones)
+| Ascension | Game Time | Tokens Earned | Conspiracies |
+|-----------|-----------|---------------|--------------|
+| 1st       | 32 min    | 10            | 7            |
+| 2nd       | 45 min    | 18            | 11           |
+| 3rd       | 58 min    | 32            | 14           |
+| 4th       | 1h 11m    | 56            | 17           |
+| 5th       | 1h 26m    | 102           | 20           |
+| 6th       | 1h 43m    | 188           | 22           |
+| 7th       | 2h 02m    | 263           | 24           |
+| 8th       | 2h 17m    | 368           | 25 (complete)|
+
+### Without Ascensions (Comparison)
+- Only reaches 20/25 conspiracies after 100+ hours of simulated play
+- **Speedup from ascending**: ~43x faster progression (target was 10x)
+- Demonstrates prestige system is critical for late-game progression
+
+### Token Generation Formula
+```
+tokens = floor(log3(totalEvidence / 50,000)) + 1
+```
+- First ascension available at 50K total evidence (yields 1 token)
+- Optimal first ascension: ~500K-1M evidence (yields 7-10 tokens)
+
+### Key Balance Takeaways
+1. **Prestige is essential**: Late-game is impossible without ascending
+2. **Generator tier progression**: Each tier roughly 10-100x more powerful
+3. **Illuminati multipliers stack**: Combined multipliers reach astronomical values
+4. **Quest rewards are supplemental**: 8-120 seconds of EPS per quest (not a primary income source)
 
 ## Known Issues
 
-- Some late-game balance may need tuning
 - Could add more achievements
 - Could expand quest system
 
