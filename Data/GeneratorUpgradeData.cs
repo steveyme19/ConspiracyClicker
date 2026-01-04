@@ -89,69 +89,69 @@ public static class GeneratorUpgradeData
                 Icon = GetGlobalIcon(GlobalBonusTypes[globalIndex])
             });
 
-            // Level 75: Cost reduction -75%
+            // Level 75: Believer bonus (replaces cost reduction)
             AllUpgrades.Add(new GeneratorUpgrade
             {
                 Id = $"{generator.Id}_lvl75",
                 GeneratorId = generator.Id,
-                Name = $"{generator.Name} Efficiency",
-                Description = "-75% cost for this generator",
+                Name = $"{generator.Name} Recruitment",
+                Description = "x2 believers from this generator",
                 UnlockLevel = 75,
-                Type = GeneratorUpgradeType.CostReduction,
-                Value = 0.25,
-                Icon = "💰"
+                Type = GeneratorUpgradeType.BelieverBonus,
+                Value = 2.0,
+                Icon = "👥"
             });
 
-            // Level 100: Production x50
+            // Level 100: Production x10 (reduced from x50)
             AllUpgrades.Add(new GeneratorUpgrade
             {
                 Id = $"{generator.Id}_lvl100",
                 GeneratorId = generator.Id,
                 Name = $"{generator.Name} Boost II",
-                Description = "x50 production from this generator",
+                Description = "x10 production from this generator",
                 UnlockLevel = 100,
                 Type = GeneratorUpgradeType.ProductionMultiplier,
-                Value = 50.0,
+                Value = 10.0,
                 Icon = "⬆⬆"
             });
 
-            // Level 150: Production x200
+            // Level 150: Global bonus (second one, offset)
+            int globalIndex2 = (genIndex + 4) % GlobalBonusTypes.Length;
             AllUpgrades.Add(new GeneratorUpgrade
             {
                 Id = $"{generator.Id}_lvl150",
                 GeneratorId = generator.Id,
-                Name = $"{generator.Name} Boost III",
-                Description = "x200 production from this generator",
-                UnlockLevel = 150,
-                Type = GeneratorUpgradeType.ProductionMultiplier,
-                Value = 200.0,
-                Icon = "⬆⬆⬆"
-            });
-
-            // Level 200: Second global bonus (offset by half)
-            int globalIndex2 = (genIndex + 4) % GlobalBonusTypes.Length;
-            AllUpgrades.Add(new GeneratorUpgrade
-            {
-                Id = $"{generator.Id}_lvl200",
-                GeneratorId = generator.Id,
-                Name = $"Master {GlobalBonusNames[globalIndex2]}",
+                Name = $"Advanced {GlobalBonusNames[globalIndex2]}",
                 Description = GlobalBonusDescriptions[globalIndex2],
-                UnlockLevel = 200,
+                UnlockLevel = 150,
                 Type = GlobalBonusTypes[globalIndex2],
                 Value = GlobalBonusValues[globalIndex2],
                 Icon = GetGlobalIcon(GlobalBonusTypes[globalIndex2])
             });
 
-            // Level 250: Production x1000
+            // Level 200: Believer bonus (second one)
+            AllUpgrades.Add(new GeneratorUpgrade
+            {
+                Id = $"{generator.Id}_lvl200",
+                GeneratorId = generator.Id,
+                Name = $"{generator.Name} Evangelism",
+                Description = "x3 believers from this generator",
+                UnlockLevel = 200,
+                Type = GeneratorUpgradeType.BelieverBonus,
+                Value = 3.0,
+                Icon = "👥"
+            });
+
+            // Level 250: Production x250 (mastery boost)
             AllUpgrades.Add(new GeneratorUpgrade
             {
                 Id = $"{generator.Id}_lvl250",
                 GeneratorId = generator.Id,
                 Name = $"{generator.Name} Mastery",
-                Description = "x1000 production from this generator",
+                Description = "x250 production from this generator",
                 UnlockLevel = 250,
                 Type = GeneratorUpgradeType.ProductionMultiplier,
-                Value = 1000.0,
+                Value = 250.0,
                 Icon = "👑"
             });
 

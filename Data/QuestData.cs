@@ -19,6 +19,7 @@ public static class QuestData
             SuccessChance = 0.90,
             EvidenceMultiplier = 100,
             TinfoilReward = 2,
+            BelieverReward = 5,
             Icon = "🔍"
         },
         new Quest
@@ -32,7 +33,7 @@ public static class QuestData
             DurationSeconds = 240,
             SuccessChance = 0.85,
             EvidenceMultiplier = 200,
-            TinfoilReward = 6,
+            TinfoilReward = 8,
             Icon = "📄"
         },
 
@@ -48,7 +49,8 @@ public static class QuestData
             DurationSeconds = 480,
             SuccessChance = 0.65,
             EvidenceMultiplier = 600,
-            TinfoilReward = 20,
+            TinfoilReward = 25,
+            BelieverReward = 50,
             Icon = "📡"
         },
         new Quest
@@ -62,7 +64,7 @@ public static class QuestData
             DurationSeconds = 720,
             SuccessChance = 0.55,
             EvidenceMultiplier = 1500,
-            TinfoilReward = 40,
+            TinfoilReward = 60,
             Icon = "🏭"
         },
         new Quest
@@ -76,7 +78,8 @@ public static class QuestData
             DurationSeconds = 350,
             SuccessChance = 0.68,
             EvidenceMultiplier = 400,
-            TinfoilReward = 14,
+            TinfoilReward = 20,
+            BelieverReward = 30,
             Icon = "🏚️"
         },
         new Quest
@@ -90,7 +93,8 @@ public static class QuestData
             DurationSeconds = 400,
             SuccessChance = 0.65,
             EvidenceMultiplier = 500,
-            TinfoilReward = 16,
+            TinfoilReward = 25,
+            BelieverReward = 100,
             Icon = "💼"
         },
         new Quest
@@ -104,7 +108,7 @@ public static class QuestData
             DurationSeconds = 600,
             SuccessChance = 0.58,
             EvidenceMultiplier = 1000,
-            TinfoilReward = 28,
+            TinfoilReward = 40,
             Icon = "🌾"
         },
         new Quest
@@ -118,7 +122,8 @@ public static class QuestData
             DurationSeconds = 750,
             SuccessChance = 0.52,
             EvidenceMultiplier = 2000,
-            TinfoilReward = 45,
+            TinfoilReward = 70,
+            BelieverReward = 500,
             Icon = "📻"
         },
 
@@ -134,7 +139,8 @@ public static class QuestData
             DurationSeconds = 1200,
             SuccessChance = 0.38,
             EvidenceMultiplier = 8000,
-            TinfoilReward = 150,
+            TinfoilReward = 200,
+            BelieverReward = 1000,
             Icon = "🏴"
         },
         new Quest
@@ -148,7 +154,8 @@ public static class QuestData
             DurationSeconds = 1500,
             SuccessChance = 0.18,
             EvidenceMultiplier = 100000,
-            TinfoilReward = 1000,
+            TinfoilReward = 1500,
+            BelieverReward = 10000,
             Icon = "🦉"
         },
 
@@ -164,7 +171,8 @@ public static class QuestData
             DurationSeconds = 1500,
             SuccessChance = 0.15,
             EvidenceMultiplier = 500000,
-            TinfoilReward = 3000,
+            TinfoilReward = 5000,
+            BelieverReward = 50000,
             Icon = "🚇"
         },
         new Quest
@@ -178,7 +186,7 @@ public static class QuestData
             DurationSeconds = 1500,
             SuccessChance = 0.12,
             EvidenceMultiplier = 2000000,
-            TinfoilReward = 8000,
+            TinfoilReward = 12000,
             Icon = "🛸"
         },
         new Quest
@@ -192,7 +200,8 @@ public static class QuestData
             DurationSeconds = 1500,
             SuccessChance = 0.08,
             EvidenceMultiplier = 10000000,
-            TinfoilReward = 25000,
+            TinfoilReward = 35000,
+            BelieverReward = 500000,
             Icon = "🕴️"
         },
         new Quest
@@ -206,7 +215,8 @@ public static class QuestData
             DurationSeconds = 1500,
             SuccessChance = 0.05,
             EvidenceMultiplier = 50000000,
-            TinfoilReward = 100000,
+            TinfoilReward = 150000,
+            BelieverReward = 2000000,
             Icon = "🌀"
         },
 
@@ -222,7 +232,8 @@ public static class QuestData
             DurationSeconds = 300,
             SuccessChance = 0.70,
             EvidenceMultiplier = 350,
-            TinfoilReward = 12,
+            TinfoilReward = 15,
+            BelieverReward = 25,
             Icon = "🏃"
         },
         new Quest
@@ -236,7 +247,7 @@ public static class QuestData
             DurationSeconds = 600,
             SuccessChance = 0.60,
             EvidenceMultiplier = 900,
-            TinfoilReward = 30,
+            TinfoilReward = 45,
             Icon = "💾"
         },
         new Quest
@@ -250,6 +261,7 @@ public static class QuestData
             DurationSeconds = 180,
             SuccessChance = 0.88,
             EvidenceMultiplier = 150,
+            BelieverReward = 10,
             TinfoilReward = 4,
             Icon = "✈️"
         },

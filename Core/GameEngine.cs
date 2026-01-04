@@ -304,7 +304,11 @@ public class GameEngine
         {
             var generator = GeneratorData.GetById(genId);
             if (generator != null)
-                totalBelievers += generator.BelieverBonus * count;
+            {
+                // Apply generator-specific believer multiplier from upgrades (level 75, 200)
+                double believerMult = GetGeneratorUpgradeBelieverMultiplier(genId);
+                totalBelievers += generator.BelieverBonus * count * believerMult;
+            }
         }
 
         // Apply Tinfoil Shop believer multiplier at the end
@@ -427,7 +431,7 @@ public class GameEngine
     {
         double basePower = 1.0;
         double multiplier = 1.0;
-        double epsBonus = 0.10; // Baseline: clicks always give 10% of EPS
+        double epsBonus = 0.001; // Baseline: clicks always give 0.1% of EPS
 
         foreach (var upgradeId in _state.PurchasedUpgrades)
         {
@@ -799,6 +803,13 @@ public class GameEngine
                 _state.Evidence += evidenceReward;
                 _state.TotalEvidenceEarned += evidenceReward;
                 _state.Tinfoil += tinfoilReward;
+
+                // Award bonus believers from quest (recruited during mission)
+                if (quest.BelieverReward > 0)
+                {
+                    _state.Believers += quest.BelieverReward * rewardMultiplier;
+                }
+
                 _state.QuestsCompleted++;
                 _state.TodayQuestsCompleted++;
             }
@@ -834,6 +845,9 @@ public class GameEngine
     {
         // Only start spawning after the first conspiracy is proven
         if (_state.ProvenConspiracies.Count == 0) return;
+
+        // Don't spawn during challenge modes
+        if (IsInChallenge) return;
 
         double spawnChance = 0.001 * GetGeneratorUpgradeGlobalGoldenEyeFrequency();
         if (_random.NextDouble() > spawnChance) return;
@@ -1567,6 +1581,18 @@ public class GameEngine
         return multiplier;
     }
 
+    public double GetGeneratorUpgradeBelieverMultiplier(string generatorId)
+    {
+        double multiplier = 1.0;
+        foreach (var upgradeId in _state.GeneratorUpgrades)
+        {
+            var upgrade = GeneratorUpgradeData.GetById(upgradeId);
+            if (upgrade != null && upgrade.GeneratorId == generatorId && upgrade.Type == GeneratorUpgradeType.BelieverBonus)
+                multiplier *= upgrade.Value;
+        }
+        return multiplier;
+    }
+
     public double GetGeneratorUpgradeGlobalClickMultiplier()
     {
         double multiplier = 1.0;
@@ -1682,8 +1708,9 @@ public class GameEngine
         var generator = GeneratorData.GetById(upgrade.GeneratorId);
         if (generator == null) return double.MaxValue;
 
-        // Cost is 3x the generator's cost at the unlock level
-        double baseCost = generator.GetCost(upgrade.UnlockLevel) * 3.0;
+        // Cost is 3x the generator's production value at the unlock level
+        // This accounts for buying multiple levels at once - cost scales with production at milestone
+        double baseCost = generator.GetProduction(upgrade.UnlockLevel) * 3.0;
 
         // Apply cost reductions from prestige
         if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) baseCost *= 0.10;

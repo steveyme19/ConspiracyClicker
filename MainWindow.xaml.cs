@@ -26,6 +26,7 @@ public partial class MainWindow : Window
     private readonly UserSettings _settings;
     private readonly Random _random = new();
     private readonly Dictionary<string, Button> _generatorButtons = new();
+    private readonly Dictionary<string, StackPanel> _generatorContainers = new();
     private readonly Dictionary<string, WrapPanel> _generatorUpgradePanels = new();
     private readonly Dictionary<string, Button> _upgradeButtons = new();
     private readonly Dictionary<string, Button> _conspiracyButtons = new();
@@ -40,7 +41,7 @@ public partial class MainWindow : Window
     private int _lastProvenConspiracyCount = -1;
     private int _currentPyramidLevel = -1;
     private string _currentRankId = "";
-    private readonly Dictionary<string, (double cost, int owned, double prod)> _lastGenState = new();
+    private readonly Dictionary<string, (double cost, int owned, double prod, double mult)> _lastGenState = new();
     private readonly Dictionary<string, string> _lastUpgradePanelState = new(); // generatorId -> state hash
     private int _lastTinfoilCount = -1;
     private int _lastQuestCount = -1;
@@ -2321,6 +2322,7 @@ public partial class MainWindow : Window
             var (container, button, upgradePanel) = CreateGeneratorButton(gen, buttonStyle);
             GeneratorPanel.Children.Add(container);
             _generatorButtons[gen.Id] = button;
+            _generatorContainers[gen.Id] = container;
             _generatorUpgradePanels[gen.Id] = upgradePanel;
         }
     }
@@ -3130,35 +3132,23 @@ public partial class MainWindow : Window
         if (rank.Id == _currentRankId) return;
         _currentRankId = rank.Id;
 
-        // Show/hide rank panel based on whether player has proven any conspiracies
-        if (conspiracyCount == 0)
-        {
-            RankDisplayPanel.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        RankDisplayPanel.Visibility = Visibility.Visible;
-        RankSocietyDisplay.Text = $"{rank.Society}:";
-        RankTitleDisplay.Text = rank.Title;
-
-        // Set color based on rank
-        try
-        {
-            var color = (Color)ColorConverter.ConvertFromString(rank.Color);
-            RankTitleDisplay.Foreground = new SolidColorBrush(color);
-        }
-        catch
-        {
-            RankTitleDisplay.Foreground = GreenBrush;
-        }
+        // Rank panel is permanently hidden - only show notifications
+        if (conspiracyCount == 0) return;
 
         // Show rank up notification if not first rank
         if (conspiracyCount > 1)
         {
-            AddNotification($"Rank Up! You are now {rank.Title} of the {rank.Society}!", new SolidColorBrush((Color)ColorConverter.ConvertFromString(rank.Color)));
-            if (!string.IsNullOrEmpty(rank.FlavorText))
+            try
             {
-                ShowToast(rank.Icon, rank.FlavorText);
+                AddNotification($"Rank Up! You are now {rank.Title} of the {rank.Society}!", new SolidColorBrush((Color)ColorConverter.ConvertFromString(rank.Color)));
+                if (!string.IsNullOrEmpty(rank.FlavorText))
+                {
+                    ShowToast(rank.Icon, rank.FlavorText);
+                }
+            }
+            catch
+            {
+                AddNotification($"Rank Up! You are now {rank.Title} of the {rank.Society}!", GreenBrush);
             }
         }
     }
@@ -3310,24 +3300,55 @@ public partial class MainWindow : Window
         var state = _engine.State;
         var (_, epsMult) = _engine.GetEpsBreakdown();
 
+        // Build generator-specific multipliers from regular upgrades (same as GameEngine.CalculateBaseEps)
+        var generatorMultipliers = new Dictionary<string, double>();
+        foreach (var upgradeId in state.PurchasedUpgrades)
+        {
+            var upgrade = UpgradeData.GetById(upgradeId);
+            if (upgrade?.Type == UpgradeType.GeneratorBoost && upgrade.TargetGeneratorId != null)
+            {
+                if (!generatorMultipliers.ContainsKey(upgrade.TargetGeneratorId))
+                    generatorMultipliers[upgrade.TargetGeneratorId] = 1.0;
+                generatorMultipliers[upgrade.TargetGeneratorId] *= upgrade.Value;
+            }
+        }
+
+        // Progressive reveal: show owned, affordable, and one more
+        bool shownFirstUnaffordable = false;
+
         foreach (var gen in GeneratorData.AllGenerators)
         {
             if (!_generatorButtons.TryGetValue(gen.Id, out var button)) continue;
+            if (!_generatorContainers.TryGetValue(gen.Id, out var container)) continue;
 
             double cost = _engine.GetGeneratorCost(gen.Id);
             int owned = state.GetGeneratorCount(gen.Id);
-            double baseProduction = gen.GetProduction(owned);
+            bool canAfford = state.Evidence >= cost;
+
+            // Progressive reveal: show if owned, affordable, or the next unaffordable one
+            bool shouldShow = owned > 0 || canAfford || !shownFirstUnaffordable;
+            if (!canAfford && owned == 0 && !shownFirstUnaffordable)
+                shownFirstUnaffordable = true;
+
+            container.Visibility = shouldShow ? Visibility.Visible : Visibility.Collapsed;
+            if (!shouldShow) continue;
+
+            // Get generator-specific multiplier from regular upgrades AND generator upgrades
+            double genSpecificMult = generatorMultipliers.TryGetValue(gen.Id, out var m) ? m : 1.0;
+            genSpecificMult *= _engine.GetGeneratorUpgradeProductionMultiplier(gen.Id);
+
+            double baseProduction = gen.GetProduction(owned) * genSpecificMult;
             double multipliedProduction = baseProduction * epsMult;
 
             // Always update enabled state (depends on evidence which changes constantly)
             button.IsEnabled = state.Evidence >= cost;
 
-            // Per-generator production (with multipliers)
-            double perGenBase = gen.BaseProduction;
+            // Per-generator production (with all multipliers)
+            double perGenBase = gen.BaseProduction * genSpecificMult;
             double perGenMultiplied = perGenBase * epsMult;
 
-            // State tuple for dirty-checking text updates
-            var newState = (cost, owned, multipliedProduction);
+            // State tuple for dirty-checking text updates (include multiplier so upgrades trigger refresh)
+            var newState = (cost, owned, multipliedProduction, genSpecificMult);
 
             // Always update upgrade panel (affordability depends on evidence which changes constantly)
             // Upgrade panel is now stored separately (outside the button)
@@ -3550,12 +3571,19 @@ public partial class MainWindow : Window
             if (PurchasedUpgradesPanel.Children.Count == 0)
                 PurchasedUpgradesPanel.Children.Add(new TextBlock { Text = "No upgrades purchased yet", Foreground = DimBrush, FontStyle = FontStyles.Italic, Margin = new Thickness(5) });
 
-            // Update available upgrades panel
+            // Update available upgrades panel (show affordable + one more)
             UpgradePanel.Children.Clear();
             _upgradeButtons.Clear();
 
+            bool shownFirstUnaffordable = false;
             foreach (var upgrade in available)
             {
+                bool canAfford = _engine.CanAffordUpgrade(upgrade.Id);
+
+                // Progressive reveal: show if affordable or the next unaffordable one
+                if (!canAfford && shownFirstUnaffordable) continue;
+                if (!canAfford) shownFirstUnaffordable = true;
+
                 var button = new Button { Style = buttonStyle, Tag = upgrade.Id, HorizontalContentAlignment = HorizontalAlignment.Stretch };
                 button.Click += UpgradeButton_Click;
 
@@ -4473,8 +4501,11 @@ public partial class MainWindow : Window
             }
         }
 
-        // Calculate per-generator production with proper multipliers
-        double totalBaseEps = 0;
+        // Get global EPS multiplier to match generators tab display
+        var (_, globalEpsMult) = _engine.GetEpsBreakdown();
+
+        // Calculate per-generator production with ALL multipliers (matching generators tab)
+        double totalCalculatedEps = 0;
         int genIndex = 0;
         foreach (var gen in GeneratorData.AllGenerators)
         {
@@ -4482,8 +4513,11 @@ public partial class MainWindow : Window
             if (owned > 0)
             {
                 double genMultiplier = generatorMultipliers.TryGetValue(gen.Id, out var m) ? m : 1.0;
-                double genEps = gen.GetProduction(owned) * genMultiplier;
-                totalBaseEps += genEps;
+                // Also include generator-specific upgrades from GeneratorUpgradeData
+                genMultiplier *= _engine.GetGeneratorUpgradeProductionMultiplier(gen.Id);
+                // Apply global EPS multiplier to match generators tab
+                double genEps = gen.GetProduction(owned) * genMultiplier * globalEpsMult;
+                totalCalculatedEps += genEps;
                 int tier = genIndex / 4;
                 productions.Add((gen.Name, genEps, GetGeneratorColor(tier)));
             }
@@ -4495,7 +4529,7 @@ public partial class MainWindow : Window
 
         foreach (var (name, eps, color) in productions)
         {
-            double percentage = totalBaseEps > 0 ? eps / totalBaseEps : 0;
+            double percentage = totalCalculatedEps > 0 ? eps / totalCalculatedEps : 0;
 
             var barContainer = new Grid { Margin = new Thickness(0, 4, 0, 4) };
             barContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });

@@ -6,16 +6,16 @@ public static class UpgradeData
 {
     public static readonly List<Upgrade> AllUpgrades = new()
     {
-        // === CLICK POWER UPGRADES (small values to stay at ~10% of EPS) ===
+        // === CLICK POWER UPGRADES (high values - main source of click power) ===
         // Costs scaled 6x for 50h target
         new Upgrade
         {
             Id = "sticky_notes",
             Name = "Sticky Notes",
-            Description = "+0.1 click power",
+            Description = "+2 click power",
             FlavorText = "For important reminders like 'THEY'RE WATCHING'.",
             Type = UpgradeType.ClickPower,
-            Value = 0.1,
+            Value = 2,
             EvidenceCost = 90,
             RequiredEvidence = 30
         },
@@ -23,10 +23,10 @@ public static class UpgradeData
         {
             Id = "reinforced_tinfoil",
             Name = "Reinforced Tinfoil Hat",
-            Description = "+0.2 click power",
+            Description = "+5 click power",
             FlavorText = "Now with extra crinkles for style.",
             Type = UpgradeType.ClickPower,
-            Value = 0.2,
+            Value = 5,
             EvidenceCost = 300,
             RequiredEvidence = 150
         },
@@ -34,10 +34,10 @@ public static class UpgradeData
         {
             Id = "notebook",
             Name = "Spiral Notebook",
-            Description = "+0.3 click power",
+            Description = "+10 click power",
             FlavorText = "College ruled. Conspiracy filled.",
             Type = UpgradeType.ClickPower,
-            Value = 0.3,
+            Value = 10,
             EvidenceCost = 600,
             RequiredEvidence = 300
         },
@@ -45,10 +45,10 @@ public static class UpgradeData
         {
             Id = "magnifying_glass",
             Name = "Magnifying Glass",
-            Description = "+0.5 click power",
+            Description = "+20 click power",
             FlavorText = "For examining those suspicious documents.",
             Type = UpgradeType.ClickPower,
-            Value = 0.5,
+            Value = 20,
             EvidenceCost = 1200,
             RequiredEvidence = 600
         },
@@ -56,10 +56,10 @@ public static class UpgradeData
         {
             Id = "flashlight",
             Name = "Heavy Duty Flashlight",
-            Description = "+0.7 click power",
+            Description = "+35 click power",
             FlavorText = "For illuminating dark corners. And faces.",
             Type = UpgradeType.ClickPower,
-            Value = 0.7,
+            Value = 35,
             EvidenceCost = 2400,
             RequiredEvidence = 1200
         },
@@ -67,10 +67,10 @@ public static class UpgradeData
         {
             Id = "red_marker",
             Name = "Red Marker",
-            Description = "+1 click power",
+            Description = "+60 click power",
             FlavorText = "For circling faces in newspapers.",
             Type = UpgradeType.ClickPower,
-            Value = 1,
+            Value = 60,
             EvidenceCost = 4800,
             RequiredEvidence = 2400
         },
@@ -78,10 +78,10 @@ public static class UpgradeData
         {
             Id = "binoculars",
             Name = "Surveillance Binoculars",
-            Description = "+1.5 click power",
+            Description = "+100 click power",
             FlavorText = "Bird watching. Definitely bird watching.",
             Type = UpgradeType.ClickPower,
-            Value = 1.5,
+            Value = 100,
             EvidenceCost = 9000,
             RequiredEvidence = 4500
         },
@@ -89,10 +89,10 @@ public static class UpgradeData
         {
             Id = "cork_board",
             Name = "Premium Cork Board",
-            Description = "+2 click power",
+            Description = "+175 click power",
             FlavorText = "Industrial grade. Holds 47% more string.",
             Type = UpgradeType.ClickPower,
-            Value = 2,
+            Value = 175,
             EvidenceCost = 18000,
             RequiredEvidence = 9000
         },
@@ -100,10 +100,10 @@ public static class UpgradeData
         {
             Id = "scanner",
             Name = "Document Scanner",
-            Description = "+3 click power",
+            Description = "+300 click power",
             FlavorText = "Digitize ALL the evidence.",
             Type = UpgradeType.ClickPower,
-            Value = 3,
+            Value = 300,
             EvidenceCost = 36000,
             RequiredEvidence = 18000
         },
@@ -111,10 +111,10 @@ public static class UpgradeData
         {
             Id = "night_vision",
             Name = "Night Vision Goggles",
-            Description = "+4 click power",
+            Description = "+500 click power",
             FlavorText = "For those 3 AM stakeouts.",
             Type = UpgradeType.ClickPower,
-            Value = 4,
+            Value = 500,
             EvidenceCost = 90000,
             RequiredEvidence = 45000
         },
@@ -122,10 +122,10 @@ public static class UpgradeData
         {
             Id = "voice_recorder",
             Name = "Concealed Voice Recorder",
-            Description = "+6 click power",
+            Description = "+850 click power",
             FlavorText = "In pen form. Very subtle.",
             Type = UpgradeType.ClickPower,
-            Value = 6,
+            Value = 850,
             EvidenceCost = 180000,
             RequiredEvidence = 90000
         },
@@ -133,23 +133,23 @@ public static class UpgradeData
         {
             Id = "mechanical_keyboard",
             Name = "Mechanical Keyboard",
-            Description = "+8 click power",
+            Description = "+1500 click power",
             FlavorText = "CLACK CLACK CLACK. The sound of truth.",
             Type = UpgradeType.ClickPower,
-            Value = 8,
+            Value = 1500,
             EvidenceCost = 450000,
             RequiredEvidence = 210000
         },
 
-        // === CLICK MULTIPLIERS (small multipliers) ===
+        // === CLICK MULTIPLIERS (strong multipliers) ===
         new Upgrade
         {
             Id = "third_eye_drops",
             Name = "Third Eye Drops",
-            Description = "x1.1 click power",
+            Description = "x1.5 click power",
             FlavorText = "Side effects may include seeing through walls.",
             Type = UpgradeType.ClickMultiplier,
-            Value = 1.1,
+            Value = 1.5,
             EvidenceCost = 600000,
             RequiredEvidence = 300000
         },
@@ -157,10 +157,10 @@ public static class UpgradeData
         {
             Id = "caffeine_iv",
             Name = "Caffeine IV Drip",
-            Description = "x1.15 click power",
+            Description = "x2 click power",
             FlavorText = "Sleep is for the uninformed.",
             Type = UpgradeType.ClickMultiplier,
-            Value = 1.15,
+            Value = 2.0,
             EvidenceCost = 6000000,
             RequiredEvidence = 3000000
         },
@@ -168,10 +168,10 @@ public static class UpgradeData
         {
             Id = "quantum_fingers",
             Name = "Quantum Fingers",
-            Description = "x1.2 click power",
+            Description = "x3 click power",
             FlavorText = "Click in multiple dimensions simultaneously.",
             Type = UpgradeType.ClickMultiplier,
-            Value = 1.2,
+            Value = 3.0,
             EvidenceCost = 60000000,
             RequiredEvidence = 30000000
         },
@@ -489,15 +489,15 @@ public static class UpgradeData
             RequiredEvidence = 3000000000
         },
 
-        // === MORE CLICK POWER UPGRADES (small values to stay at ~10% of EPS) ===
+        // === MORE CLICK POWER UPGRADES (high values - main source of click power) ===
         new Upgrade
         {
             Id = "encrypted_usb",
             Name = "Encrypted USB Drive",
-            Description = "+15 click power",
+            Description = "+3000 click power",
             FlavorText = "Found in a parking lot. Totally safe to plug in.",
             Type = UpgradeType.ClickPower,
-            Value = 15,
+            Value = 3000,
             EvidenceCost = 1500000,
             RequiredEvidence = 750000
         },
@@ -505,10 +505,10 @@ public static class UpgradeData
         {
             Id = "burner_phone",
             Name = "Burner Phone Collection",
-            Description = "+30 click power",
+            Description = "+7500 click power",
             FlavorText = "One for each personality.",
             Type = UpgradeType.ClickPower,
-            Value = 30,
+            Value = 7500,
             EvidenceCost = 6000000,
             RequiredEvidence = 3000000
         },
@@ -516,10 +516,10 @@ public static class UpgradeData
         {
             Id = "satellite_dish",
             Name = "DIY Satellite Dish",
-            Description = "+60 click power",
+            Description = "+20000 click power",
             FlavorText = "Made from a wok and coat hangers.",
             Type = UpgradeType.ClickPower,
-            Value = 60,
+            Value = 20000,
             EvidenceCost = 30000000,
             RequiredEvidence = 15000000
         },
@@ -527,10 +527,10 @@ public static class UpgradeData
         {
             Id = "black_light",
             Name = "Industrial Black Light",
-            Description = "+120 click power",
+            Description = "+50000 click power",
             FlavorText = "Reveals hidden messages. And unfortunate stains.",
             Type = UpgradeType.ClickPower,
-            Value = 120,
+            Value = 50000,
             EvidenceCost = 150000000,
             RequiredEvidence = 75000000
         },
@@ -538,10 +538,10 @@ public static class UpgradeData
         {
             Id = "evidence_vault",
             Name = "Evidence Vault",
-            Description = "+250 click power",
+            Description = "+150000 click power",
             FlavorText = "Fireproof, waterproof, government-proof.",
             Type = UpgradeType.ClickPower,
-            Value = 250,
+            Value = 150000,
             EvidenceCost = 600000000,
             RequiredEvidence = 300000000
         },
@@ -549,23 +549,23 @@ public static class UpgradeData
         {
             Id = "neural_enhancer",
             Name = "Neural Pattern Enhancer",
-            Description = "+500 click power",
+            Description = "+500000 click power",
             FlavorText = "See connections others can't. Literally.",
             Type = UpgradeType.ClickPower,
-            Value = 500,
+            Value = 500000,
             EvidenceCost = 3000000000,
             RequiredEvidence = 1500000000
         },
 
-        // === MORE CLICK MULTIPLIERS (small multipliers) ===
+        // === MORE CLICK MULTIPLIERS (strong multipliers) ===
         new Upgrade
         {
             Id = "truth_serum",
             Name = "Truth Serum",
-            Description = "x1.25 click power",
+            Description = "x4 click power",
             FlavorText = "Works on you too, unfortunately.",
             Type = UpgradeType.ClickMultiplier,
-            Value = 1.25,
+            Value = 4.0,
             EvidenceCost = 300000000,
             RequiredEvidence = 150000000
         },
@@ -573,10 +573,10 @@ public static class UpgradeData
         {
             Id = "reality_distortion",
             Name = "Reality Distortion Field",
-            Description = "x1.3 click power",
+            Description = "x5 click power",
             FlavorText = "Bend truth to your will.",
             Type = UpgradeType.ClickMultiplier,
-            Value = 1.3,
+            Value = 5.0,
             EvidenceCost = 3000000000,
             RequiredEvidence = 1500000000
         },
@@ -709,10 +709,10 @@ public static class UpgradeData
             FlavorText = "Trending #1 in 47 countries.",
             Type = UpgradeType.GeneratorBoost,
             Value = 2.0,
-            TargetGeneratorId = "netflix_documentary",
+            TargetGeneratorId = "netflix_doc",
             EvidenceCost = 60000000000,
             RequiredGeneratorCount = 5,
-            RequiredGeneratorId = "netflix_documentary"
+            RequiredGeneratorId = "netflix_doc"
         },
         new Upgrade
         {

@@ -23,6 +23,8 @@ public class Quest
     public double EvidenceReward { get; init; }
     public double EvidenceMultiplier { get; init; } = 1.0; // Multiplied by current EPS
     public long TinfoilReward { get; init; }
+    public double BelieverReward { get; init; } // Bonus believers gained
+    public double ClickPowerBonus { get; init; } // Temporary click power bonus duration (seconds)
     public string? UnlockUpgradeId { get; init; }
 
     // Partial reward on fail (for Low risk)

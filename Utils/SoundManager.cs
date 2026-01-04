@@ -160,18 +160,55 @@ public static class SoundManager
     // Sound generators
     private static byte[] GenerateClick()
     {
-        // Short blip - 880Hz for 30ms
-        var samples = GenerateTone(880, 30, 0.3);
+        // Soft pop sound - lower frequency with gentle envelope
+        int sampleRate = 22050;
+        int numSamples = (int)(sampleRate * 0.045); // 45ms
+        var samples = new short[numSamples];
+
+        for (int i = 0; i < numSamples; i++)
+        {
+            double t = (double)i / sampleRate;
+            double progress = (double)i / numSamples;
+
+            // Quick attack, smooth exponential decay
+            double envelope = Math.Exp(-progress * 6.0);
+
+            // Lower fundamental (440Hz) with soft second harmonic for warmth
+            double fundamental = Math.Sin(2 * Math.PI * 440 * t);
+            double harmonic = Math.Sin(2 * Math.PI * 880 * t) * 0.2;
+
+            double sample = (fundamental + harmonic) * 0.25 * envelope;
+            samples[i] = (short)(sample * 32767);
+        }
+
         return GenerateWav(samples);
     }
 
     private static byte[] GenerateCrit()
     {
-        // Higher pitched double blip
-        var tone1 = GenerateTone(1200, 25, 0.5);
-        var tone2 = GenerateTone(1600, 25, 0.5);
-        var combined = CombineSamples(tone1, tone2);
-        return GenerateWav(combined);
+        // Soft satisfying chime - rising tone with gentle decay
+        int sampleRate = 22050;
+        int numSamples = (int)(sampleRate * 0.08); // 80ms
+        var samples = new short[numSamples];
+
+        for (int i = 0; i < numSamples; i++)
+        {
+            double t = (double)i / sampleRate;
+            double progress = (double)i / numSamples;
+
+            // Quick attack, smooth exponential decay
+            double envelope = Math.Exp(-progress * 5.0);
+
+            // Pleasant rising chord (C5 + E5 + G5) for a major chord feel
+            double c5 = Math.Sin(2 * Math.PI * 523 * t);
+            double e5 = Math.Sin(2 * Math.PI * 659 * t) * 0.7;
+            double g5 = Math.Sin(2 * Math.PI * 784 * t) * 0.5;
+
+            double sample = (c5 + e5 + g5) * 0.2 * envelope;
+            samples[i] = (short)(sample * 32767);
+        }
+
+        return GenerateWav(samples);
     }
 
     private static byte[] GeneratePurchase()
