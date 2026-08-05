@@ -538,19 +538,19 @@
                                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,0">
                                     <TextBlock Text="Buy Mode: " Foreground="{StaticResource TextDim}" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="21"/>
                                     <Button x:Name="BuyMode1" Content="1x" Click="BuyMode_Click" Tag="1"
-                                            ToolTip="Buy 1 at a time"
+                                            ToolTip="Buy 1 at a time (Q/E to cycle)"
                                             Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource AccentGreen}"
                                             BorderBrush="{StaticResource AccentGreen}" BorderThickness="1"/>
                                     <Button x:Name="BuyMode10" Content="10x" Click="BuyMode_Click" Tag="10"
-                                            ToolTip="Buy 10 at a time"
+                                            ToolTip="Buy 10 at a time (Q/E to cycle)"
                                             Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource TextDim}"
                                             BorderBrush="{StaticResource TextDim}" BorderThickness="1"/>
                                     <Button x:Name="BuyMode100" Content="100x" Click="BuyMode_Click" Tag="100"
-                                            ToolTip="Buy 100 at a time"
+                                            ToolTip="Buy 100 at a time (Q/E to cycle)"
                                             Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource TextDim}"
                                             BorderBrush="{StaticResource TextDim}" BorderThickness="1"/>
                                     <Button x:Name="BuyModeMax" Content="MAX" Click="BuyMode_Click" Tag="max"
-                                            ToolTip="Buy as many as you can afford"
+                                            ToolTip="Buy as many as you can afford (Q/E to cycle)"
                                             Padding="18,9" Margin="3" FontSize="21" Background="#0f3460" Foreground="{StaticResource TextDim}"
                                             BorderBrush="{StaticResource TextDim}" BorderThickness="1"/>
                                 </StackPanel>

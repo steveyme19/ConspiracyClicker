@@ -9,6 +9,7 @@ public static class SoundManager
     private static bool _enabled = true;
     private static double _volume = 0.7; // 0.0 to 1.0 (effects volume)
     private static double _clickVolume = 0.3; // 0.0 to 1.0 (click/crit/combo volume - lower default)
+    private static double _eventVolume = 0.25; // 0.0 to 1.0 (ambient events like drops, debunkers - quiet)
 
     public static bool Enabled
     {
@@ -148,12 +149,20 @@ public static class SoundManager
         return ms.ToArray();
     }
 
-    private static short[] GenerateTone(double frequency, double durationMs, double volume = 0.5, bool fadeOut = true, bool useClickVolume = false)
+    private enum VolumeType { Normal, Click, Event }
+
+    private static short[] GenerateTone(double frequency, double durationMs, double volume = 0.5, bool fadeOut = true, bool useClickVolume = false, VolumeType volumeType = VolumeType.Normal)
     {
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * durationMs / 1000.0);
         var samples = new short[numSamples];
-        double masterVolume = useClickVolume ? _clickVolume : _volume; // Apply appropriate volume
+        // Legacy useClickVolume support + new volumeType
+        double masterVolume = useClickVolume ? _clickVolume : volumeType switch
+        {
+            VolumeType.Click => _clickVolume,
+            VolumeType.Event => _eventVolume,
+            _ => _volume
+        };
 
         for (int i = 0; i < numSamples; i++)
         {
@@ -297,11 +306,11 @@ public static class SoundManager
 
     private static byte[] GenerateAbility()
     {
-        // Woosh/power sound - descending then ascending
+        // Woosh/power sound - descending then ascending - uses quiet event volume
         int sampleRate = 22050;
         int numSamples = (int)(sampleRate * 0.2);
         var samples = new short[numSamples];
-        double masterVolume = _volume;
+        double masterVolume = _eventVolume;
 
         for (int i = 0; i < numSamples; i++)
         {
@@ -320,19 +329,19 @@ public static class SoundManager
 
     private static byte[] GenerateDrop()
     {
-        // Coin-like pickup sound
-        var tone1 = GenerateTone(1047, 40, 0.4); // C6
-        var tone2 = GenerateTone(1319, 60, 0.4); // E6
+        // Coin-like pickup sound - uses quiet event volume
+        var tone1 = GenerateTone(1047, 40, 0.4, true, false, VolumeType.Event); // C6
+        var tone2 = GenerateTone(1319, 60, 0.4, true, false, VolumeType.Event); // E6
         var samples = SequenceSamples(tone1, tone2);
         return GenerateWav(samples);
     }
 
     private static byte[] GenerateDebunker()
     {
-        // Defeat sound - descending
-        var tone1 = GenerateTone(400, 50, 0.5);
-        var tone2 = GenerateTone(300, 50, 0.4);
-        var tone3 = GenerateTone(200, 100, 0.3);
+        // Defeat sound - descending - uses quiet event volume
+        var tone1 = GenerateTone(400, 50, 0.5, true, false, VolumeType.Event);
+        var tone2 = GenerateTone(300, 50, 0.4, true, false, VolumeType.Event);
+        var tone3 = GenerateTone(200, 100, 0.3, true, false, VolumeType.Event);
         var samples = SequenceSamples(tone1, tone2, tone3);
         return GenerateWav(samples);
     }

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 
@@ -32,9 +33,10 @@ public class UserSettings
                     return settings;
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // If settings fail to load, use defaults
+            // If settings fail to load, use defaults (not critical)
+            Debug.WriteLine($"[UserSettings] Failed to load settings: {ex.Message}");
         }
 
         return new UserSettings();
@@ -52,9 +54,10 @@ public class UserSettings
             string json = JsonSerializer.Serialize(this, options);
             File.WriteAllText(SettingsPath, json);
         }
-        catch
+        catch (Exception ex)
         {
-            // Silently fail - settings are not critical
+            // Settings save failed - not critical but log for debugging
+            Debug.WriteLine($"[UserSettings] Failed to save settings: {ex.Message}");
         }
     }
 }

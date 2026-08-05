@@ -514,7 +514,60 @@ public partial class MainWindow : Window
                     e.Handled = true;
                 }
                 break;
+
+            // Ctrl+S = Manual save
+            case Key.S:
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                {
+                    _engine.Save();
+                    ShowToast("SAVED", "Game progress saved!");
+                    e.Handled = true;
+                }
+                break;
+
+            // Q = Previous buy mode, E = Next buy mode
+            case Key.Q:
+                CycleBuyMode(-1);
+                e.Handled = true;
+                break;
+            case Key.E:
+                CycleBuyMode(1);
+                e.Handled = true;
+                break;
+
+            // R = Quick ascend (if available)
+            case Key.R:
+                if (_engine.CanPrestige())
+                {
+                    PrestigeButton_Click(this, new RoutedEventArgs());
+                    e.Handled = true;
+                }
+                break;
         }
+    }
+
+    private void CycleBuyMode(int direction)
+    {
+        int[] modes = { 1, 10, 100, -1 }; // -1 is max
+        int currentIndex = Array.IndexOf(modes, _buyMode);
+        int newIndex = (currentIndex + direction + modes.Length) % modes.Length;
+        _buyMode = modes[newIndex];
+        UpdateBuyModeUI();
+
+        string modeName = _buyMode == -1 ? "MAX" : _buyMode.ToString();
+        AddNotification($"Buy mode: {modeName}", GreenBrush);
+    }
+
+    private void UpdateBuyModeUI()
+    {
+        BuyMode1.Foreground = _buyMode == 1 ? GreenBrush : DimBrush;
+        BuyMode1.BorderBrush = _buyMode == 1 ? GreenBrush : DimBrush;
+        BuyMode10.Foreground = _buyMode == 10 ? GreenBrush : DimBrush;
+        BuyMode10.BorderBrush = _buyMode == 10 ? GreenBrush : DimBrush;
+        BuyMode100.Foreground = _buyMode == 100 ? GreenBrush : DimBrush;
+        BuyMode100.BorderBrush = _buyMode == 100 ? GreenBrush : DimBrush;
+        BuyModeMax.Foreground = _buyMode == -1 ? GreenBrush : DimBrush;
+        BuyModeMax.BorderBrush = _buyMode == -1 ? GreenBrush : DimBrush;
     }
 
     private void BuyGeneratorByIndex(int index)
@@ -579,7 +632,7 @@ public partial class MainWindow : Window
             _engine.State.ProvenConspiracies.Count >= 1)
         {
             _minigameSpawnTimer += deltaTime;
-            if (_minigameSpawnTimer > 120 + _random.NextDouble() * 120) // 2-4 minutes
+            if (_minigameSpawnTimer > 480 + _random.NextDouble() * 480) // 8-16 minutes (was 2-4 min)
             {
                 _minigameSpawnTimer = 0;
                 SpawnRandomMinigame();
@@ -618,7 +671,7 @@ public partial class MainWindow : Window
         // Spawn new drops randomly (only after first conspiracy is proven, not in zen mode)
         _luckyDropTimer += deltaTime;
         if (!_zenMode && _engine.State.ProvenConspiracies.Count > 0 &&
-            _luckyDropTimer > 8 + _random.NextDouble() * 12 && _luckyDrops.Count < 3)
+            _luckyDropTimer > 32 + _random.NextDouble() * 48 && _luckyDrops.Count < 3) // 32-80 sec (was 8-20)
         {
             _luckyDropTimer = 0;
             SpawnLuckyDrop(width, height);
@@ -875,7 +928,7 @@ public partial class MainWindow : Window
                 _engine.State.ProvenConspiracies.Count > 0)
             {
                 _debunkerSpawnTimer += deltaTime;
-                if (_debunkerSpawnTimer > 45 + _random.NextDouble() * 30 && _engine.State.Believers > 100)
+                if (_debunkerSpawnTimer > 180 + _random.NextDouble() * 120 && _engine.State.Believers > 100) // 3-5 min (was 45-75 sec)
                 {
                     _debunkerSpawnTimer = 0;
                     SpawnDebunker();
@@ -1044,7 +1097,7 @@ public partial class MainWindow : Window
                 _engine.State.ProvenConspiracies.Count >= 2)
             {
                 _evidenceThiefTimer += deltaTime;
-                if (_evidenceThiefTimer > 60 + _random.NextDouble() * 45 && _engine.State.Evidence > 1000)
+                if (_evidenceThiefTimer > 240 + _random.NextDouble() * 180 && _engine.State.Evidence > 1000) // 4-7 min (was 1-1.75 min)
                 {
                     _evidenceThiefTimer = 0;
                     SpawnEvidenceThief();
@@ -1216,7 +1269,7 @@ public partial class MainWindow : Window
                 _engine.State.ProvenConspiracies.Count >= 2)
             {
                 _tinfoilThiefTimer += deltaTime;
-                if (_tinfoilThiefTimer > 90 + _random.NextDouble() * 60 && _engine.State.Tinfoil >= 5)
+                if (_tinfoilThiefTimer > 360 + _random.NextDouble() * 240 && _engine.State.Tinfoil >= 5) // 6-10 min (was 1.5-2.5 min)
                 {
                     _tinfoilThiefTimer = 0;
                     SpawnTinfoilThief();
@@ -1387,7 +1440,7 @@ public partial class MainWindow : Window
             _escapedDocument == null && _evidenceTrail.Count == 0 && _connectionPins.Count == 0)
         {
             _specialEventTimer += deltaTime;
-            if (_specialEventTimer > 15 + _random.NextDouble() * 20) // 15-35 seconds
+            if (_specialEventTimer > 60 + _random.NextDouble() * 80) // 60-140 seconds (was 15-35 sec)
             {
                 _specialEventTimer = 0;
                 int eventType = _random.Next(3);
@@ -2936,16 +2989,10 @@ public partial class MainWindow : Window
         if (sender is Button btn && btn.Tag is string modeStr)
         {
             _buyMode = modeStr == "max" ? -1 : int.Parse(modeStr);
+            UpdateBuyModeUI();
 
-            // Update button visuals
-            BuyMode1.Foreground = _buyMode == 1 ? GreenBrush : DimBrush;
-            BuyMode1.BorderBrush = _buyMode == 1 ? GreenBrush : DimBrush;
-            BuyMode10.Foreground = _buyMode == 10 ? GreenBrush : DimBrush;
-            BuyMode10.BorderBrush = _buyMode == 10 ? GreenBrush : DimBrush;
-            BuyMode100.Foreground = _buyMode == 100 ? GreenBrush : DimBrush;
-            BuyMode100.BorderBrush = _buyMode == 100 ? GreenBrush : DimBrush;
-            BuyModeMax.Foreground = _buyMode == -1 ? GreenBrush : DimBrush;
-            BuyModeMax.BorderBrush = _buyMode == -1 ? GreenBrush : DimBrush;
+            string modeName = _buyMode == -1 ? "MAX" : _buyMode.ToString();
+            AddNotification($"Buy mode: {modeName}", GreenBrush);
         }
     }
 
@@ -5216,8 +5263,26 @@ public partial class MainWindow : Window
         {
             PrestigeInfoText.Text = $"You have earned {NumberFormatter.Format(state.TotalEvidenceEarned)} total evidence.\n" +
                                     $"Ascending will grant you {tokensFromPrestige} Illuminati Token(s).\n" +
-                                    $"Tokens unlock upgrades with MASSIVE permanent multipliers (100x-500x EPS)!";
+                                    $"Press R to ascend! Tokens unlock MASSIVE permanent multipliers!";
             PrestigeButton.IsEnabled = true;
+            PrestigeButton.Content = "ASCEND NOW!";
+
+            // Add pulsing glow effect when prestige is available
+            if (PrestigeButton.Tag as string != "glowing")
+            {
+                PrestigeButton.Tag = "glowing";
+                var glowAnim = new System.Windows.Media.Animation.ColorAnimation
+                {
+                    From = System.Windows.Media.Color.FromRgb(153, 51, 255), // Purple
+                    To = System.Windows.Media.Color.FromRgb(255, 215, 0),    // Gold
+                    Duration = TimeSpan.FromSeconds(0.8),
+                    AutoReverse = true,
+                    RepeatBehavior = System.Windows.Media.Animation.RepeatBehavior.Forever
+                };
+                var brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(153, 51, 255));
+                PrestigeButton.Background = brush;
+                brush.BeginAnimation(System.Windows.Media.SolidColorBrush.ColorProperty, glowAnim);
+            }
         }
         else
         {
@@ -5226,6 +5291,14 @@ public partial class MainWindow : Window
             PrestigeInfoText.Text = $"Progress: {NumberFormatter.Format(state.TotalEvidenceEarned)} / {NumberFormatter.Format(threshold)} ({progress:P1})\n" +
                                     $"Ascending grants Illuminati Tokens for MASSIVE permanent multipliers!";
             PrestigeButton.IsEnabled = false;
+            PrestigeButton.Content = "ASCEND";
+
+            // Remove glow effect
+            if (PrestigeButton.Tag as string == "glowing")
+            {
+                PrestigeButton.Tag = null;
+                PrestigeButton.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(153, 51, 255));
+            }
         }
 
         IlluminatiTokensText.Text = $"You have {state.IlluminatiTokens} Illuminati Token(s)";

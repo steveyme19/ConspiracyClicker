@@ -653,8 +653,13 @@ public class GameEngine
             if (upgrade?.Type == TinfoilUpgradeType.AutoClicker)
                 rate += upgrade.Value;
         }
-        // Cap auto-click rate at 50 CPS
-        return Math.Min(rate, 50.0);
+
+        // Illuminati auto-click upgrades
+        if (_state.IlluminatiUpgrades.Contains("auto_clicker")) rate += 20.0;
+        if (_state.IlluminatiUpgrades.Contains("click_transcendence")) rate += 200.0;
+
+        // Cap auto-click rate at 250 CPS (increased for Illuminati upgrades)
+        return Math.Min(rate, 250.0);
     }
 
     public double GetCriticalChance()
@@ -1215,6 +1220,20 @@ public class GameEngine
         // Also reset tinfoil and tinfoil upgrades
         _state.Tinfoil = 0;
         _state.TinfoilShopPurchases.Clear();
+
+        // Reset generator-specific upgrades (they're tied to generators which are now gone)
+        _state.GeneratorUpgrades.Clear();
+
+        // Reset active events
+        _state.GoldenEyeActive = false;
+        _state.GoldenEyeEndTime = DateTime.MinValue;
+        _state.WhistleBlowerActive = false;
+        _state.WhistleBlowerEndTime = DateTime.MinValue;
+        _state.WhistleBlowerX = 0;
+        _state.WhistleBlowerY = 0;
+
+        // Reset bonus believers from quests (earned during this run)
+        _state.BonusBelievers = 0;
 
         // Keep: IlluminatiTokens, IlluminatiUpgrades, UnlockedSkills, Achievements
 

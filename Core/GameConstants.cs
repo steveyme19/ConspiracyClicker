@@ -98,8 +98,8 @@ public static class GameConstants
     // === RANDOM EVENTS ===
     public static class Events
     {
-        public const double GOLDEN_EYE_SPAWN_CHANCE = 0.001;    // Per tick
-        public const double WHISTLE_BLOWER_SPAWN_CHANCE = 0.0005;
+        public const double GOLDEN_EYE_SPAWN_CHANCE = 0.00025;    // Per tick (reduced to 25%)
+        public const double WHISTLE_BLOWER_SPAWN_CHANCE = 0.000125; // Reduced to 25%
         public const int GOLDEN_EYE_MIN_CLICKS = 50;
         public const int WHISTLE_BLOWER_MIN_CLICKS = 100;
     }
