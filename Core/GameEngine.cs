@@ -18,6 +18,10 @@ public class GameEngine
     public event Action<Achievement>? OnAchievementUnlocked;
     public event Action<string>? OnFlavorMessage;
     public event Action<double>? OnComboBurst;
+    public event Action<double, double>? OnFrenzyChanged; // multiplier, seconds
+    public event Action? OnFrenzyEnded;
+    public event Action? OnDoctrineDraftAvailable;
+    public event Action<Doctrine>? OnDoctrineChosen;
     public event Action<double, bool>? OnClickProcessed; // clickPower, isCritical
     public event Action<double, int, int>? OnAutoClickBatch; // evidence, clicks, criticals
     public event Action<string, bool, double, long>? OnQuestComplete;
@@ -151,6 +155,10 @@ public class GameEngine
         _state.BelieversLost = source.BelieversLost;
         _state.BonusBelievers = source.BonusBelievers;
         _state.LostBelievers = source.LostBelievers;
+        _state.ActiveDoctrineId = source.ActiveDoctrineId;
+        _state.DoctrineDraftPending = source.DoctrineDraftPending;
+        _state.DoctrineHistory.Clear();
+        _state.DoctrineHistory.AddRange(source.DoctrineHistory);
         _state.SkillPoints = source.SkillPoints;
 
         // Daily challenge tracking
@@ -177,6 +185,9 @@ public class GameEngine
 
         _state.ProvenConspiracies.Clear();
         foreach (var c in source.ProvenConspiracies) _state.ProvenConspiracies.Add(c);
+
+        _state.ConspiracyChoices.Clear();
+        foreach (var (k, v) in source.ConspiracyChoices) _state.ConspiracyChoices[k] = v;
 
         _state.UnlockedAchievements.Clear();
         foreach (var a in source.UnlockedAchievements) _state.UnlockedAchievements.Add(a);
@@ -300,6 +311,12 @@ public class GameEngine
         // Apply generator upgrade believer bonus
         totalBelievers *= GetGeneratorUpgradeGlobalBelieverMultiplier();
 
+        // Payoffs taken when conspiracies were proven
+        totalBelievers *= GetConspiracyBelieverMultiplier();
+
+        // This run's doctrine
+        totalBelievers *= ActiveDoctrine?.BelieverMultiplier ?? 1.0;
+
         // Add permanent bonus believers from quests, minus any detained on failed high-risk ones
         totalBelievers += _state.BonusBelievers - _state.LostBelievers;
 
@@ -309,9 +326,10 @@ public class GameEngine
     private void UpdateComboMeter()
     {
         double timeSinceClick = (DateTime.Now - _state.LastClickTime).TotalSeconds;
-        if (timeSinceClick > 0.5)
+        if (timeSinceClick > GameConstants.COMBO_GRACE_SECONDS)
         {
-            _state.ComboMeter -= GameConstants.COMBO_DECAY_RATE * (GameConstants.TICK_RATE_MS / 1000.0);
+            double decay = GameConstants.COMBO_DECAY_RATE * (ActiveDoctrine?.ComboDecayMultiplier ?? 1.0);
+            _state.ComboMeter -= decay * (GameConstants.TICK_RATE_MS / 1000.0);
             if (_state.ComboMeter < 0) _state.ComboMeter = 0;
             if (timeSinceClick > 2) _state.ComboClicks = 0;
         }
@@ -402,7 +420,11 @@ public class GameEngine
         _state.ComboClicks++;
 
         // Fill combo meter
-        _state.ComboMeter += GameConstants.COMBO_FILL_PER_CLICK;
+        // GetSkillComboFillBonus was defined but never called, so Combo Master - a 3-point
+        // skill whose whole text is "combo meter fills 25% faster" - did nothing at all.
+        _state.ComboMeter += GameConstants.COMBO_FILL_PER_CLICK
+                             * GetSkillComboFillBonus()
+                             * (ActiveDoctrine?.ComboFillMultiplier ?? 1.0);
         if (_state.ComboMeter >= 1.0)
         {
             TriggerComboBurst();
@@ -411,6 +433,75 @@ public class GameEngine
         OnClickProcessed?.Invoke(clickPower, isCritical);
         CheckAchievements();
         OnTick?.Invoke();
+    }
+
+    // === DOCTRINES ===
+
+    /// <summary>The doctrine governing this run, or null if none was drafted.</summary>
+    public Doctrine? ActiveDoctrine =>
+        _state.ActiveDoctrineId != null ? DoctrineData.GetById(_state.ActiveDoctrineId) : null;
+
+    public bool IsDoctrineDraftPending => _state.DoctrineDraftPending;
+
+    /// <summary>The three doctrines on offer for the pending draft.</summary>
+    public List<Doctrine> GetDoctrineDraft() =>
+        DoctrineData.GetDraft(_state.TimesAscended, _state.DoctrineHistory);
+
+    public bool ChooseDoctrine(string doctrineId)
+    {
+        if (!_state.DoctrineDraftPending) return false;
+        if (!GetDoctrineDraft().Any(d => d.Id == doctrineId)) return false;
+
+        _state.ActiveDoctrineId = doctrineId;
+        _state.DoctrineHistory.Add(doctrineId);
+        _state.DoctrineDraftPending = false;
+
+        OnDoctrineChosen?.Invoke(DoctrineData.GetById(doctrineId)!);
+        OnTick?.Invoke();
+        return true;
+    }
+
+    /// <summary>Declining the draft is allowed - a plain run is itself a valid choice.</summary>
+    public void SkipDoctrineDraft()
+    {
+        _state.DoctrineDraftPending = false;
+        _state.ActiveDoctrineId = null;
+        OnTick?.Invoke();
+    }
+
+    // === FRENZY ===
+
+    public bool IsFrenzyActive => _state.FrenzyMultiplier > 1.0 && DateTime.Now < _state.FrenzyEndTime;
+
+    /// <summary>The live global EPS multiplier from Frenzy, or 1.0 when it has lapsed.</summary>
+    public double GetFrenzyMultiplier() => IsFrenzyActive ? _state.FrenzyMultiplier : 1.0;
+
+    public double GetFrenzySecondsRemaining() =>
+        IsFrenzyActive ? (_state.FrenzyEndTime - DateTime.Now).TotalSeconds : 0;
+
+    /// <summary>
+    /// Starts a Frenzy, or escalates and extends one already running. Chaining is what makes
+    /// sustained clicking worth more than the sum of its clicks.
+    /// </summary>
+    private void ApplyFrenzy()
+    {
+        double bonus = ActiveDoctrine?.FrenzyPowerBonus ?? 0.0;
+        double multiplier = IsFrenzyActive
+            ? Math.Min(_state.FrenzyMultiplier + GameConstants.FRENZY_STEP + bonus,
+                       GameConstants.FRENZY_MAX + bonus)
+            : GameConstants.FRENZY_BASE + bonus;
+
+        _state.FrenzyMultiplier = multiplier;
+        _state.FrenzyEndTime = DateTime.Now.AddSeconds(GameConstants.FRENZY_SECONDS);
+
+        OnFrenzyChanged?.Invoke(multiplier, GameConstants.FRENZY_SECONDS);
+    }
+
+    private void EndFrenzy()
+    {
+        _state.FrenzyMultiplier = 1.0;
+        _state.FrenzyEndTime = DateTime.MinValue;
+        OnFrenzyEnded?.Invoke();
     }
 
     private void TriggerComboBurst()
@@ -427,6 +518,8 @@ public class GameEngine
         _state.ComboMeter = 0;
         _state.ComboClicks = 0;
         _state.TodayCombos++;
+
+        ApplyFrenzy();
         OnComboBurst?.Invoke(burstAmount);
     }
 
@@ -457,12 +550,9 @@ public class GameEngine
 
         foreach (var conspiracyId in _state.ProvenConspiracies)
         {
-            var conspiracy = ConspiracyData.GetById(conspiracyId);
-            if (conspiracy != null)
-            {
-                basePower += conspiracy.ClickBonus;
-                multiplier *= conspiracy.MultiplierBonus;
-            }
+            var reward = ConspiracyRewardData.Resolve(conspiracyId, _state.ConspiracyChoices);
+            basePower += reward.ClickBonus;
+            multiplier *= reward.MultiplierBonus;
         }
 
         foreach (var achievementId in _state.UnlockedAchievements)
@@ -497,6 +587,9 @@ public class GameEngine
 
         // Generator upgrade global click power bonus
         multiplier *= GetGeneratorUpgradeGlobalClickMultiplier();
+
+        // This run's doctrine
+        multiplier *= ActiveDoctrine?.ClickPowerMultiplier ?? 1.0;
 
         // EPS to click component from upgrades
         double epsComponent = epsBonus > 0 ? CalculateBaseEps() * GetEpsMultiplier() * epsBonus : 0;
@@ -534,6 +627,7 @@ public class GameEngine
                 double genMultiplier = generatorMultipliers.TryGetValue(genId, out var m) ? m : 1.0;
                 // Apply generator-specific upgrades
                 genMultiplier *= GetGeneratorUpgradeProductionMultiplier(genId);
+                genMultiplier *= GetSynergyMultiplier(genId);
                 total += generator.GetProduction(count) * genMultiplier;
             }
         }
@@ -592,6 +686,13 @@ public class GameEngine
 
         // Generator upgrade global EPS bonus
         multiplier *= GetGeneratorUpgradeGlobalEpsMultiplier();
+
+        // This run's doctrine
+        multiplier *= ActiveDoctrine?.EpsMultiplier ?? 1.0;
+
+        // Frenzy from chained combo bursts. Deliberately last and deliberately global: this is
+        // the only thing in the game that makes clicking matter once generators dominate.
+        multiplier *= GetFrenzyMultiplier();
 
         return multiplier;
     }
@@ -664,6 +765,8 @@ public class GameEngine
         if (_state.IlluminatiUpgrades.Contains("auto_clicker")) rate += 20.0;
         if (_state.IlluminatiUpgrades.Contains("click_transcendence")) rate += 200.0;
 
+        rate *= ActiveDoctrine?.AutoClickMultiplier ?? 1.0;
+
         // Cap auto-click rate at 250 CPS (increased for Illuminati upgrades)
         return Math.Min(rate, 250.0);
     }
@@ -680,6 +783,8 @@ public class GameEngine
         chance += GetSkillCriticalChanceBonus();
         if (_state.IlluminatiUpgrades.Contains("third_eye_awakening")) chance += 0.50;
         chance += GetGeneratorUpgradeGlobalCritChance();
+        chance += GetConspiracyCritChanceBonus();
+        chance += ActiveDoctrine?.CritChanceBonus ?? 0.0;
         return chance;
     }
 
@@ -754,6 +859,8 @@ public class GameEngine
         if (_state.IlluminatiUpgrades.Contains("temporal_fold")) durationMultiplier *= 0.02; // -98%
         if (_state.IlluminatiUpgrades.Contains("probability_control")) durationMultiplier *= 0.10; // -90%
         durationMultiplier *= GetGeneratorUpgradeGlobalQuestSpeed();
+        durationMultiplier *= GetConspiracyQuestSpeedMultiplier();
+        durationMultiplier *= ActiveDoctrine?.QuestSpeedMultiplier ?? 1.0;
         double adjustedDuration = quest.DurationSeconds * durationMultiplier;
 
         var activeQuest = new ActiveQuest
@@ -834,9 +941,10 @@ public class GameEngine
                 double rewardMultiplier = 1.0;
                 if (_state.IlluminatiUpgrades.Contains("moon_base_alpha")) rewardMultiplier *= 6.0; // +500%
                 if (_state.UnlockedSkills.Contains("cult_of_personality")) rewardMultiplier *= 1.25;
+                rewardMultiplier *= ActiveDoctrine?.QuestRewardMultiplier ?? 1.0;
                 evidenceReward *= rewardMultiplier;
 
-                tinfoilReward = quest.TinfoilReward;
+                tinfoilReward = (long)Math.Round(quest.TinfoilReward * (ActiveDoctrine?.TinfoilMultiplier ?? 1.0));
                 _state.Evidence += evidenceReward;
                 _state.TotalEvidenceEarned += evidenceReward;
                 _state.Tinfoil += tinfoilReward;
@@ -941,6 +1049,11 @@ public class GameEngine
         {
             _state.WhistleBlowerActive = false;
         }
+
+        if (_state.FrenzyMultiplier > 1.0 && DateTime.Now >= _state.FrenzyEndTime)
+        {
+            EndFrenzy();
+        }
     }
 
     // === PRESTIGE ===
@@ -1003,23 +1116,75 @@ public class GameEngine
         return ConspiracyData.GetAvailable(_state.TotalEvidenceEarned, _state.ProvenConspiracies);
     }
 
-    public bool CanAffordConspiracy(string conspiracyId)
+    // Aggregate effects of the payoffs taken when conspiracies were proven
+
+    public double GetConspiracyBelieverMultiplier()
+    {
+        double multiplier = 1.0;
+        foreach (var conspiracyId in _state.ProvenConspiracies)
+            multiplier *= ConspiracyRewardData.Resolve(conspiracyId, _state.ConspiracyChoices).BelieverMultiplier;
+        return multiplier;
+    }
+
+    public double GetConspiracyCritChanceBonus()
+    {
+        double bonus = 0;
+        foreach (var conspiracyId in _state.ProvenConspiracies)
+            bonus += ConspiracyRewardData.Resolve(conspiracyId, _state.ConspiracyChoices).CritChanceBonus;
+        return bonus;
+    }
+
+    public double GetConspiracyQuestSpeedMultiplier()
+    {
+        double multiplier = 1.0;
+        foreach (var conspiracyId in _state.ProvenConspiracies)
+            multiplier *= ConspiracyRewardData.Resolve(conspiracyId, _state.ConspiracyChoices).QuestSpeedMultiplier;
+        return multiplier;
+    }
+
+    /// <summary>Evidence it costs to prove a conspiracy right now, doctrine included.</summary>
+    public double GetConspiracyPrice(string conspiracyId)
+    {
+        var conspiracy = ConspiracyData.GetById(conspiracyId);
+        if (conspiracy == null) return double.MaxValue;
+
+        return conspiracy.EvidenceCost
+               * GameConstants.CONSPIRACY_PRICE_FRACTION
+               * (ActiveDoctrine?.ConspiracyCostMultiplier ?? 1.0);
+    }
+
+    /// <summary>Whether the conspiracy has been discovered - it still shows at the old threshold.</summary>
+    public bool IsConspiracyUnlocked(string conspiracyId)
     {
         var conspiracy = ConspiracyData.GetById(conspiracyId);
         if (conspiracy == null || _state.ProvenConspiracies.Contains(conspiracyId)) return false;
-        // Unlocked by total evidence earned, not current evidence
         return _state.TotalEvidenceEarned >= conspiracy.EvidenceCost;
     }
 
-    public bool ProveConspiracy(string conspiracyId)
+    public bool CanAffordConspiracy(string conspiracyId)
+    {
+        return IsConspiracyUnlocked(conspiracyId) && _state.Evidence >= GetConspiracyPrice(conspiracyId);
+    }
+
+    public (ConspiracyReward a, ConspiracyReward b) GetConspiracyOptions(string conspiracyId) =>
+        ConspiracyRewardData.GetOptions(conspiracyId);
+
+    /// <summary>
+    /// Proves a conspiracy, spending the evidence and banking which of the two payoffs the
+    /// player took. Defaults to option A, the reward it always used to grant.
+    /// </summary>
+    public bool ProveConspiracy(string conspiracyId, string rewardOption = ConspiracyRewardData.OptionA)
     {
         if (!CanAffordConspiracy(conspiracyId)) return false;
         var conspiracy = ConspiracyData.GetById(conspiracyId);
         if (conspiracy == null) return false;
 
-        // No evidence cost - just claim if you've earned enough total evidence
+        _state.Evidence -= GetConspiracyPrice(conspiracyId);
         _state.ProvenConspiracies.Add(conspiracyId);
-        _state.Tinfoil += conspiracy.TinfoilReward;
+        _state.ConspiracyChoices[conspiracyId] = rewardOption;
+
+        var reward = ConspiracyRewardData.Resolve(conspiracyId, _state.ConspiracyChoices);
+        _state.Tinfoil += (long)Math.Round(reward.TinfoilReward * (ActiveDoctrine?.TinfoilMultiplier ?? 1.0));
 
         CheckAchievements();
         OnTick?.Invoke();
@@ -1146,6 +1311,7 @@ public class GameEngine
         if (_state.IlluminatiUpgrades.Contains("shadow_network")) discount *= 0.05; // -95%
         discount *= GetMatrixCostMultiplier();
         discount *= GetGeneratorUpgradeCostMultiplier(generatorId);
+        discount *= ActiveDoctrine?.GeneratorCostMultiplier ?? 1.0;
         return discount;
     }
 
@@ -1155,6 +1321,7 @@ public class GameEngine
         double baseMultiplier = 5.0 + _random.NextDouble() * 5.0; // 5x to 10x
         if (_state.UnlockedSkills.Contains("deadly_precision")) baseMultiplier = 10.0 + _random.NextDouble() * 5.0; // 10x to 15x
         baseMultiplier *= GetGeneratorUpgradeGlobalCritDamage();
+        baseMultiplier *= ActiveDoctrine?.CritDamageMultiplier ?? 1.0;
         return baseMultiplier;
     }
 
@@ -1167,9 +1334,42 @@ public class GameEngine
         return fromAchievements + fromPrestiges;
     }
 
+    /// <summary>
+    /// Points actually committed to the tree. This used to be counted as the *number* of
+    /// unlocked skills, so a tier-5 skill priced at 8 only ever cost 1 and the whole tree came
+    /// to 15 points instead of 57 - every player ended up with every skill and the branch
+    /// choice meant nothing.
+    /// </summary>
+    public int GetSpentSkillPoints()
+    {
+        int spent = 0;
+        foreach (var skillId in _state.UnlockedSkills)
+        {
+            var skill = SkillTreeData.GetById(skillId);
+            if (skill != null) spent += skill.SkillPointCost;
+        }
+        return spent;
+    }
+
+    /// <summary>
+    /// Clamped at zero so a save made under the old accounting - which could have spent far
+    /// more than it earned - keeps its skills instead of showing a negative balance.
+    /// </summary>
     public int GetAvailableSkillPoints()
     {
-        return GetTotalSkillPoints() - _state.UnlockedSkills.Count;
+        return Math.Max(0, GetTotalSkillPoints() - GetSpentSkillPoints());
+    }
+
+    /// <summary>
+    /// Refunds the whole tree so the player can rebuild. Free by design: the interesting
+    /// constraint is the point budget, not the cost of changing your mind.
+    /// </summary>
+    public bool RespecSkills()
+    {
+        if (_state.UnlockedSkills.Count == 0) return false;
+        _state.UnlockedSkills.Clear();
+        OnTick?.Invoke();
+        return true;
     }
 
     public bool CanUnlockSkill(string skillId)
@@ -1265,9 +1465,12 @@ public class GameEngine
         _state.Generators.Clear();
         _state.PurchasedUpgrades.Clear();
         _state.ProvenConspiracies.Clear();
+        _state.ConspiracyChoices.Clear();
         _state.ActiveQuests.Clear();
         _state.ComboMeter = 0;
         _state.ComboClicks = 0;
+        _state.FrenzyMultiplier = 1.0;
+        _state.FrenzyEndTime = DateTime.MinValue;
 
         // Also reset tinfoil and tinfoil upgrades
         _state.Tinfoil = 0;
@@ -1288,10 +1491,15 @@ public class GameEngine
         _state.BonusBelievers = 0;
         _state.LostBelievers = 0;
 
+        // The old doctrine expires with the run it governed; the player drafts a new one
+        _state.ActiveDoctrineId = null;
+        _state.DoctrineDraftPending = true;
+
         // Keep: IlluminatiTokens, IlluminatiUpgrades, UnlockedSkills, Achievements
 
         _prestigeNotified = false;
         OnPrestigeComplete?.Invoke();
+        OnDoctrineDraftAvailable?.Invoke();
         OnTick?.Invoke();
         return true;
     }
@@ -1427,9 +1635,12 @@ public class GameEngine
         _state.Generators.Clear();
         _state.PurchasedUpgrades.Clear();
         _state.ProvenConspiracies.Clear();
+        _state.ConspiracyChoices.Clear();
         _state.ActiveQuests.Clear();
         _state.ComboMeter = 0;
         _state.ComboClicks = 0;
+        _state.FrenzyMultiplier = 1.0;
+        _state.FrenzyEndTime = DateTime.MinValue;
         _state.Tinfoil = 0;
         _state.TinfoilShopPurchases.Clear();
         _state.IlluminatiTokens = 0;
@@ -1541,6 +1752,7 @@ public class GameEngine
         _state.Generators.Clear();
         _state.PurchasedUpgrades.Clear();
         _state.ProvenConspiracies.Clear();
+        _state.ConspiracyChoices.Clear();
         _state.ActiveQuests.Clear();
         _state.Tinfoil = 0;
         _state.TinfoilShopPurchases.Clear();
@@ -1548,6 +1760,8 @@ public class GameEngine
         _state.IlluminatiUpgrades.Clear();
         _state.ComboMeter = 0;
         _state.ComboClicks = 0;
+        _state.FrenzyMultiplier = 1.0;
+        _state.FrenzyEndTime = DateTime.MinValue;
 
         // Set challenge state
         _state.ActiveChallengeId = challengeId;
@@ -1643,6 +1857,27 @@ public class GameEngine
     }
 
     // === GENERATOR UPGRADES ===
+    /// <summary>
+    /// Production bonus this generator gets from the other generators feeding it, as a plain
+    /// multiplier (1.0 = no synergies active). Each contribution is capped independently.
+    /// </summary>
+    public double GetSynergyMultiplier(string generatorId)
+    {
+        var synergies = SynergyData.GetForTarget(generatorId);
+        if (synergies.Count == 0) return 1.0;
+
+        double bonus = 0;
+        foreach (var synergy in synergies)
+        {
+            int sourceOwned = _state.GetGeneratorCount(synergy.SourceId);
+            if (sourceOwned < synergy.Per) continue;
+
+            int steps = sourceOwned / synergy.Per;
+            bonus += Math.Min(steps * synergy.Bonus, synergy.Cap);
+        }
+        return 1.0 + bonus;
+    }
+
     public double GetGeneratorUpgradeProductionMultiplier(string generatorId)
     {
         double multiplier = 1.0;
