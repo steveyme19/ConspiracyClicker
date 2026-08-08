@@ -464,6 +464,12 @@
                     <StackPanel Grid.Row="3" Margin="15,5,15,5" Panel.ZIndex="100" HorizontalAlignment="Center">
                         <TextBlock x:Name="ComboLabel" Text="" FontSize="21" FontWeight="Bold"
                                    Foreground="{StaticResource AccentGold}" HorizontalAlignment="Center"/>
+                        <Border x:Name="FrenzyBanner" Visibility="Collapsed" HorizontalAlignment="Center"
+                                Background="#3a1030" BorderBrush="#ff44cc" BorderThickness="2"
+                                CornerRadius="6" Padding="14,4" Margin="0,4,0,0">
+                            <TextBlock x:Name="FrenzyLabel" Text="" FontSize="17" FontWeight="Bold"
+                                       Foreground="#ff88dd" HorizontalAlignment="Center"/>
+                        </Border>
                     </StackPanel>
 
                     <TextBlock x:Name="FlavorTextDisplay" Grid.Row="4"
@@ -681,11 +687,16 @@
 
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                                         <TextBlock Text="SKILL POINTS: " FontSize="14" FontWeight="Bold"
-                                                   Foreground="{StaticResource AccentGreen}"/>
+                                                   Foreground="{StaticResource AccentGreen}" VerticalAlignment="Center"/>
                                         <TextBlock x:Name="SkillPointsDisplay" FontSize="14" FontWeight="Bold"
-                                                   Foreground="{StaticResource AccentGold}" Text="0"/>
+                                                   Foreground="{StaticResource AccentGold}" Text="0" VerticalAlignment="Center"/>
                                         <TextBlock Text=" (Available / Total)" FontSize="11"
                                                    Foreground="{StaticResource TextDim}" VerticalAlignment="Bottom" Margin="5,0,0,1"/>
+                                        <Button x:Name="RespecButton" Content="RESPEC" Click="RespecButton_Click"
+                                                FontSize="11" FontWeight="Bold" Margin="15,0,0,0" Padding="10,3"
+                                                Background="#2a1a1a" Foreground="#ff8888" BorderBrush="#ff4444"
+                                                BorderThickness="1" Cursor="Hand" VerticalAlignment="Center"
+                                                ToolTip="Refund every skill point so you can rebuild. Free."/>
                                     </StackPanel>
 
                                     <!-- Researcher Branch -->

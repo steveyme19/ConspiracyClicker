@@ -399,6 +399,7 @@ public partial class MainWindow : Window
         _engine.OnClickProcessed += OnClickProcessed;
         _engine.OnAutoClickBatch += OnAutoClickBatch;
         _engine.OnComboBurst += OnComboBurst;
+        _engine.OnFrenzyChanged += OnFrenzyChanged;
         _engine.OnQuestComplete += OnQuestComplete;
         _engine.OnGoldenEyeStart += OnGoldenEyeStart;
         _engine.OnGoldenEyeEnd += OnGoldenEyeEnd;
@@ -2575,6 +2576,35 @@ public partial class MainWindow : Window
         SpawnFloatingNumber(evidence, isCritical: false);
     }
 
+    /// <summary>
+    /// Announces a Frenzy starting or escalating. Only shouts on the first one of a chain -
+    /// a toast on every burst would be constant noise during sustained clicking.
+    /// </summary>
+    private void OnFrenzyChanged(double multiplier, double seconds)
+    {
+        FrenzyBanner.Visibility = Visibility.Visible;
+        FrenzyLabel.Text = $"FRENZY x{multiplier:0.#} - {seconds:0.0}s";
+
+        if (multiplier <= GameConstants.FRENZY_BASE)
+        {
+            ShowToast("FRENZY!", $"All evidence production x{multiplier:0.#}. Keep the combo alive to push it higher.");
+            SoundManager.Play("achievement");
+        }
+
+        var pop = new DoubleAnimation
+        {
+            From = 1.35,
+            To = 1.0,
+            Duration = TimeSpan.FromMilliseconds(220),
+            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+        };
+        var scale = new ScaleTransform(1, 1);
+        FrenzyBanner.RenderTransform = scale;
+        FrenzyBanner.RenderTransformOrigin = new Point(0.5, 0.5);
+        scale.BeginAnimation(ScaleTransform.ScaleXProperty, pop);
+        scale.BeginAnimation(ScaleTransform.ScaleYProperty, pop);
+    }
+
     private void OnClickProcessed(double clickPower, bool isCritical)
     {
         SpawnFloatingNumber(clickPower, isCritical);
@@ -3189,6 +3219,17 @@ public partial class MainWindow : Window
 
         // Combo label
         ComboLabel.Text = state.ComboClicks > 0 ? $"x{state.ComboClicks} COMBO" : "";
+
+        // Frenzy banner - the countdown is the whole point, so it ticks every refresh
+        if (_engine.IsFrenzyActive)
+        {
+            FrenzyBanner.Visibility = Visibility.Visible;
+            FrenzyLabel.Text = $"FRENZY x{_engine.GetFrenzyMultiplier():0.#} - {_engine.GetFrenzySecondsRemaining():0.0}s";
+        }
+        else if (FrenzyBanner.Visibility == Visibility.Visible)
+        {
+            FrenzyBanner.Visibility = Visibility.Collapsed;
+        }
 
         TotalEvidenceDisplay.Text = NumberFormatter.Format(state.TotalEvidenceEarned);
         TotalClicksDisplay.Text = NumberFormatter.FormatInteger(state.TotalClicks);
@@ -5113,6 +5154,20 @@ public partial class MainWindow : Window
             _engine.UnlockSkill(skillId);
     }
 
+    private void RespecButton_Click(object sender, RoutedEventArgs e)
+    {
+        int spent = _engine.GetSpentSkillPoints();
+        var confirm = MessageBox.Show(
+            $"Refund all {_engine.State.UnlockedSkills.Count} skills and get {spent} skill points back?\n\n" +
+            $"You will have {_engine.GetTotalSkillPoints()} points to spend from scratch.",
+            "Respec Skills", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+        if (confirm != MessageBoxResult.Yes) return;
+
+        _engine.RespecSkills();
+        ShowFlavorMessage($"Skills refunded. {_engine.GetAvailableSkillPoints()} points available.");
+    }
+
     private void IlluminatiUpgradeButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is string upgradeId)
@@ -5131,6 +5186,7 @@ public partial class MainWindow : Window
         string currentState = $"{_engine.GetAvailableSkillPoints()}:{string.Join(",", state.UnlockedSkills)}";
 
         SkillPointsDisplay.Text = $"{_engine.GetAvailableSkillPoints()} / {_engine.GetTotalSkillPoints()}";
+        RespecButton.IsEnabled = state.UnlockedSkills.Count > 0;
 
         if (currentState == _lastSkillTreeState) return;
         _lastSkillTreeState = currentState;

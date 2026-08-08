@@ -15,6 +15,17 @@ public static class GameConstants
     public const double COMBO_FILL_PER_CLICK = 0.08;    // How much each click fills the combo meter
     public const int COMBO_BURST_CLICKS = 10;           // Combo burst gives value of X clicks
 
+    // === FRENZY ===
+    // A combo burst puts the whole operation into a Frenzy: a global EPS multiplier, not just
+    // a click payout. Without this the combo system is dead weight by the midgame, when
+    // generators out-earn any human clicker by orders of magnitude and there is no reason to
+    // touch the eye again. Chaining bursts before the timer runs out escalates it, so an
+    // active player is trading attention for idle income rather than for a rounding error.
+    public const double FRENZY_SECONDS = 12.0;          // Duration, refreshed by each burst
+    public const double FRENZY_BASE = 2.0;              // Multiplier from a burst out of frenzy
+    public const double FRENZY_STEP = 0.5;              // Added by each burst chained during one
+    public const double FRENZY_MAX = 5.0;               // Ceiling on the chain
+
     // === CRITICAL HITS ===
     public const double CRIT_MULTIPLIER_MIN = 5.0;      // Minimum critical hit multiplier
     public const double CRIT_MULTIPLIER_MAX = 10.0;     // Maximum critical hit multiplier

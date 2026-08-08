@@ -18,6 +18,8 @@ public class GameEngine
     public event Action<Achievement>? OnAchievementUnlocked;
     public event Action<string>? OnFlavorMessage;
     public event Action<double>? OnComboBurst;
+    public event Action<double, double>? OnFrenzyChanged; // multiplier, seconds
+    public event Action? OnFrenzyEnded;
     public event Action<double, bool>? OnClickProcessed; // clickPower, isCritical
     public event Action<double, int, int>? OnAutoClickBatch; // evidence, clicks, criticals
     public event Action<string, bool, double, long>? OnQuestComplete;
@@ -413,6 +415,39 @@ public class GameEngine
         OnTick?.Invoke();
     }
 
+    // === FRENZY ===
+
+    public bool IsFrenzyActive => _state.FrenzyMultiplier > 1.0 && DateTime.Now < _state.FrenzyEndTime;
+
+    /// <summary>The live global EPS multiplier from Frenzy, or 1.0 when it has lapsed.</summary>
+    public double GetFrenzyMultiplier() => IsFrenzyActive ? _state.FrenzyMultiplier : 1.0;
+
+    public double GetFrenzySecondsRemaining() =>
+        IsFrenzyActive ? (_state.FrenzyEndTime - DateTime.Now).TotalSeconds : 0;
+
+    /// <summary>
+    /// Starts a Frenzy, or escalates and extends one already running. Chaining is what makes
+    /// sustained clicking worth more than the sum of its clicks.
+    /// </summary>
+    private void ApplyFrenzy()
+    {
+        double multiplier = IsFrenzyActive
+            ? Math.Min(_state.FrenzyMultiplier + GameConstants.FRENZY_STEP, GameConstants.FRENZY_MAX)
+            : GameConstants.FRENZY_BASE;
+
+        _state.FrenzyMultiplier = multiplier;
+        _state.FrenzyEndTime = DateTime.Now.AddSeconds(GameConstants.FRENZY_SECONDS);
+
+        OnFrenzyChanged?.Invoke(multiplier, GameConstants.FRENZY_SECONDS);
+    }
+
+    private void EndFrenzy()
+    {
+        _state.FrenzyMultiplier = 1.0;
+        _state.FrenzyEndTime = DateTime.MinValue;
+        OnFrenzyEnded?.Invoke();
+    }
+
     private void TriggerComboBurst()
     {
         double burstAmount = CalculateClickPower() * GameConstants.COMBO_BURST_CLICKS;
@@ -427,6 +462,8 @@ public class GameEngine
         _state.ComboMeter = 0;
         _state.ComboClicks = 0;
         _state.TodayCombos++;
+
+        ApplyFrenzy();
         OnComboBurst?.Invoke(burstAmount);
     }
 
@@ -592,6 +629,10 @@ public class GameEngine
 
         // Generator upgrade global EPS bonus
         multiplier *= GetGeneratorUpgradeGlobalEpsMultiplier();
+
+        // Frenzy from chained combo bursts. Deliberately last and deliberately global: this is
+        // the only thing in the game that makes clicking matter once generators dominate.
+        multiplier *= GetFrenzyMultiplier();
 
         return multiplier;
     }
@@ -941,6 +982,11 @@ public class GameEngine
         {
             _state.WhistleBlowerActive = false;
         }
+
+        if (_state.FrenzyMultiplier > 1.0 && DateTime.Now >= _state.FrenzyEndTime)
+        {
+            EndFrenzy();
+        }
     }
 
     // === PRESTIGE ===
@@ -1167,9 +1213,42 @@ public class GameEngine
         return fromAchievements + fromPrestiges;
     }
 
+    /// <summary>
+    /// Points actually committed to the tree. This used to be counted as the *number* of
+    /// unlocked skills, so a tier-5 skill priced at 8 only ever cost 1 and the whole tree came
+    /// to 15 points instead of 57 - every player ended up with every skill and the branch
+    /// choice meant nothing.
+    /// </summary>
+    public int GetSpentSkillPoints()
+    {
+        int spent = 0;
+        foreach (var skillId in _state.UnlockedSkills)
+        {
+            var skill = SkillTreeData.GetById(skillId);
+            if (skill != null) spent += skill.SkillPointCost;
+        }
+        return spent;
+    }
+
+    /// <summary>
+    /// Clamped at zero so a save made under the old accounting - which could have spent far
+    /// more than it earned - keeps its skills instead of showing a negative balance.
+    /// </summary>
     public int GetAvailableSkillPoints()
     {
-        return GetTotalSkillPoints() - _state.UnlockedSkills.Count;
+        return Math.Max(0, GetTotalSkillPoints() - GetSpentSkillPoints());
+    }
+
+    /// <summary>
+    /// Refunds the whole tree so the player can rebuild. Free by design: the interesting
+    /// constraint is the point budget, not the cost of changing your mind.
+    /// </summary>
+    public bool RespecSkills()
+    {
+        if (_state.UnlockedSkills.Count == 0) return false;
+        _state.UnlockedSkills.Clear();
+        OnTick?.Invoke();
+        return true;
     }
 
     public bool CanUnlockSkill(string skillId)
@@ -1268,6 +1347,8 @@ public class GameEngine
         _state.ActiveQuests.Clear();
         _state.ComboMeter = 0;
         _state.ComboClicks = 0;
+        _state.FrenzyMultiplier = 1.0;
+        _state.FrenzyEndTime = DateTime.MinValue;
 
         // Also reset tinfoil and tinfoil upgrades
         _state.Tinfoil = 0;
@@ -1430,6 +1511,8 @@ public class GameEngine
         _state.ActiveQuests.Clear();
         _state.ComboMeter = 0;
         _state.ComboClicks = 0;
+        _state.FrenzyMultiplier = 1.0;
+        _state.FrenzyEndTime = DateTime.MinValue;
         _state.Tinfoil = 0;
         _state.TinfoilShopPurchases.Clear();
         _state.IlluminatiTokens = 0;
@@ -1548,6 +1631,8 @@ public class GameEngine
         _state.IlluminatiUpgrades.Clear();
         _state.ComboMeter = 0;
         _state.ComboClicks = 0;
+        _state.FrenzyMultiplier = 1.0;
+        _state.FrenzyEndTime = DateTime.MinValue;
 
         // Set challenge state
         _state.ActiveChallengeId = challengeId;

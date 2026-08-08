@@ -195,6 +195,146 @@ public class EngineTests
         Assert.Equal(0, engine.State.ComboClicks);
     }
 
+    // === Skill point economy ===
+
+    [Fact]
+    public void SkillPoints_AreChargedAtTheirListedCost()
+    {
+        // Availability used to be total minus the *count* of unlocked skills, so an 8-point
+        // tier-5 skill cost 1 and the whole 57-point tree came to 15.
+        var engine = new GameEngine();
+        engine.State.TimesAscended = 20; // plenty of points
+
+        int before = engine.GetAvailableSkillPoints();
+        Assert.True(engine.UnlockSkill("research_basics"));   // costs 1
+        Assert.True(engine.UnlockSkill("speed_reading"));     // costs 2
+
+        Assert.Equal(3, engine.GetSpentSkillPoints());
+        Assert.Equal(before - 3, engine.GetAvailableSkillPoints());
+    }
+
+    [Fact]
+    public void SkillTree_CannotBeFullyUnlockedOnAFinishedRunsBudget()
+    {
+        // A completed run earns roughly 7 (achievements) + 8 (ascensions) points against a
+        // 57-point tree, so the branch choice has to actually bind.
+        int treeCost = SkillTreeData.AllSkills.Sum(s => s.SkillPointCost);
+        Assert.Equal(57, treeCost);
+
+        var engine = new GameEngine();
+        engine.State.TimesAscended = 8;
+        foreach (var achievement in AchievementData.AllAchievements)
+            engine.State.UnlockedAchievements.Add(achievement.Id);
+
+        Assert.True(engine.GetTotalSkillPoints() < treeCost,
+            $"a finished run has {engine.GetTotalSkillPoints()} points for a {treeCost} point tree");
+    }
+
+    [Fact]
+    public void Respec_RefundsEveryPointAndClearsTheTree()
+    {
+        var engine = new GameEngine();
+        engine.State.TimesAscended = 20;
+        engine.UnlockSkill("research_basics");
+        engine.UnlockSkill("speed_reading");
+        engine.UnlockSkill("data_mining");
+
+        int total = engine.GetTotalSkillPoints();
+        Assert.True(engine.RespecSkills());
+
+        Assert.Empty(engine.State.UnlockedSkills);
+        Assert.Equal(0, engine.GetSpentSkillPoints());
+        Assert.Equal(total, engine.GetAvailableSkillPoints());
+    }
+
+    [Fact]
+    public void AvailableSkillPoints_NeverGoNegativeOnAnOldSave()
+    {
+        // Saves made under the old accounting can hold far more skills than they paid for
+        var engine = new GameEngine();
+        foreach (var skill in SkillTreeData.AllSkills)
+            engine.State.UnlockedSkills.Add(skill.Id);
+
+        Assert.Equal(0, engine.GetAvailableSkillPoints());
+        Assert.False(engine.CanUnlockSkill("research_basics"));
+    }
+
+    // === Frenzy ===
+
+    private static void ClickToBurst(GameEngine engine)
+    {
+        int clicks = (int)Math.Ceiling(1.0 / GameConstants.COMBO_FILL_PER_CLICK);
+        for (int i = 0; i < clicks; i++)
+            engine.ProcessClick();
+    }
+
+    [Fact]
+    public void ComboBurst_StartsAFrenzyThatMultipliesGlobalEps()
+    {
+        var engine = new GameEngine();
+        engine.State.Generators[CheapGenerator] = 100;
+
+        double calmEps = engine.CalculateEvidencePerSecond();
+        Assert.False(engine.IsFrenzyActive);
+
+        ClickToBurst(engine);
+
+        Assert.True(engine.IsFrenzyActive);
+        Assert.Equal(GameConstants.FRENZY_BASE, engine.GetFrenzyMultiplier());
+        Assert.Equal(calmEps * GameConstants.FRENZY_BASE, engine.CalculateEvidencePerSecond(), precision: 6);
+    }
+
+    [Fact]
+    public void ChainedBursts_EscalateTheFrenzyUpToItsCeiling()
+    {
+        var engine = new GameEngine();
+
+        ClickToBurst(engine);
+        double first = engine.GetFrenzyMultiplier();
+
+        ClickToBurst(engine);
+        Assert.Equal(first + GameConstants.FRENZY_STEP, engine.GetFrenzyMultiplier());
+
+        for (int i = 0; i < 40; i++)
+            ClickToBurst(engine);
+
+        Assert.Equal(GameConstants.FRENZY_MAX, engine.GetFrenzyMultiplier());
+    }
+
+    [Fact]
+    public void Frenzy_LapsesAndStopsMultiplying()
+    {
+        var engine = new GameEngine();
+        engine.State.Generators[CheapGenerator] = 100;
+        double calmEps = engine.CalculateEvidencePerSecond();
+
+        ClickToBurst(engine);
+        Assert.True(engine.IsFrenzyActive);
+
+        engine.State.FrenzyEndTime = DateTime.Now.AddSeconds(-1);
+
+        Assert.False(engine.IsFrenzyActive);
+        Assert.Equal(1.0, engine.GetFrenzyMultiplier());
+        Assert.Equal(calmEps, engine.CalculateEvidencePerSecond(), precision: 6);
+
+        engine.TickForTests(); // expiry sweep resets the stored multiplier
+        Assert.Equal(1.0, engine.State.FrenzyMultiplier);
+    }
+
+    [Fact]
+    public void Ascending_ClearsAnActiveFrenzy()
+    {
+        var engine = new GameEngine();
+        engine.State.TotalEvidenceEarned = GameConstants.PRESTIGE_THRESHOLD * 10;
+        ClickToBurst(engine);
+        Assert.True(engine.IsFrenzyActive);
+
+        Assert.True(engine.PerformPrestige());
+
+        Assert.False(engine.IsFrenzyActive);
+        Assert.Equal(1.0, engine.State.FrenzyMultiplier);
+    }
+
     // === Data lookups ===
 
     [Theory]

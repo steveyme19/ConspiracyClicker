@@ -77,6 +77,10 @@ public class GameState
     public DateTime LastClickTime { get; set; } = DateTime.MinValue;
     public int ComboClicks { get; set; }
 
+    // Frenzy: global EPS multiplier earned by chaining combo bursts
+    public DateTime FrenzyEndTime { get; set; }
+    public double FrenzyMultiplier { get; set; } = 1.0;
+
     // Active events
     public bool GoldenEyeActive { get; set; }
     public DateTime GoldenEyeEndTime { get; set; }
