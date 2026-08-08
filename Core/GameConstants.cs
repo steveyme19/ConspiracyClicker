@@ -13,6 +13,14 @@ public static class GameConstants
     // === COMBO SYSTEM ===
     public const double COMBO_DECAY_RATE = 0.15;        // How fast combo meter drains per tick
     public const double COMBO_FILL_PER_CLICK = 0.08;    // How much each click fills the combo meter
+
+    // Seconds of no clicking before the meter starts draining. This was 0.5s, which put a hard
+    // cliff at ~1.9 clicks/sec: below that the 0.15/s drain outran the 0.08/click fill and the
+    // meter could never reach a burst at all, so a casual clicker was locked out of the combo
+    // system entirely rather than merely being slower at it. Measured at 1 CPS, a full run took
+    // six times longer than it should have because those players paid every cost of the newer
+    // systems and could not reach the reward.
+    public const double COMBO_GRACE_SECONDS = 1.5;
     public const int COMBO_BURST_CLICKS = 10;           // Combo burst gives value of X clicks
 
     // === FRENZY ===
@@ -30,6 +38,24 @@ public static class GameConstants
     public const double CRIT_MULTIPLIER_MIN = 5.0;      // Minimum critical hit multiplier
     public const double CRIT_MULTIPLIER_MAX = 10.0;     // Maximum critical hit multiplier
     public const double CRIT_MULTIPLIER_AVG = 7.5;      // Average for display purposes
+
+    // === CONSPIRACIES ===
+    // Proving a conspiracy now spends evidence instead of being a free checkbox that ticked
+    // itself the moment lifetime earnings crossed a threshold. Without a price the entire
+    // twenty-five-conspiracy progression - the game's stated goal - re-completed itself in
+    // under a minute on every run after the first, because the Illuminati multipliers blow
+    // past the old lifetime gate instantly.
+    // Charging the full threshold made proving cost as much again as discovering, and because
+    // that evidence would otherwise have compounded into generators it slowed a low-engagement
+    // run by roughly 6x. A quarter keeps the choice weighty without taxing the run.
+    public const double CONSPIRACY_PRICE_FRACTION = 0.25;
+
+    // Tried and rejected 2026-08-08: also charging a floor of "30 seconds of your current EPS",
+    // to stop post-ascension multipliers from re-proving nineteen conspiracies in a minute.
+    // Measured in the simulator it was perverse - buying generators raised the price of every
+    // remaining conspiracy, so progress pushed the goal away. Full completion slid from
+    // 1h26m to 2h01m and the first conspiracy after an ascension stalled for 25 minutes.
+    // Early content being cheap after a prestige is the point of a prestige; leave it alone.
 
     // === PRESTIGE ===
     public const double PRESTIGE_THRESHOLD = 50_000; // 50K total evidence to prestige (first ascension ~2h)

@@ -30,6 +30,9 @@ public partial class MainWindow : Window
     private readonly Dictionary<string, WrapPanel> _generatorUpgradePanels = new();
     private readonly Dictionary<string, Button> _upgradeButtons = new();
     private readonly Dictionary<string, Button> _conspiracyButtons = new();
+
+    // Payoff buttons for the conspiracy currently on offer, keyed by conspiracy id (two each)
+    private readonly List<KeyValuePair<string, Button>> _conspiracyOptionButtons = new();
     private readonly Dictionary<string, Button> _questButtons = new();
     private readonly Dictionary<string, Button> _tinfoilButtons = new();
     private readonly List<string> _notificationLog = new();
@@ -91,6 +94,7 @@ public partial class MainWindow : Window
     private static readonly SolidColorBrush PurpleBrush;
     private static readonly SolidColorBrush CritBrush;
     private static readonly SolidColorBrush AmbientBrush;
+    private static readonly SolidColorBrush SynergyBrush;
     private static readonly FontFamily EmojiFont;
 
     static MainWindow()
@@ -107,6 +111,7 @@ public partial class MainWindow : Window
         PurpleBrush = new SolidColorBrush(Color.FromRgb(153, 51, 255)); PurpleBrush.Freeze();
         CritBrush = new SolidColorBrush(Color.FromRgb(255, 100, 100)); CritBrush.Freeze();
         AmbientBrush = new SolidColorBrush(Color.FromArgb(80, 0, 255, 65)); AmbientBrush.Freeze();
+        SynergyBrush = new SolidColorBrush(Color.FromRgb(120, 200, 255)); SynergyBrush.Freeze();
         EmojiFont = new FontFamily("Segoe UI Emoji");
     }
 
@@ -400,6 +405,7 @@ public partial class MainWindow : Window
         _engine.OnAutoClickBatch += OnAutoClickBatch;
         _engine.OnComboBurst += OnComboBurst;
         _engine.OnFrenzyChanged += OnFrenzyChanged;
+        _engine.OnDoctrineDraftAvailable += ShowDoctrineDraft;
         _engine.OnQuestComplete += OnQuestComplete;
         _engine.OnGoldenEyeStart += OnGoldenEyeStart;
         _engine.OnGoldenEyeEnd += OnGoldenEyeEnd;
@@ -2528,6 +2534,35 @@ public partial class MainWindow : Window
         if (gen.BelieverBonus > 0)
             leftStack.Children.Add(new TextBlock { Text = $"+{NumberFormatter.FormatInteger(gen.BelieverBonus)} believers each", FontSize = 15, Foreground = GoldBrush });
 
+        // Synergies are only a decision if the player can see them. The live value is filled in
+        // by UpdateGeneratorButtons; the static text explains where it comes from.
+        foreach (var synergy in SynergyData.GetForTarget(gen.Id))
+        {
+            leftStack.Children.Add(new TextBlock
+            {
+                Tag = synergy,
+                Text = synergy.Description,
+                FontSize = 14,
+                Foreground = SynergyBrush,
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 375,
+                Margin = new Thickness(0, 3, 0, 0)
+            });
+        }
+        foreach (var synergy in SynergyData.GetForSource(gen.Id))
+        {
+            var target = GeneratorData.GetById(synergy.TargetId);
+            leftStack.Children.Add(new TextBlock
+            {
+                Text = $"Feeds {target?.Name ?? synergy.TargetId}: +{synergy.Bonus:P0} per {synergy.Per} owned",
+                FontSize = 14,
+                Foreground = SynergyBrush,
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 375,
+                Margin = new Thickness(0, 3, 0, 0)
+            });
+        }
+
         var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(15, 0, 0, 0) };
         rightStack.Children.Add(new TextBlock { Tag = "cost", FontWeight = FontWeights.Bold, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right, FontSize = 21 });
         rightStack.Children.Add(new TextBlock { Tag = "owned", FontSize = 17, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Right });
@@ -2574,6 +2609,119 @@ public partial class MainWindow : Window
         _lastAutoClickFloat = now;
 
         SpawnFloatingNumber(evidence, isCritical: false);
+    }
+
+    // === DOCTRINE DRAFT ===
+
+    /// <summary>
+    /// Builds the three cards offered at an ascension. Presented as a modal because the choice
+    /// governs the whole run - it should not be something the player scrolls past by accident.
+    /// </summary>
+    private void ShowDoctrineDraft()
+    {
+        var draft = _engine.GetDoctrineDraft();
+        if (draft.Count == 0) return;
+
+        DoctrineOptionsPanel.Children.Clear();
+        foreach (var doctrine in draft)
+            DoctrineOptionsPanel.Children.Add(CreateDoctrineCard(doctrine));
+
+        DoctrineOverlay.Visibility = Visibility.Visible;
+    }
+
+    private Border CreateDoctrineCard(Doctrine doctrine)
+    {
+        var stack = new StackPanel();
+
+        stack.Children.Add(new TextBlock
+        {
+            Text = doctrine.Icon,
+            FontSize = 34,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 0, 0, 6)
+        });
+        stack.Children.Add(new TextBlock
+        {
+            Text = doctrine.Name,
+            FontSize = 18,
+            FontWeight = FontWeights.Bold,
+            Foreground = GoldBrush,
+            TextWrapping = TextWrapping.Wrap,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            TextAlignment = TextAlignment.Center
+        });
+        stack.Children.Add(new TextBlock
+        {
+            Text = doctrine.Description,
+            FontSize = 12,
+            FontStyle = FontStyles.Italic,
+            Foreground = DimBrush,
+            TextWrapping = TextWrapping.Wrap,
+            TextAlignment = TextAlignment.Center,
+            Margin = new Thickness(0, 4, 0, 12)
+        });
+        stack.Children.Add(new TextBlock
+        {
+            Text = "+ " + doctrine.Upside,
+            FontSize = 13,
+            FontWeight = FontWeights.Bold,
+            Foreground = GreenBrush,
+            TextWrapping = TextWrapping.Wrap
+        });
+        stack.Children.Add(new TextBlock
+        {
+            Text = "- " + doctrine.Downside,
+            FontSize = 13,
+            Foreground = new SolidColorBrush(Color.FromRgb(255, 110, 110)),
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 4, 0, 0)
+        });
+
+        var card = new Border
+        {
+            Background = new SolidColorBrush(Color.FromRgb(20, 16, 40)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(120, 70, 200)),
+            BorderThickness = new Thickness(2),
+            CornerRadius = new CornerRadius(10),
+            Padding = new Thickness(16),
+            Margin = new Thickness(6, 0, 6, 8),
+            Width = 212,
+            Cursor = Cursors.Hand,
+            Tag = doctrine.Id,
+            Child = stack
+        };
+
+        var normal = card.BorderBrush;
+        var hover = new SolidColorBrush(Color.FromRgb(200, 140, 255));
+        card.MouseEnter += (_, _) => card.BorderBrush = hover;
+        card.MouseLeave += (_, _) => card.BorderBrush = normal;
+        card.MouseLeftButtonUp += DoctrineCard_Click;
+
+        return card;
+    }
+
+    private void DoctrineCard_Click(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not Border card || card.Tag is not string doctrineId) return;
+        if (!_engine.ChooseDoctrine(doctrineId)) return;
+
+        DoctrineOverlay.Visibility = Visibility.Collapsed;
+        InvalidatePanelCaches();
+
+        var doctrine = DoctrineData.GetById(doctrineId);
+        if (doctrine != null)
+        {
+            ShowToast($"Doctrine: {doctrine.Name}", $"{doctrine.Upside}. {doctrine.Downside}.");
+            AddNotification($"Doctrine adopted: {doctrine.Name}", GoldBrush);
+        }
+        SoundManager.Play("achievement");
+    }
+
+    private void DoctrineSkipButton_Click(object sender, RoutedEventArgs e)
+    {
+        _engine.SkipDoctrineDraft();
+        DoctrineOverlay.Visibility = Visibility.Collapsed;
+        InvalidatePanelCaches();
     }
 
     /// <summary>
@@ -3126,15 +3274,66 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ConspiracyButton_Click(object sender, RoutedEventArgs e)
+    /// <summary>
+    /// One of the two payoffs on offer for the next conspiracy. Tagged with
+    /// "conspiracyId|option" so a single handler covers both.
+    /// </summary>
+    private Button CreateConspiracyOptionButton(string conspiracyId, ConspiracyReward reward)
     {
-        if (sender is Button btn && btn.Tag is string conspiracyId)
+        var stack = new StackPanel();
+        stack.Children.Add(new TextBlock
         {
-            if (_engine.ProveConspiracy(conspiracyId))
-            {
-                SoundManager.Play("upgrade");
-                UpdatePyramidLevel(); // Immediately update pyramid appearance
-            }
+            Text = reward.Name,
+            FontWeight = FontWeights.Bold,
+            FontSize = 15,
+            Foreground = GoldBrush,
+            TextWrapping = TextWrapping.Wrap
+        });
+        stack.Children.Add(new TextBlock
+        {
+            Text = reward.Description,
+            FontSize = 13,
+            Foreground = LightBrush,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 3, 0, 0)
+        });
+
+        var button = new Button
+        {
+            Content = stack,
+            Tag = $"{conspiracyId}|{reward.Id}",
+            Padding = new Thickness(12, 8, 12, 8),
+            Background = new SolidColorBrush(Color.FromRgb(26, 34, 56)),
+            BorderBrush = GoldBrush,
+            BorderThickness = new Thickness(1),
+            Foreground = LightBrush,
+            Cursor = Cursors.Hand,
+            HorizontalContentAlignment = HorizontalAlignment.Left,
+            IsEnabled = _engine.CanAffordConspiracy(conspiracyId)
+        };
+        button.Click += ConspiracyOptionButton_Click;
+        button.ToolTip = CreateStyledTooltip(reward.Name, reward.Description,
+            $"Costs {NumberFormatter.Format(_engine.GetConspiracyPrice(conspiracyId))} evidence. This choice is permanent for the run.");
+
+        _conspiracyOptionButtons.Add(new KeyValuePair<string, Button>(conspiracyId, button));
+        return button;
+    }
+
+    private void ConspiracyOptionButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button btn || btn.Tag is not string tag) return;
+
+        string[] parts = tag.Split('|');
+        if (parts.Length != 2) return;
+
+        if (_engine.ProveConspiracy(parts[0], parts[1]))
+        {
+            var conspiracy = ConspiracyData.GetById(parts[0]);
+            var reward = ConspiracyRewardData.Resolve(parts[0], _engine.State.ConspiracyChoices);
+            SoundManager.Play("upgrade");
+            UpdatePyramidLevel(); // Immediately update pyramid appearance
+            ShowToast(conspiracy?.Name ?? "Conspiracy proven", $"{reward.Name}: {reward.Description}");
+            InvalidatePanelCaches();
         }
     }
 
@@ -3229,6 +3428,18 @@ public partial class MainWindow : Window
         else if (FrenzyBanner.Visibility == Visibility.Visible)
         {
             FrenzyBanner.Visibility = Visibility.Collapsed;
+        }
+
+        var doctrine = _engine.ActiveDoctrine;
+        if (doctrine != null)
+        {
+            ActiveDoctrineBanner.Visibility = Visibility.Visible;
+            ActiveDoctrineName.Text = $"{doctrine.Icon} {doctrine.Name}";
+            ActiveDoctrineEffect.Text = $"+ {doctrine.Upside}   |   - {doctrine.Downside}";
+        }
+        else if (ActiveDoctrineBanner.Visibility == Visibility.Visible)
+        {
+            ActiveDoctrineBanner.Visibility = Visibility.Collapsed;
         }
 
         TotalEvidenceDisplay.Text = NumberFormatter.Format(state.TotalEvidenceEarned);
@@ -3575,6 +3786,7 @@ public partial class MainWindow : Window
             // Get generator-specific multiplier from regular upgrades AND generator upgrades
             double genSpecificMult = generatorMultipliers.TryGetValue(gen.Id, out var m) ? m : 1.0;
             genSpecificMult *= _engine.GetGeneratorUpgradeProductionMultiplier(gen.Id);
+            genSpecificMult *= _engine.GetSynergyMultiplier(gen.Id);
 
             double baseProduction = gen.GetProduction(owned) * genSpecificMult;
             double multipliedProduction = baseProduction * epsMult;
@@ -3614,6 +3826,18 @@ public partial class MainWindow : Window
                             {
                                 if (tb.Tag as string == "cost") tb.Text = NumberFormatter.Format(cost);
                                 else if (tb.Tag as string == "owned") tb.Text = $"Owned: {owned}";
+                                else if (tb.Tag is Synergy synergy)
+                                {
+                                    // Show what the synergy is currently worth, so stacking the
+                                    // source generator has visible feedback rather than being
+                                    // arithmetic the player has to do in their head.
+                                    int sourceOwned = state.GetGeneratorCount(synergy.SourceId);
+                                    double active = Math.Min(sourceOwned / synergy.Per * synergy.Bonus, synergy.Cap);
+                                    tb.Foreground = active > 0 ? GreenBrush : SynergyBrush;
+                                    tb.Text = active > 0
+                                        ? $"{synergy.Description}  [now +{active:P0}]"
+                                        : synergy.Description;
+                                }
                                 else if (tb.Tag as string == "prod")
                                 {
                                     if (owned > 0)
@@ -3959,6 +4183,7 @@ public partial class MainWindow : Window
             _lastAvailableConspiracyCount = available.Count;
             ConspiracyPanel.Children.Clear();
             _conspiracyButtons.Clear();
+            _conspiracyOptionButtons.Clear();
 
             // Show progress summary
             int totalConspiracies = ConspiracyData.AllConspiracies.Count;
@@ -4082,8 +4307,9 @@ public partial class MainWindow : Window
 
                 var nextConspiracy = available.First();
 
-                var button = new Button { Style = buttonStyle, Tag = nextConspiracy.Id, HorizontalContentAlignment = HorizontalAlignment.Stretch };
-                button.Click += ConspiracyButton_Click;
+                // The button itself no longer proves anything - the two payoff buttons below it
+                // do, so the player has to pick one rather than just tick a box.
+                var button = new Button { Style = buttonStyle, Tag = nextConspiracy.Id, HorizontalContentAlignment = HorizontalAlignment.Stretch, IsHitTestVisible = false };
 
                 var grid = new Grid();
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -4098,13 +4324,27 @@ public partial class MainWindow : Window
                 leftStack.Children.Add(new TextBlock { Text = nextConspiracy.Name, FontWeight = FontWeights.Bold, Foreground = GreenBrush, FontSize = 21 });
                 leftStack.Children.Add(new TextBlock { Text = nextConspiracy.Description, FontSize = 17, Foreground = LightBrush });
                 leftStack.Children.Add(new TextBlock { Text = nextConspiracy.FlavorText, FontSize = 15, Foreground = DimBrush, FontStyle = FontStyles.Italic, TextWrapping = TextWrapping.Wrap, MaxWidth = 420 });
-                var bonusText2 = nextConspiracy.MultiplierBonus > 1.0 ? $"Reward: x{nextConspiracy.MultiplierBonus} all + {NumberFormatter.FormatInteger(nextConspiracy.TinfoilReward)} Tinfoil" : $"Reward: +{NumberFormatter.FormatInteger(nextConspiracy.ClickBonus)} click + {NumberFormatter.FormatInteger(nextConspiracy.TinfoilReward)} Tinfoil";
-                leftStack.Children.Add(new TextBlock { Text = bonusText2, FontSize = 15, Foreground = GoldBrush, Margin = new Thickness(0, 5, 0, 0) });
+                double price = _engine.GetConspiracyPrice(nextConspiracy.Id);
+                bool unlocked = _engine.IsConspiracyUnlocked(nextConspiracy.Id);
 
                 var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(15, 0, 0, 0) };
-                bool canClaim = state.TotalEvidenceEarned >= nextConspiracy.EvidenceCost;
-                rightStack.Children.Add(new TextBlock { Text = canClaim ? "✓ CLAIM" : $"Need {NumberFormatter.Format(nextConspiracy.EvidenceCost)}", FontWeight = FontWeights.Bold, Foreground = canClaim ? GreenBrush : DimBrush, FontSize = 21 });
-                rightStack.Children.Add(new TextBlock { Text = "total evidence", FontSize = 14, Foreground = DimBrush, HorizontalAlignment = HorizontalAlignment.Center });
+                rightStack.Children.Add(new TextBlock
+                {
+                    Text = NumberFormatter.Format(price),
+                    FontWeight = FontWeights.Bold,
+                    Foreground = unlocked ? GoldBrush : DimBrush,
+                    FontSize = 21,
+                    HorizontalAlignment = HorizontalAlignment.Center
+                });
+                rightStack.Children.Add(new TextBlock
+                {
+                    Text = unlocked ? "evidence to prove" : $"discovered at {NumberFormatter.Format(nextConspiracy.EvidenceCost)} total",
+                    FontSize = 14,
+                    Foreground = DimBrush,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap,
+                    MaxWidth = 160
+                });
 
                 Grid.SetColumn(iconElement2, 0);
                 Grid.SetColumn(leftStack, 1);
@@ -4116,6 +4356,33 @@ public partial class MainWindow : Window
                 button.Content = grid;
                 ConspiracyPanel.Children.Add(button);
                 _conspiracyButtons[nextConspiracy.Id] = button;
+
+                // The fork: two payoffs, one conspiracy, no take-backs
+                var (optionA, optionB) = _engine.GetConspiracyOptions(nextConspiracy.Id);
+                var optionsGrid = new Grid { Margin = new Thickness(5, 6, 5, 0) };
+                optionsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                optionsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                optionsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+                var buttonA = CreateConspiracyOptionButton(nextConspiracy.Id, optionA);
+                var orLabel = new TextBlock
+                {
+                    Text = "OR",
+                    Foreground = DimBrush,
+                    FontWeight = FontWeights.Bold,
+                    FontSize = 13,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(10, 0, 10, 0)
+                };
+                var buttonB = CreateConspiracyOptionButton(nextConspiracy.Id, optionB);
+
+                Grid.SetColumn(buttonA, 0);
+                Grid.SetColumn(orLabel, 1);
+                Grid.SetColumn(buttonB, 2);
+                optionsGrid.Children.Add(buttonA);
+                optionsGrid.Children.Add(orLabel);
+                optionsGrid.Children.Add(buttonB);
+                ConspiracyPanel.Children.Add(optionsGrid);
             }
             else if (provenCount == totalConspiracies)
             {
@@ -4132,8 +4399,13 @@ public partial class MainWindow : Window
                 ConspiracyPanel.Children.Add(new TextBlock { Text = "Keep gathering evidence to uncover conspiracies...", Foreground = DimBrush, FontStyle = FontStyles.Italic, Margin = new Thickness(10) });
         }
 
-        // Update enabled state for existing buttons
+        // Affordability changes with every tick while the panel itself only rebuilds when a
+        // count changes, so the payoff buttons have to be re-enabled here or they would stay
+        // greyed out until the player proved something else.
         foreach (var (id, button) in _conspiracyButtons)
+            button.IsEnabled = _engine.CanAffordConspiracy(id);
+
+        foreach (var (id, button) in _conspiracyOptionButtons)
             button.IsEnabled = _engine.CanAffordConspiracy(id);
     }
 
@@ -5145,6 +5417,12 @@ public partial class MainWindow : Window
         if (!_engine.State.HasSeenTutorial)
         {
             TutorialOverlay.Visibility = Visibility.Visible;
+        }
+
+        // A draft owed from an ascension survives quitting mid-choice
+        if (_engine.IsDoctrineDraftPending)
+        {
+            ShowDoctrineDraft();
         }
     }
 

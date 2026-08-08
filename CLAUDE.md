@@ -35,6 +35,9 @@ ConspiracyClicker/
 ├── Tests/                  # xUnit regression tests (excluded from main build)
 ├── Data/
 │   ├── DataIndex.cs        # id -> item lookups for the tables below
+│   ├── DoctrineData.cs     # run modifiers drafted at each ascension
+│   ├── ConspiracyRewardData.cs  # the two payoffs offered per conspiracy
+│   ├── SynergyData.cs      # generator-boosts-generator pairs
 │   ├── GeneratorData.cs    # Generator definitions (12 tiers, 50+ generators)
 │   ├── UpgradeData.cs      # Upgrade definitions (~90 upgrades)
 │   ├── ConspiracyData.cs   # Conspiracy definitions (25 conspiracies)
@@ -296,6 +299,83 @@ tokens = floor(log3(totalEvidence / 50,000)) + 1
 2. **Generator tier progression**: Each tier roughly 10-100x more powerful
 3. **Illuminati multipliers stack**: Combined multipliers reach astronomical values
 4. **Quest rewards are supplemental**: 8-120 seconds of EPS per quest (not a primary income source)
+
+## Choice systems (added 2026-08-08)
+
+Every progression system in this game used to pull the same lever - multiply a number - so
+almost nothing asked the player to decide anything. Four systems exist to change that. All are
+data-driven; adding content means adding a list entry, not engine code.
+
+### Doctrines (`Data/DoctrineData.cs`)
+
+Drafted at each ascension: three cards, pick one, it governs the next run and then expires.
+Each is a genuine trade (`Hands-On Research` is click x25 / generators x0.5). Every field on
+`Doctrine` maps to a multiplier hook the engine already had, so a new doctrine is one literal.
+
+- The draft is seeded by ascension number, so it cannot be rerolled by reloading.
+- `DoctrineDraftPending` survives a save, so quitting mid-choice resumes the draft on load.
+- Skipping is allowed - a plain run is a legitimate choice.
+- **Note:** click power carries a slice of EPS (`epsComponent`), so "click up / EPS down"
+  doctrines partly cancel themselves. That is intentional but worth remembering when tuning.
+
+### Conspiracy forks (`Data/ConspiracyRewardData.cs`)
+
+Proving now costs evidence and offers two payoffs. Option A is always the conspiracy's original
+reward, so a save written before the fork keeps exactly the bonuses it had; a proven conspiracy
+with no recorded choice resolves to A. Option B trades the click bonus - the part that stops
+mattering once generators dominate - for a believer, tinfoil, crit or quest-speed payoff,
+rotating through five archetypes so consecutive conspiracies do not offer the same deal.
+
+### Frenzy (`GameEngine.ApplyFrenzy`)
+
+A combo burst grants a global EPS multiplier, escalating from 2x to 5x while the chain holds.
+Before this the combo system was dead weight past the midgame. See the balance table below for
+why `COMBO_GRACE_SECONDS` matters.
+
+### Generator synergies (`Data/SynergyData.cs`)
+
+"Every N of X makes Y faster, capped." Fifteen pairs across the tiers. Buying used to be a
+solved problem - the newest affordable generator was always right - and these give cheap early
+generators a reason to keep stacking. Both sides of a synergy are printed on the generator card;
+hidden synergies would just be arithmetic the player cannot see.
+
+### Balance, measured in the simulator
+
+`dotnet run --project Simulator/ConspiracyClicker.Simulator.csproj -- --ascension Optimal
+--maxtime 2 --cps <n>` — time to prove all 25 conspiracies:
+
+| clicks/sec | before | after |
+|---|---|---|
+| 1 (casual)  | 1h 39m 44s | 1h 39m 44s |
+| 5 (engaged) | 1h 39m 44s | 54m 43s |
+
+Before, clicking five times as fast changed the completion time by nothing at all - which is
+the whole case for Frenzy. After, engaged play is worth about 1.8x and casual play is not taxed.
+
+Two things had to be corrected to land there, both caught by measuring rather than by reasoning:
+
+1. **`COMBO_GRACE_SECONDS` was 0.5**, which put a hard cliff at ~1.9 clicks/sec: below that the
+   0.15/s drain outran the 0.08/click fill, so the meter could never reach a burst and casual
+   players were locked out of Frenzy entirely while still paying for conspiracies. A 1 CPS run
+   took **six times** longer than it should. Raised to 1.5s.
+2. **`CONSPIRACY_PRICE_FRACTION` started at 1.0** and, because that evidence would otherwise
+   have compounded into generators, it dominated the slowdown above. Cut to 0.25.
+
+Also tried and rejected: charging a floor of "30 seconds of current EPS" per conspiracy, to stop
+post-ascension multipliers re-proving nineteen conspiracies in a minute. It is perverse - buying
+generators raises the price of every remaining conspiracy, so progress pushes the goal away.
+Completion slid to 2h01m and the first conspiracy after an ascension stalled for 25 minutes.
+Early content being cheap after a prestige is the point of a prestige. See `GameConstants`.
+
+## Fixed 2026-08-08
+
+- **Combo Master did nothing.** `GetSkillComboFillBonus()` was defined and never called, so a
+  3-point skill whose entire text is "combo meter fills 25% faster" had no effect. Now applied
+  at the fill site.
+- **Skill points were charged one apiece** regardless of `SkillPointCost`, so the 57-point tree
+  cost 15 and every player unlocked all fifteen skills. Costs are summed now; availability is
+  clamped at zero so oversubscribed old saves keep their skills, and a free respec lets players
+  rebuild within their real budget.
 
 ## Fixed 2026-08-07 (do not reintroduce)
 

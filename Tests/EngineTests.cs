@@ -335,6 +335,248 @@ public class EngineTests
         Assert.Equal(1.0, engine.State.FrenzyMultiplier);
     }
 
+    // === Doctrines ===
+
+    [Fact]
+    public void Ascending_OwesTheePlayerADraftAndClearsTheOldDoctrine()
+    {
+        var engine = new GameEngine();
+        engine.State.TotalEvidenceEarned = GameConstants.PRESTIGE_THRESHOLD * 10;
+        engine.State.ActiveDoctrineId = "hands_on";
+
+        Assert.True(engine.PerformPrestige());
+
+        Assert.Null(engine.State.ActiveDoctrineId);
+        Assert.True(engine.IsDoctrineDraftPending);
+        Assert.Equal(DoctrineData.DraftSize, engine.GetDoctrineDraft().Count);
+    }
+
+    [Fact]
+    public void TheDraft_IsStableForAnAscensionSoItCannotBeRerolledByReloading()
+    {
+        var first = DoctrineData.GetDraft(3, Array.Empty<string>()).Select(d => d.Id);
+        var second = DoctrineData.GetDraft(3, Array.Empty<string>()).Select(d => d.Id);
+
+        Assert.Equal(first, second);
+    }
+
+    [Fact]
+    public void TheDraft_SkipsDoctrinesAlreadyTakenThisPlaythrough()
+    {
+        var taken = DoctrineData.AllDoctrines.Take(4).Select(d => d.Id).ToList();
+        var draft = DoctrineData.GetDraft(2, taken);
+
+        Assert.Equal(DoctrineData.DraftSize, draft.Count);
+        Assert.All(draft, d => Assert.DoesNotContain(d.Id, taken));
+    }
+
+    [Fact]
+    public void ChoosingADoctrine_AppliesItsUpsideAndItsDownside()
+    {
+        var engine = new GameEngine();
+        engine.State.Generators[CheapGenerator] = 500;
+
+        double plainEps = engine.CalculateEvidencePerSecond();
+        var (plainBase, plainMult, plainEpsPart) = engine.GetClickPowerBreakdown();
+
+        var doctrine = DoctrineData.GetById("hands_on")!;   // click x25, EPS x0.5
+        engine.State.ActiveDoctrineId = doctrine.Id;
+
+        var (doctrineBase, doctrineMult, doctrineEpsPart) = engine.GetClickPowerBreakdown();
+
+        // The downside lands on production
+        Assert.Equal(plainEps * doctrine.EpsMultiplier, engine.CalculateEvidencePerSecond(), precision: 6);
+
+        // The upside lands on the click multiplier...
+        Assert.Equal(plainBase, doctrineBase);
+        Assert.Equal(plainMult * doctrine.ClickPowerMultiplier, doctrineMult, precision: 6);
+
+        // ...but note clicks also carry a slice of EPS, so the penalty claws part of it back.
+        // A click doctrine is only worth taking alongside click-power upgrades.
+        Assert.Equal(plainEpsPart * doctrine.EpsMultiplier, doctrineEpsPart, precision: 6);
+    }
+
+    [Fact]
+    public void ADoctrineCanOnlyBeChosenFromTheCurrentDraft()
+    {
+        var engine = new GameEngine();
+        engine.State.DoctrineDraftPending = true;
+
+        var offered = engine.GetDoctrineDraft().Select(d => d.Id).ToHashSet();
+        string notOffered = DoctrineData.AllDoctrines.First(d => !offered.Contains(d.Id)).Id;
+
+        Assert.False(engine.ChooseDoctrine(notOffered));
+        Assert.True(engine.ChooseDoctrine(offered.First()));
+        Assert.False(engine.IsDoctrineDraftPending);
+    }
+
+    [Fact]
+    public void TrueBeliever_TurnsOffAutoClickingEntirely()
+    {
+        var engine = new GameEngine();
+        engine.State.IlluminatiUpgrades.Add("auto_clicker");
+        Assert.Equal(20.0, engine.GetAutoClickRate());
+
+        engine.State.ActiveDoctrineId = "true_believer";
+
+        Assert.Equal(0.0, engine.GetAutoClickRate());
+    }
+
+    // === Conspiracy fork ===
+
+    [Fact]
+    public void ProvingAConspiracy_SpendsEvidence()
+    {
+        var engine = new GameEngine();
+        var conspiracy = ConspiracyData.AllConspiracies.First();
+        engine.State.TotalEvidenceEarned = conspiracy.EvidenceCost * 10;
+        engine.State.Evidence = conspiracy.EvidenceCost * 2;
+
+        double price = engine.GetConspiracyPrice(conspiracy.Id);
+        double before = engine.State.Evidence;
+
+        Assert.True(engine.ProveConspiracy(conspiracy.Id));
+        Assert.Equal(before - price, engine.State.Evidence, precision: 6);
+    }
+
+    [Fact]
+    public void AConspiracyCannotBeProvenOnCreditEvenWhenDiscovered()
+    {
+        var engine = new GameEngine();
+        var conspiracy = ConspiracyData.AllConspiracies.First();
+        engine.State.TotalEvidenceEarned = conspiracy.EvidenceCost * 100; // discovered
+        engine.State.Evidence = 0;                                        // but broke
+
+        Assert.True(engine.IsConspiracyUnlocked(conspiracy.Id));
+        Assert.False(engine.CanAffordConspiracy(conspiracy.Id));
+        Assert.False(engine.ProveConspiracy(conspiracy.Id));
+        Assert.Empty(engine.State.ProvenConspiracies);
+    }
+
+    [Fact]
+    public void EachConspiracyOffersTwoDistinctPayoffs()
+    {
+        foreach (var conspiracy in ConspiracyData.AllConspiracies)
+        {
+            var (a, b) = ConspiracyRewardData.GetOptions(conspiracy.Id);
+            Assert.Equal(ConspiracyRewardData.OptionA, a.Id);
+            Assert.Equal(ConspiracyRewardData.OptionB, b.Id);
+            Assert.NotEqual(a.Name, b.Name);
+        }
+    }
+
+    [Fact]
+    public void OptionA_IsExactlyTheRewardTheConspiracyAlwaysGranted()
+    {
+        foreach (var conspiracy in ConspiracyData.AllConspiracies)
+        {
+            var (a, _) = ConspiracyRewardData.GetOptions(conspiracy.Id);
+            Assert.Equal(conspiracy.ClickBonus, a.ClickBonus);
+            Assert.Equal(conspiracy.MultiplierBonus, a.MultiplierBonus);
+            Assert.Equal(conspiracy.TinfoilReward, a.TinfoilReward);
+        }
+    }
+
+    [Fact]
+    public void AProvenConspiracyWithNoRecordedChoice_FallsBackToTheOriginalReward()
+    {
+        // Saves written before the fork existed have ProvenConspiracies but no choices
+        var conspiracy = ConspiracyData.AllConspiracies.First(c => c.ClickBonus > 0);
+
+        var legacy = new GameEngine();
+        legacy.State.ProvenConspiracies.Add(conspiracy.Id); // no ConspiracyChoices entry
+
+        var explicitA = new GameEngine();
+        explicitA.State.ProvenConspiracies.Add(conspiracy.Id);
+        explicitA.State.ConspiracyChoices[conspiracy.Id] = ConspiracyRewardData.OptionA;
+
+        Assert.Equal(explicitA.CalculateClickPower(), legacy.CalculateClickPower(), precision: 6);
+    }
+
+    [Fact]
+    public void TakingOptionB_AppliesItsOwnBonusInsteadOfTheClickBonus()
+    {
+        // Index 0 in the rotation is the believer payoff
+        var conspiracy = ConspiracyData.AllConspiracies.First();
+        var (_, b) = ConspiracyRewardData.GetOptions(conspiracy.Id);
+        Assert.True(b.BelieverMultiplier > 1.0, "expected the first conspiracy's option B to boost believers");
+
+        var engine = new GameEngine();
+        engine.State.Generators[BelieverGenerator] = 100;
+        engine.TickForTests();
+        double plainBelievers = engine.State.Believers;
+
+        engine.State.ProvenConspiracies.Add(conspiracy.Id);
+        engine.State.ConspiracyChoices[conspiracy.Id] = ConspiracyRewardData.OptionB;
+        engine.TickForTests();
+
+        Assert.Equal(plainBelievers * b.BelieverMultiplier, engine.State.Believers, precision: 6);
+    }
+
+    [Fact]
+    public void Ascending_ForgetsWhichPayoffsWereTaken()
+    {
+        var engine = new GameEngine();
+        engine.State.TotalEvidenceEarned = GameConstants.PRESTIGE_THRESHOLD * 10;
+        engine.State.ProvenConspiracies.Add("birds_arent_real");
+        engine.State.ConspiracyChoices["birds_arent_real"] = ConspiracyRewardData.OptionB;
+
+        Assert.True(engine.PerformPrestige());
+
+        Assert.Empty(engine.State.ProvenConspiracies);
+        Assert.Empty(engine.State.ConspiracyChoices);
+    }
+
+    // === Generator synergies ===
+
+    [Fact]
+    public void ASynergy_ScalesWithTheSourceAndStopsAtItsCap()
+    {
+        var synergy = SynergyData.AllSynergies.First();
+        var engine = new GameEngine();
+
+        Assert.Equal(1.0, engine.GetSynergyMultiplier(synergy.TargetId));
+
+        engine.State.Generators[synergy.SourceId] = synergy.Per - 1;
+        Assert.Equal(1.0, engine.GetSynergyMultiplier(synergy.TargetId));
+
+        engine.State.Generators[synergy.SourceId] = synergy.Per * 3;
+        Assert.Equal(1.0 + synergy.Bonus * 3, engine.GetSynergyMultiplier(synergy.TargetId), precision: 6);
+
+        engine.State.Generators[synergy.SourceId] = synergy.Per * 100_000;
+        Assert.Equal(1.0 + synergy.Cap, engine.GetSynergyMultiplier(synergy.TargetId), precision: 6);
+    }
+
+    [Fact]
+    public void ASynergy_RaisesTheTargetsActualProduction()
+    {
+        var synergy = SynergyData.AllSynergies.First();
+        var engine = new GameEngine();
+        engine.State.Generators[synergy.TargetId] = 50;
+
+        double before = engine.CalculateBaseEps();
+        engine.State.Generators[synergy.SourceId] = synergy.Per * 5;
+        double after = engine.CalculateBaseEps();
+
+        var source = GeneratorData.GetById(synergy.SourceId)!;
+        double sourceOwnContribution = source.GetProduction(synergy.Per * 5);
+        double target = GeneratorData.GetById(synergy.TargetId)!.GetProduction(50);
+
+        Assert.Equal(before + sourceOwnContribution + target * synergy.Bonus * 5, after, precision: 6);
+    }
+
+    [Fact]
+    public void EverySynergyPointsAtRealGenerators()
+    {
+        foreach (var synergy in SynergyData.AllSynergies)
+        {
+            Assert.True(GeneratorData.GetById(synergy.SourceId) != null, $"unknown source '{synergy.SourceId}'");
+            Assert.True(GeneratorData.GetById(synergy.TargetId) != null, $"unknown target '{synergy.TargetId}'");
+            Assert.True(synergy.Per > 0);
+            Assert.True(synergy.Cap > 0);
+        }
+    }
+
     // === Data lookups ===
 
     [Theory]

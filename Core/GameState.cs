@@ -33,6 +33,10 @@ public class GameState
     // Proven conspiracies
     public HashSet<string> ProvenConspiracies { get; set; } = new();
 
+    // Which payoff was taken for each proven conspiracy. Anything missing resolves to option A,
+    // the original reward, so saves made before the fork existed behave exactly as they did.
+    public Dictionary<string, string> ConspiracyChoices { get; set; } = new();
+
     // Achievements
     public HashSet<string> UnlockedAchievements { get; set; } = new();
 
@@ -76,6 +80,13 @@ public class GameState
     public double ComboMeter { get; set; }
     public DateTime LastClickTime { get; set; } = DateTime.MinValue;
     public int ComboClicks { get; set; }
+
+    // Doctrine drafted at the last ascension, governing the current run
+    public string? ActiveDoctrineId { get; set; }
+    public List<string> DoctrineHistory { get; set; } = new();
+
+    // Set when an ascension owes the player a draft; cleared once they choose
+    public bool DoctrineDraftPending { get; set; }
 
     // Frenzy: global EPS multiplier earned by chaining combo bursts
     public DateTime FrenzyEndTime { get; set; }

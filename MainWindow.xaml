@@ -13,6 +13,7 @@
         <SolidColorBrush x:Key="PanelBackground" Color="#16213e"/>
         <SolidColorBrush x:Key="AccentGreen" Color="#00ff41"/>
         <SolidColorBrush x:Key="AccentGold" Color="#ffd700"/>
+        <SolidColorBrush x:Key="AccentPurple" Color="#9933ff"/>
         <SolidColorBrush x:Key="TextLight" Color="#e0e0e0"/>
         <SolidColorBrush x:Key="TextDim" Color="#888888"/>
 
@@ -321,6 +322,22 @@
                                    FontSize="24"
                                    Foreground="{StaticResource TextDim}"
                                    Text="0/sec"/>
+                        <!-- The doctrine belongs in the left column, not the Statistics panel:
+                             the three-column layout is wider than the window at its own default
+                             size, so the right-hand column is off screen until it is widened. -->
+                        <Border x:Name="ActiveDoctrineBanner" Visibility="Collapsed"
+                                Background="#1a1030" BorderBrush="{StaticResource AccentPurple}"
+                                BorderThickness="1" CornerRadius="6" Padding="10,5"
+                                Margin="0,8,0,0" HorizontalAlignment="Left">
+                            <StackPanel>
+                                <TextBlock x:Name="ActiveDoctrineName" FontSize="16" FontWeight="Bold"
+                                           Foreground="{StaticResource AccentGold}" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="ActiveDoctrineEffect" FontSize="12"
+                                           Foreground="{StaticResource TextDim}" TextWrapping="Wrap"
+                                           MaxWidth="620"/>
+                            </StackPanel>
+                        </Border>
+
                         <!-- Hidden rank stubs (disabled feature) -->
                         <StackPanel x:Name="RankDisplayPanel" Visibility="Collapsed">
                             <TextBlock x:Name="RankSocietyDisplay"/>
@@ -1304,6 +1321,35 @@
         </Border>
 
         <!-- Tutorial Overlay (shown for new players) -->
+        <!-- Doctrine draft: shown once at each ascension -->
+        <Border x:Name="DoctrineOverlay" Visibility="Collapsed" Panel.ZIndex="700"
+                Background="#EE0a0a15">
+            <Grid>
+                <Border Background="#16213e" BorderBrush="{StaticResource AccentPurple}"
+                        BorderThickness="3" CornerRadius="12" Padding="30"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        MaxWidth="760">
+                    <StackPanel>
+                        <TextBlock Text="CHOOSE YOUR DOCTRINE" FontSize="28" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentPurple}"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="The order rebuilds itself around one idea. It governs this run only."
+                                   FontSize="14" Foreground="{StaticResource TextDim}" FontStyle="Italic"
+                                   HorizontalAlignment="Center" Margin="0,6,0,20"/>
+                        <!-- WrapPanel, not StackPanel: the three-column layout is wider than the
+                             window at its own default size, so a fixed row can run off screen -->
+                        <WrapPanel x:Name="DoctrineOptionsPanel" HorizontalAlignment="Center"/>
+                        <Button x:Name="DoctrineSkipButton" Content="Ascend without a doctrine"
+                                Click="DoctrineSkipButton_Click"
+                                Background="Transparent" Foreground="{StaticResource TextDim}"
+                                BorderBrush="#444" BorderThickness="1" Padding="14,6"
+                                FontSize="12" Cursor="Hand" HorizontalAlignment="Center"
+                                Margin="0,20,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
         <Border x:Name="TutorialOverlay" Visibility="Collapsed" Panel.ZIndex="650"
                 Background="#EE0a0a15">
             <Grid>
