@@ -815,8 +815,10 @@ public static class AchievementData
         }
     };
 
+    private static readonly Dictionary<string, Achievement> ById = DataIndex.Build(AllAchievements, a => a.Id);
+
     public static Achievement? GetById(string id)
     {
-        return AllAchievements.FirstOrDefault(a => a.Id == id);
+        return ById.TryGetValue(id, out var achievement) ? achievement : null;
     }
 }

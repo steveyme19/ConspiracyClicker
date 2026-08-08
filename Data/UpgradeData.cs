@@ -1454,9 +1454,11 @@ public static class UpgradeData
 
     };
 
+    private static readonly Dictionary<string, Upgrade> ById = DataIndex.Build(AllUpgrades, u => u.Id);
+
     public static Upgrade? GetById(string id)
     {
-        return AllUpgrades.FirstOrDefault(u => u.Id == id);
+        return ById.TryGetValue(id, out var upgrade) ? upgrade : null;
     }
 
     public static IEnumerable<Upgrade> GetAvailable(double evidence, Dictionary<string, int> generators, HashSet<string> purchased)

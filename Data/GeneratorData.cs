@@ -575,8 +575,10 @@ public static class GeneratorData
         }
     };
 
+    private static readonly Dictionary<string, Generator> ById = DataIndex.Build(AllGenerators, g => g.Id);
+
     public static Generator? GetById(string id)
     {
-        return AllGenerators.FirstOrDefault(g => g.Id == id);
+        return ById.TryGetValue(id, out var generator) ? generator : null;
     }
 }

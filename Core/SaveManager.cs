@@ -218,16 +218,4 @@ public class SaveManager
         }
         return mostRecent?.Slot;
     }
-
-    public (double offlineEvidence, TimeSpan offlineTime) CalculateOfflineProgress(GameState state, double currentEps)
-    {
-        var offlineTime = DateTime.Now - state.LastSaveTime;
-        double offlineSeconds = Math.Min(offlineTime.TotalSeconds, 86400); // Cap at 24 hours
-
-        // 50% offline efficiency (100% if matrix upgrade unlocked)
-        double offlineMultiplier = state.MatrixUpgrades.Contains("time_manipulation") ? 1.0 : 0.5;
-        double offlineEvidence = currentEps * offlineSeconds * offlineMultiplier;
-
-        return (offlineEvidence, offlineTime);
-    }
 }

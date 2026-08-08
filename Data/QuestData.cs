@@ -509,7 +509,9 @@ public static class QuestData
         }
     };
 
-    public static Quest? GetById(string id) => AllQuests.FirstOrDefault(q => q.Id == id);
+    private static readonly Dictionary<string, Quest> ById = DataIndex.Build(AllQuests, q => q.Id);
+
+    public static Quest? GetById(string id) => ById.TryGetValue(id, out var quest) ? quest : null;
 
     public static IEnumerable<Quest> GetAvailable(double believers)
     {

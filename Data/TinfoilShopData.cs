@@ -604,5 +604,7 @@ public static class TinfoilShopData
         }
     };
 
-    public static TinfoilUpgrade? GetById(string id) => AllUpgrades.FirstOrDefault(u => u.Id == id);
+    private static readonly Dictionary<string, TinfoilUpgrade> ById = DataIndex.Build(AllUpgrades, u => u.Id);
+
+    public static TinfoilUpgrade? GetById(string id) => ById.TryGetValue(id, out var upgrade) ? upgrade : null;
 }

@@ -388,7 +388,9 @@ public static class PrestigeData
         }
     };
 
-    public static IlluminatiUpgrade? GetById(string id) => IlluminatiUpgrades.FirstOrDefault(u => u.Id == id);
+    private static readonly Dictionary<string, IlluminatiUpgrade> ById = DataIndex.Build(IlluminatiUpgrades, u => u.Id);
+
+    public static IlluminatiUpgrade? GetById(string id) => ById.TryGetValue(id, out var upgrade) ? upgrade : null;
 
     public static int CalculateTokensEarned(double totalEvidence)
     {

@@ -19,6 +19,7 @@ public class GameEngine
     public event Action<string>? OnFlavorMessage;
     public event Action<double>? OnComboBurst;
     public event Action<double, bool>? OnClickProcessed; // clickPower, isCritical
+    public event Action<double, int, int>? OnAutoClickBatch; // evidence, clicks, criticals
     public event Action<string, bool, double, long>? OnQuestComplete;
     public event Action? OnGoldenEyeStart;
     public event Action? OnGoldenEyeEnd;
@@ -30,34 +31,9 @@ public class GameEngine
 
     private bool _prestigeNotified = false;
     private DateTime _lastDailyCheck = DateTime.MinValue;
-    private int _normalizationCounter = 0;
 
     public GameState State => _state;
 
-    /// <summary>
-    /// Aggressively reduces precision based on magnitude.
-    /// Larger numbers get fewer significant figures since precision doesn't matter.
-    /// </summary>
-    private static double NormalizeLargeNumber(double value)
-    {
-        if (value <= 0 || value < 1_000) return value;
-
-        // Calculate magnitude (power of 10)
-        double magnitude = Math.Floor(Math.Log10(value));
-
-        // Adaptive precision: fewer sig figs for larger numbers
-        // < 1M: 6 sig figs, < 1B: 5 sig figs, < 1T: 4 sig figs, >= 1T: 3 sig figs
-        int sigFigs = magnitude switch
-        {
-            < 6 => 6,   // < 1M
-            < 9 => 5,   // < 1B
-            < 12 => 4,  // < 1T
-            _ => 3      // >= 1T (3 sig figs is plenty for huge numbers)
-        };
-
-        double scale = Math.Pow(10, magnitude - (sigFigs - 1));
-        return Math.Round(value / scale) * scale;
-    }
     public SaveManager SaveManager => _saveManager;
 
     public GameEngine()
@@ -173,6 +149,8 @@ public class GameEngine
         _state.QuestsCompleted = source.QuestsCompleted;
         _state.QuestsFailed = source.QuestsFailed;
         _state.BelieversLost = source.BelieversLost;
+        _state.BonusBelievers = source.BonusBelievers;
+        _state.LostBelievers = source.LostBelievers;
         _state.SkillPoints = source.SkillPoints;
 
         // Daily challenge tracking
@@ -242,18 +220,9 @@ public class GameEngine
 
     public void Start()
     {
-        var eps = CalculateEvidencePerSecond();
-        if (eps > 0)
-        {
-            var (offlineEvidence, offlineTime) = _saveManager.CalculateOfflineProgress(_state, eps);
-            if (offlineEvidence > 0 && offlineTime.TotalMinutes >= 1)
-            {
-                _state.Evidence += offlineEvidence;
-                _state.TotalEvidenceEarned += offlineEvidence;
-                OnFlavorMessage?.Invoke($"While you were gone ({offlineTime.Hours}h {offlineTime.Minutes}m), you gathered {Utils.NumberFormatter.Format(offlineEvidence)} evidence!");
-            }
-        }
-
+        // Offline progress is awarded by LoadSlot -> CalculateOfflineProgress. It used to be
+        // paid a second time here through SaveManager at a different rate, so every load
+        // granted 75% of EPS for the time away and raised two separate notifications.
         _gameLoop.Start();
         _autoSaveTimer.Start();
     }
@@ -267,6 +236,12 @@ public class GameEngine
 
     public void Save() => _saveManager.Save(_state);
 
+    /// <summary>
+    /// Runs one game tick synchronously. Exists so tests can advance the simulation without
+    /// standing up a WPF dispatcher; the game itself always ticks off the DispatcherTimer.
+    /// </summary>
+    internal void TickForTests() => GameLoop_Tick(null, EventArgs.Empty);
+
     private void GameLoop_Tick(object? sender, EventArgs e)
     {
         double eps = CalculateEvidencePerSecond();
@@ -276,14 +251,11 @@ public class GameEngine
         _state.TotalEvidenceEarned += evidenceThisTick;
         _state.TotalPlayTimeSeconds += GameConstants.TICK_RATE_MS / 1000.0;
 
-        // Normalize large numbers every 10 ticks to reduce floating-point overhead
-        if (++_normalizationCounter >= 10)
-        {
-            _normalizationCounter = 0;
-            _state.Evidence = NormalizeLargeNumber(_state.Evidence);
-            _state.TotalEvidenceEarned = NormalizeLargeNumber(_state.TotalEvidenceEarned);
-        }
-
+        // Evidence used to be rounded to 3-6 significant figures once a second here, on the
+        // premise that it reduced floating-point overhead. A double costs the same to add
+        // whatever its magnitude, and the rounding silently destroyed income: above ~1e12 the
+        // quantum is bank/1000, so once a player banked more than ~2000 seconds of EPS every
+        // tick's earnings rounded straight back off and progress stopped dead.
         UpdateBelievers();
         UpdateComboMeter();
         ProcessAutoClicks();
@@ -328,10 +300,10 @@ public class GameEngine
         // Apply generator upgrade believer bonus
         totalBelievers *= GetGeneratorUpgradeGlobalBelieverMultiplier();
 
-        // Add permanent bonus believers from quests
-        totalBelievers += _state.BonusBelievers;
+        // Add permanent bonus believers from quests, minus any detained on failed high-risk ones
+        totalBelievers += _state.BonusBelievers - _state.LostBelievers;
 
-        _state.Believers = totalBelievers;
+        _state.Believers = Math.Max(0, totalBelievers);
     }
 
     private void UpdateComboMeter()
@@ -345,6 +317,15 @@ public class GameEngine
         }
     }
 
+    /// <summary>
+    /// Pays out this tick's auto-clicks as one batch.
+    ///
+    /// Each auto-click used to run the whole ProcessClick path on its own, which at the 250 CPS
+    /// cap meant 250 achievement sweeps, 250 full UI rebuilds, 250 animated floating numbers and
+    /// 250 sound plays every second - by far the heaviest thing the game did. The critical-hit
+    /// roll is still made per click so the odds are untouched; only the payout, the statistics
+    /// and the single UI notification are applied once for the whole batch.
+    /// </summary>
     private void ProcessAutoClicks()
     {
         double autoClickRate = GetAutoClickRate();
@@ -352,15 +333,43 @@ public class GameEngine
 
         _autoClickAccumulator += autoClickRate * (GameConstants.TICK_RATE_MS / 1000.0);
 
-        while (_autoClickAccumulator >= 1.0)
+        int clicks = (int)_autoClickAccumulator;
+        if (clicks <= 0) return;
+        _autoClickAccumulator -= clicks;
+
+        double clickPower = CalculateClickPower();
+        double critChance = GetCriticalChance();
+
+        double total = 0;
+        int crits = 0;
+        for (int i = 0; i < clicks; i++)
         {
-            _autoClickAccumulator -= 1.0;
-            ProcessClick(isAutoClick: true);
+            double power = clickPower;
+            if (critChance > 0 && _random.NextDouble() < critChance)
+            {
+                power *= GetCriticalMultiplier();
+                crits++;
+            }
+            total += power;
         }
+
+        if (_state.GoldenEyeActive && DateTime.Now < _state.GoldenEyeEndTime)
+            total *= 5;
+
+        _state.Evidence += total;
+        _state.TotalEvidenceEarned += total;
+        _state.TodayEvidence += total;
+        _state.TotalClicks += clicks;
+        _state.TodayClicks += clicks;
+        _state.CriticalClicks += crits;
+        _state.TodayCriticalHits += crits;
+
+        OnAutoClickBatch?.Invoke(total, clicks, crits);
     }
 
     // === CLICK PROCESSING ===
-    public void ProcessClick(bool isAutoClick = false, double externalMultiplier = 1.0)
+    // Player clicks only - auto-clicks go through ProcessAutoClicks, which batches them.
+    public void ProcessClick(double externalMultiplier = 1.0)
     {
         double clickPower = CalculateClickPower();
         bool isCritical = false;
@@ -389,17 +398,14 @@ public class GameEngine
         _state.TotalClicks++;
         _state.TodayClicks++;
 
-        if (!isAutoClick)
-        {
-            _state.LastClickTime = DateTime.Now;
-            _state.ComboClicks++;
+        _state.LastClickTime = DateTime.Now;
+        _state.ComboClicks++;
 
-            // Fill combo meter
-            _state.ComboMeter += GameConstants.COMBO_FILL_PER_CLICK;
-            if (_state.ComboMeter >= 1.0)
-            {
-                TriggerComboBurst();
-            }
+        // Fill combo meter
+        _state.ComboMeter += GameConstants.COMBO_FILL_PER_CLICK;
+        if (_state.ComboMeter >= 1.0)
+        {
+            TriggerComboBurst();
         }
 
         OnClickProcessed?.Invoke(clickPower, isCritical);
@@ -769,9 +775,11 @@ public class GameEngine
     {
         if (!HasAutoQuest() || !_state.AutoQuestEnabled) return;
 
-        // Get all available quests that can be started
+        // Get all available quests that can be started. High-risk quests forfeit the believers
+        // they send on a failure, so autopilot only touches them once that gamble is close to
+        // a sure thing - it should not be able to burn the believer base unattended.
         var availableQuests = QuestData.GetAvailable(_state.AvailableBelievers)
-            .Where(q => CanStartQuest(q.Id))
+            .Where(q => CanStartQuest(q.Id) && (q.Risk != QuestRisk.High || GetEffectiveQuestSuccessChance(q) >= 0.9))
             .OrderByDescending(q => q.EvidenceReward) // Prioritize higher reward quests
             .ToList();
 
@@ -783,6 +791,23 @@ public class GameEngine
                 StartQuest(quest.Id);
             }
         }
+    }
+
+    /// <summary>
+    /// The quest's base success chance with every Tinfoil Shop, skill, Matrix and Illuminati
+    /// bonus folded in, capped at 95% - or a flat 1.0 when a skill makes quests unfailable.
+    /// </summary>
+    public double GetEffectiveQuestSuccessChance(Quest quest)
+    {
+        if (SkillQuestsNeverFail()) return 1.0;
+
+        double chance = quest.SuccessChance
+            + GetTinfoilQuestSuccessBonus()
+            + GetSkillQuestSuccessBonus()
+            + GetMatrixQuestSuccessBonus()
+            + GetIlluminatiQuestSuccessBonus();
+
+        return Math.Min(chance, 0.95);
     }
 
     private void CheckQuests()
@@ -797,10 +822,7 @@ public class GameEngine
             _state.ActiveQuests.Remove(activeQuest);
             _state.BusyBelievers -= activeQuest.BelieversSent;
 
-            // Apply quest success bonus from Tinfoil Shop, Skills, Matrix, and Illuminati
-            double adjustedSuccessChance = quest.SuccessChance + GetTinfoilQuestSuccessBonus() + GetSkillQuestSuccessBonus() + GetMatrixQuestSuccessBonus() + GetIlluminatiQuestSuccessBonus();
-            adjustedSuccessChance = Math.Min(adjustedSuccessChance, 0.95);
-            bool success = SkillQuestsNeverFail() || _random.NextDouble() < adjustedSuccessChance;
+            bool success = _random.NextDouble() < GetEffectiveQuestSuccessChance(quest);
             double evidenceReward = 0;
             long tinfoilReward = 0;
 
@@ -844,8 +866,11 @@ public class GameEngine
                         break;
 
                     case QuestRisk.High:
-                        // Believers are detained/lost permanently on high-risk failure
-                        _state.Believers -= activeQuest.BelieversSent;
+                        // Believers are detained/lost permanently on high-risk failure.
+                        // This has to go through LostBelievers: writing _state.Believers
+                        // directly was undone by UpdateBelievers on the very next tick, which
+                        // left high-risk quests with no downside at all.
+                        _state.LostBelievers += activeQuest.BelieversSent;
                         _state.BelieversLost += activeQuest.BelieversSent;
                         break;
                 }
@@ -1046,12 +1071,7 @@ public class GameEngine
         var generator = GeneratorData.GetById(generatorId);
         if (generator == null) return double.MaxValue;
         int owned = _state.GetGeneratorCount(generatorId);
-        double cost = generator.GetCost(owned);
-        if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) cost *= 0.10; // -90%
-        if (_state.IlluminatiUpgrades.Contains("shadow_network")) cost *= 0.05; // -95%
-        cost *= GetMatrixCostMultiplier();
-        cost *= GetGeneratorUpgradeCostMultiplier(generatorId); // Generator-specific discount
-        return cost;
+        return generator.GetCost(owned) * GetGeneratorCostDiscount(generatorId);
     }
 
     public bool CanAffordGenerator(string generatorId) => _state.Evidence >= GetGeneratorCost(generatorId);
@@ -1075,26 +1095,58 @@ public class GameEngine
         double available = _state.Evidence;
         int count = 0;
 
-        double genUpgradeCostMult = GetGeneratorUpgradeCostMultiplier(generatorId);
+        double discount = GetGeneratorCostDiscount(generatorId);
         while (count < 1000)
         {
-            double cost = generator.GetCost(owned + count);
-            if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) cost *= 0.10; // -90%
-            if (_state.IlluminatiUpgrades.Contains("shadow_network")) cost *= 0.05; // -95%
-            cost *= genUpgradeCostMult;
+            double cost = generator.GetCost(owned + count) * discount;
             if (available >= cost) { available -= cost; count++; }
             else break;
         }
         return count;
     }
 
+    /// <summary>
+    /// Buys as many of a generator as the player can afford in one transaction.
+    ///
+    /// This used to call PurchaseGenerator in a loop, and each of those swept the achievement
+    /// table and raised OnTick - so a single "buy max" could trigger up to a thousand whole-UI
+    /// rebuilds and visibly lock the window. The per-unit costs are identical; only the
+    /// bookkeeping happens once.
+    /// </summary>
     public bool PurchaseMaxGenerators(string generatorId)
     {
+        var generator = GeneratorData.GetById(generatorId);
+        if (generator == null) return false;
+
         int max = GetMaxAffordable(generatorId);
         if (max == 0) return false;
+
+        int owned = _state.GetGeneratorCount(generatorId);
+        double discount = GetGeneratorCostDiscount(generatorId);
+        double totalCost = 0;
         for (int i = 0; i < max; i++)
-            if (!PurchaseGenerator(generatorId)) break;
+            totalCost += generator.GetCost(owned + i) * discount;
+
+        _state.Evidence -= totalCost;
+        _state.AddGenerator(generatorId, max);
+
+        CheckAchievements();
+        OnTick?.Invoke();
         return true;
+    }
+
+    /// <summary>
+    /// Every multiplicative discount that applies to a generator's sticker price.
+    /// Shared so the single-buy, buy-max and affordability paths cannot drift apart.
+    /// </summary>
+    private double GetGeneratorCostDiscount(string generatorId)
+    {
+        double discount = 1.0;
+        if (_state.IlluminatiUpgrades.Contains("new_world_order_discount")) discount *= 0.10; // -90%
+        if (_state.IlluminatiUpgrades.Contains("shadow_network")) discount *= 0.05; // -95%
+        discount *= GetMatrixCostMultiplier();
+        discount *= GetGeneratorUpgradeCostMultiplier(generatorId);
+        return discount;
     }
 
     // === CRITICAL HITS ===
@@ -1232,8 +1284,9 @@ public class GameEngine
         _state.WhistleBlowerX = 0;
         _state.WhistleBlowerY = 0;
 
-        // Reset bonus believers from quests (earned during this run)
+        // Reset bonus and detained believers from quests (both earned during this run)
         _state.BonusBelievers = 0;
+        _state.LostBelievers = 0;
 
         // Keep: IlluminatiTokens, IlluminatiUpgrades, UnlockedSkills, Achievements
 
@@ -1369,6 +1422,8 @@ public class GameEngine
         _state.TotalEvidenceEarned = 0;
         _state.Believers = 0;
         _state.BusyBelievers = 0;
+        _state.BonusBelievers = 0;
+        _state.LostBelievers = 0;
         _state.Generators.Clear();
         _state.PurchasedUpgrades.Clear();
         _state.ProvenConspiracies.Clear();
@@ -1481,6 +1536,8 @@ public class GameEngine
         _state.TotalEvidenceEarned = 0;
         _state.Believers = 0;
         _state.BusyBelievers = 0;
+        _state.BonusBelievers = 0;
+        _state.LostBelievers = 0;
         _state.Generators.Clear();
         _state.PurchasedUpgrades.Clear();
         _state.ProvenConspiracies.Clear();

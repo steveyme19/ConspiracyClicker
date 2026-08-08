@@ -113,7 +113,9 @@ public static class MatrixData
         }
     };
 
-    public static MatrixUpgrade? GetById(string id) => MatrixUpgrades.FirstOrDefault(u => u.Id == id);
+    private static readonly Dictionary<string, MatrixUpgrade> ById = DataIndex.Build(MatrixUpgrades, u => u.Id);
+
+    public static MatrixUpgrade? GetById(string id) => ById.TryGetValue(id, out var upgrade) ? upgrade : null;
 
     public static int CalculateGlitchTokensEarned(double totalIlluminatiTokensSpent)
     {

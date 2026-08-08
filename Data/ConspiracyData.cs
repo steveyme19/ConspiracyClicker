@@ -305,9 +305,11 @@ public static class ConspiracyData
         }
     };
 
+    private static readonly Dictionary<string, Conspiracy> ById = DataIndex.Build(AllConspiracies, c => c.Id);
+
     public static Conspiracy? GetById(string id)
     {
-        return AllConspiracies.FirstOrDefault(c => c.Id == id);
+        return ById.TryGetValue(id, out var conspiracy) ? conspiracy : null;
     }
 
     public static IEnumerable<Conspiracy> GetAvailable(double evidence, HashSet<string> proven)
