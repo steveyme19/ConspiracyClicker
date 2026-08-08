@@ -76,6 +76,8 @@
   <ItemGroup>
     <Compile Remove="Simulator\**" />
     <None Remove="Simulator\**" />
+    <Compile Remove="Tests\**" />
+    <None Remove="Tests\**" />
   </ItemGroup>
 
 </Project>

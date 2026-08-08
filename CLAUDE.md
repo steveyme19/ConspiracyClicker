@@ -32,7 +32,9 @@ ConspiracyClicker/
 │   ├── GameEngine.cs       # Core game logic, state management
 │   ├── GameState.cs        # Serializable game state model
 │   └── GameConstants.cs    # Game balance constants
+├── Tests/                  # xUnit regression tests (excluded from main build)
 ├── Data/
+│   ├── DataIndex.cs        # id -> item lookups for the tables below
 │   ├── GeneratorData.cs    # Generator definitions (12 tiers, 50+ generators)
 │   ├── UpgradeData.cs      # Upgrade definitions (~90 upgrades)
 │   ├── ConspiracyData.cs   # Conspiracy definitions (25 conspiracies)
@@ -50,6 +52,7 @@ ConspiracyClicker/
 ├── Utils/
 │   ├── IconHelper.cs       # Icon loading with fallback chain
 │   ├── NumberFormatter.cs  # Large number formatting
+│   ├── PerfLog.cs          # Dev-only refresh timing (CC_PERFLOG=1)
 │   ├── SoundManager.cs     # Audio playback
 │   ├── FlavorText.cs       # Random flavor text
 │   ├── SpriteSheetLoader.cs           # Generator icons (main)
@@ -200,7 +203,48 @@ Three-column layout:
 ```bash
 dotnet build
 dotnet run
+dotnet test Tests/ConspiracyClicker.Tests.csproj    # engine regression tests
 ```
+
+## Performance
+
+The UI refresh is the hot path and it is easy to make slow again. Two rules keep it honest:
+
+1. **Never call `UpdateUI` directly from an event.** The engine raises `OnTick` ten times a
+   second and again on every purchase and player click. `MainWindow` subscribes
+   `RequestUiRefresh`, which sets a flag that `OnRendering` drains once per frame, so a burst
+   of events costs one refresh.
+2. **`UpdateVisibleTabPanel` only rebuilds the tab that is on screen.** Anything permanently
+   visible (the owned-generator list in the right column, the tab strip) has to be updated in
+   `UpdateUICore` itself, *not* inside the tab switch. `MainTabControl_SelectionChanged` calls
+   `InvalidatePanelCaches()` so the incoming panel rebuilds from current state - add any new
+   dirty-check field to that method.
+
+Auto-clicks are batched by `GameEngine.ProcessAutoClicks` into one payout and one
+`OnAutoClickBatch` event per tick. Do not route them back through `ProcessClick`: at the 250
+CPS cap that was 250 achievement sweeps, UI rebuilds, floating numbers and sound plays a second.
+
+### Measuring
+
+`Utils/PerfLog.cs` is inert unless `CC_PERFLOG=1`. To time a refresh against a known save:
+
+```powershell
+$env:CC_PERFLOG="1"; $env:CC_PERFRUN="3:30"; $env:CC_PERFTAB="4"   # slot 3, 30s, Quests tab
+$env:CC_PERFOUT="$PWD\perf.txt"
+.\bin\Debug\net8.0-windows\ConspiracyClicker.exe
+```
+
+It skips the menu, loads the slot, sits on the tab, then writes mean/p50/p95/max and quits.
+
+Measured on a maxed save (53 generators x 300, every upgrade, 250 CPS auto-click), 2026-08-07:
+
+| Build | Mean refresh | p95 |
+|---|---|---|
+| Before | 184.5 ms | 234 ms |
+| After, all panels forced | 11.0 ms | 16.7 ms |
+| After, visible tab only | 2.6 - 9.4 ms by tab | 20 ms worst (Quests) |
+
+At 184 ms the 100 ms game tick could never keep up; the late game ran at roughly 5 fps.
 
 ## Recent Changes (January 2026)
 
@@ -253,8 +297,38 @@ tokens = floor(log3(totalEvidence / 50,000)) + 1
 3. **Illuminati multipliers stack**: Combined multipliers reach astronomical values
 4. **Quest rewards are supplemental**: 8-120 seconds of EPS per quest (not a primary income source)
 
+## Fixed 2026-08-07 (do not reintroduce)
+
+- **Offline progress paid twice.** `LoadSlot` awarded 25% of EPS for the time away and `Start`
+  awarded another 50% through `SaveManager`, so every load handed out 75% and raised two
+  different notifications. `SaveManager.CalculateOfflineProgress` is gone; the engine's own
+  method is the only path, and `OFFLINE_EARNINGS_RATE` is now the documented 0.50.
+- **Evidence stopped growing in the late game.** A `NormalizeLargeNumber` pass rounded the
+  balance to 3-6 significant figures once a second "to reduce floating-point overhead". Above
+  ~1e12 the quantum is bank/1000, so once a player banked more than ~2000 seconds of EPS each
+  tick's income rounded straight back off. Removed - a double costs the same to add at any
+  magnitude, and `NumberFormatter` already handles display rounding.
+- **High-risk quests had no risk.** The believer forfeit wrote to `State.Believers`, which
+  `UpdateBelievers` recomputes from the generators on the very next tick. Losses now go to
+  `State.LostBelievers`, a subtractive term that survives the recalculation and clears on
+  ascension. Autopilot no longer starts high-risk quests below a 90% effective success chance.
+- **Quest odds were understated.** The card showed base chance plus the Tinfoil bonus only.
+  `GameEngine.GetEffectiveQuestSuccessChance` is now the single source for both the display and
+  the roll.
+- **"Buy max" froze the window.** It looped `PurchaseGenerator`, each of which swept the
+  achievement table and raised `OnTick` - up to 1000 whole-UI rebuilds for one click. It is now
+  one transaction. All three cost paths share `GetGeneratorCostDiscount`.
+- **`GetById` was a linear scan** on every data table, called thousands of times a second. All
+  are dictionary-backed via `Data/DataIndex.cs`; `GeneratorUpgradeData` also indexes by
+  generator. Note its indexes are built at the end of the static constructor, not in field
+  initialisers, because `AllUpgrades` is itself populated there.
+
 ## Known Issues
 
+- The Quests tab is the most expensive refresh (~9 ms) - it rebuilds quest cards rather than
+  updating them in place.
+- At 1400x900 the tab strip wraps to three rows and overlaps the header, and long generator
+  names clip. The save-slot dialog's QUIT button sits on the bottom edge.
 - Could add more achievements
 - Could expand quest system
 

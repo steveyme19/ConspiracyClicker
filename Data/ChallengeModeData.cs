@@ -113,5 +113,7 @@ public static class ChallengeModeData
         }
     };
 
-    public static ChallengeMode? GetById(string id) => AllChallenges.FirstOrDefault(c => c.Id == id);
+    private static readonly Dictionary<string, ChallengeMode> ById = DataIndex.Build(AllChallenges, c => c.Id);
+
+    public static ChallengeMode? GetById(string id) => ById.TryGetValue(id, out var challenge) ? challenge : null;
 }

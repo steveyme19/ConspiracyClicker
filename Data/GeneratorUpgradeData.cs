@@ -157,7 +157,18 @@ public static class GeneratorUpgradeData
 
             genIndex++;
         }
+
+        // Indexes are built here rather than in field initialisers because AllUpgrades is
+        // populated by this static constructor, which runs after all field initialisers.
+        ById = DataIndex.Build(AllUpgrades, u => u.Id);
+        ByGenerator = AllUpgrades
+            .GroupBy(u => u.GeneratorId)
+            .ToDictionary(g => g.Key, g => g.OrderBy(u => u.UnlockLevel).ToList(), StringComparer.Ordinal);
     }
+
+    private static readonly Dictionary<string, GeneratorUpgrade> ById;
+    private static readonly Dictionary<string, List<GeneratorUpgrade>> ByGenerator;
+    private static readonly List<GeneratorUpgrade> NoUpgrades = new();
 
     private static string GetGlobalIcon(GeneratorUpgradeType type) => type switch
     {
@@ -172,28 +183,29 @@ public static class GeneratorUpgradeData
         _ => "★"
     };
 
-    public static IEnumerable<GeneratorUpgrade> GetUpgradesForGenerator(string generatorId)
+    /// <summary>
+    /// Upgrades belonging to one generator, already ordered by unlock level.
+    /// The returned list is the shared index entry - callers must not mutate it.
+    /// </summary>
+    public static List<GeneratorUpgrade> GetUpgradesForGenerator(string generatorId)
     {
-        return AllUpgrades.Where(u => u.GeneratorId == generatorId).OrderBy(u => u.UnlockLevel);
+        return ByGenerator.TryGetValue(generatorId, out var upgrades) ? upgrades : NoUpgrades;
     }
 
     public static GeneratorUpgrade? GetById(string id)
     {
-        return AllUpgrades.FirstOrDefault(u => u.Id == id);
+        return ById.TryGetValue(id, out var upgrade) ? upgrade : null;
     }
 
     public static IEnumerable<GeneratorUpgrade> GetAvailableUpgrades(string generatorId, int level, HashSet<string> purchased)
     {
-        return AllUpgrades.Where(u =>
-            u.GeneratorId == generatorId &&
+        return GetUpgradesForGenerator(generatorId).Where(u =>
             level >= u.UnlockLevel &&
             !purchased.Contains(u.Id));
     }
 
     public static IEnumerable<GeneratorUpgrade> GetPurchasedUpgrades(string generatorId, HashSet<string> purchased)
     {
-        return AllUpgrades.Where(u =>
-            u.GeneratorId == generatorId &&
-            purchased.Contains(u.Id));
+        return GetUpgradesForGenerator(generatorId).Where(u => purchased.Contains(u.Id));
     }
 }

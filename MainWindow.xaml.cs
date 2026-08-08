@@ -51,6 +51,34 @@ public partial class MainWindow : Window
     private string _lastPrestigeState = "";
     private bool _challengeComboPopulated = false;
 
+    // Set by RequestUiRefresh, drained once per frame by OnRendering
+    private bool _uiRefreshPending = false;
+
+    // Rate limit for the auto-clicker's floating numbers
+    private DateTime _lastAutoClickFloat = DateTime.MinValue;
+
+    // Tab panels are only refreshed while their tab is on screen, so the caches above have to
+    // be dropped when the player switches tabs - otherwise a panel whose dirty check missed a
+    // change made while it was hidden would come back stale.
+    private void InvalidatePanelCaches()
+    {
+        _lastUpgradeCount = -1;
+        _lastPurchasedUpgradeCount = -1;
+        _lastProvenConspiracyCount = -1;
+        _lastAvailableConspiracyCount = -1;
+        _lastTinfoilCount = -1;
+        _lastQuestCount = -1;
+        _lastAchievementCount = -1;
+        _lastOwnedGenState = "";
+        _lastSkillTreeState = "";
+        _lastPrestigeState = "";
+        _lastMatrixState = "";
+        _lastStatsState = "";
+        _lastDailyChallengeState = "";
+        _lastGenState.Clear();
+        _lastUpgradePanelState.Clear();
+    }
+
     // Frozen brushes for performance
     private static readonly SolidColorBrush GreenBrush;
     private static readonly SolidColorBrush GoldBrush;
@@ -365,10 +393,11 @@ public partial class MainWindow : Window
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, ref darkMode, sizeof(int));
 
         _engine = new GameEngine();
-        _engine.OnTick += UpdateUI;
+        _engine.OnTick += RequestUiRefresh;
         _engine.OnFlavorMessage += ShowFlavorMessage;
         _engine.OnAchievementUnlocked += ShowAchievementUnlocked;
         _engine.OnClickProcessed += OnClickProcessed;
+        _engine.OnAutoClickBatch += OnAutoClickBatch;
         _engine.OnComboBurst += OnComboBurst;
         _engine.OnQuestComplete += OnQuestComplete;
         _engine.OnGoldenEyeStart += OnGoldenEyeStart;
@@ -407,6 +436,39 @@ public partial class MainWindow : Window
 
         // Initialize pyramid and eye from sprite sheet
         InitializePyramidAndEye();
+
+        StartPerfRunIfRequested();
+    }
+
+    /// <summary>
+    /// Dev-only: with CC_PERFRUN=slot:seconds set, skip the menu, load that slot and quit after
+    /// the given time with a frame-cost summary. Lets the same save be measured against two
+    /// builds instead of guessing at where the time goes.
+    /// </summary>
+    private void StartPerfRunIfRequested()
+    {
+        var run = PerfLog.AutoRun();
+        if (run == null) return;
+
+        Loaded += (_, _) =>
+        {
+            StartGameWithSlot(run.Value.slot, isNewGame: false);
+
+            int? tab = PerfLog.Tab();
+            if (tab != null && tab >= 0 && tab < MainTabControl.Items.Count)
+                MainTabControl.SelectedIndex = tab.Value;
+
+            var stop = new DispatcherTimer { Interval = TimeSpan.FromSeconds(run.Value.seconds) };
+            stop.Tick += (_, _) =>
+            {
+                stop.Stop();
+                PerfLog.Dump($"UpdateUI over {run.Value.seconds}s on slot {run.Value.slot}" +
+                             $"\nevidence    {_engine.State.Evidence:E6}" +
+                             $"\neps         {_engine.CalculateEvidencePerSecond():E6}");
+                Application.Current.Shutdown();
+            };
+            stop.Start();
+        };
     }
 
     private void InitializePyramidAndEye()
@@ -599,6 +661,14 @@ public partial class MainWindow : Window
         SoundToggleIcon.Source = (System.Windows.Media.ImageSource)Application.Current.FindResource(iconKey);
     }
 
+    /// <summary>
+    /// Marks the interface as needing a refresh. The engine raises OnTick ten times a second
+    /// and again on every purchase and player click, and a refresh walks every panel, so
+    /// running one per event meant rebuilding the whole window dozens of times a second.
+    /// Requests are coalesced here and drained once per frame by OnRendering.
+    /// </summary>
+    private void RequestUiRefresh() => _uiRefreshPending = true;
+
     private void OnRendering(object? sender, EventArgs e)
     {
         var now = DateTime.Now;
@@ -607,6 +677,12 @@ public partial class MainWindow : Window
 
         // Cap delta time to avoid huge jumps
         if (deltaTime > 0.1) deltaTime = 0.1;
+
+        if (_uiRefreshPending)
+        {
+            _uiRefreshPending = false;
+            UpdateUI();
+        }
 
         // Update menu background if menu is visible
         if (MainMenuOverlay.Visibility == Visibility.Visible)
@@ -2484,6 +2560,21 @@ public partial class MainWindow : Window
             FlavorTextDisplay.Text = FlavorText.GetRandomClickMessage();
     }
 
+    /// <summary>
+    /// Feedback for a tick's worth of auto-clicks. Deliberately quieter than a player click:
+    /// no sound, no particles and no screen shake, because at the 250 CPS cap those fired
+    /// hundreds of times a second. One floating total every 250 ms still reads as a stream of
+    /// income without burying the clicks the player actually made.
+    /// </summary>
+    private void OnAutoClickBatch(double evidence, int clicks, int criticals)
+    {
+        var now = DateTime.Now;
+        if ((now - _lastAutoClickFloat).TotalMilliseconds < 250) return;
+        _lastAutoClickFloat = now;
+
+        SpawnFloatingNumber(evidence, isCritical: false);
+    }
+
     private void OnClickProcessed(double clickPower, bool isCritical)
     {
         SpawnFloatingNumber(clickPower, isCritical);
@@ -3019,6 +3110,13 @@ public partial class MainWindow : Window
 
     private void UpdateUI()
     {
+        PerfLog.Begin();
+        UpdateUICore();
+        PerfLog.End();
+    }
+
+    private void UpdateUICore()
+    {
         var state = _engine.State;
 
         EvidenceDisplay.Text = $"{NumberFormatter.Format(state.Evidence)} Evidence";
@@ -3114,20 +3212,50 @@ public partial class MainWindow : Window
         AchievementCountDisplay.Text = $"{state.UnlockedAchievements.Count}/{AchievementData.AllAchievements.Count}";
         ConspiracyCountDisplay.Text = $"{state.ProvenConspiracies.Count}/{ConspiracyData.AllConspiracies.Count}";
 
-        UpdateGeneratorButtons();
-        UpdateUpgradePanel();
-        UpdateTinfoilShopPanel();
-        UpdateConspiracyPanel();
-        UpdateQuestPanel();
-        UpdateAchievementPanel();
+        // Only the tab the player is actually looking at gets rebuilt. Every panel used to be
+        // walked on every refresh, so eleven tabs' worth of layout work was thrown away each
+        // time to display one of them. Switching tabs clears the caches so the incoming panel
+        // rebuilds from current state.
+        UpdateVisibleTabPanel();
+
+        // Always run: the owned-generator list lives in the right-hand column and the tab
+        // strip itself (which tabs exist, and which are glowing) is visible from every tab.
         UpdateOwnedGeneratorsPanel();
-        UpdateSkillTreePanel();
-        UpdateDailyChallengesPanel();
-        UpdatePrestigePanel();
-        UpdateMatrixPanel();
-        UpdateStatisticsPanel();
         UpdateTabVisibility();
         UpdateTabHighlights();
+    }
+
+    private void UpdateVisibleTabPanel()
+    {
+        var selected = MainTabControl.SelectedItem as TabItem;
+
+        if (selected == GeneratorsTab) UpdateGeneratorButtons();
+        else if (selected == UpgradesTab) UpdateUpgradePanel();
+        else if (selected == TinfoilShopTab) UpdateTinfoilShopPanel();
+        else if (selected == ConspiraciesTab) UpdateConspiracyPanel();
+        else if (selected == QuestsTab) UpdateQuestPanel();
+        else if (selected == AchievementsTab) UpdateAchievementPanel();
+        else if (selected == SkillsTab) UpdateSkillTreePanel();
+        else if (selected == DailyTab) UpdateDailyChallengesPanel();
+        else if (selected == IlluminatiTab)
+        {
+            UpdatePrestigePanel();
+            UpdateMatrixPanel();
+        }
+        else if (selected == StatisticsTab) UpdateStatisticsPanel();
+    }
+
+    private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        // TabControl bubbles SelectionChanged from any Selector inside a tab; only react to its own
+        if (!ReferenceEquals(e.OriginalSource, MainTabControl)) return;
+
+        // The handler is wired up by InitializeComponent, which can select the first tab before
+        // the constructor has built the engine
+        if (_engine == null) return;
+
+        InvalidatePanelCaches();
+        UpdateVisibleTabPanel();
     }
 
     private void UpdatePyramidLevel()
@@ -4060,8 +4188,12 @@ public partial class MainWindow : Window
                 leftStack.Children.Add(new TextBlock { Text = quest.FlavorText, FontSize = 12, Foreground = DimBrush, FontStyle = FontStyles.Italic });
 
                 var riskText = quest.Risk switch { QuestRisk.Low => "LOW RISK", QuestRisk.Medium => "MEDIUM RISK", QuestRisk.High => "HIGH RISK", _ => "" };
-                double adjustedChance = Math.Min(quest.SuccessChance + _engine.GetTinfoilQuestSuccessBonus(), 0.95);
-                leftStack.Children.Add(new TextBlock { Text = $"{riskText} ({adjustedChance:P0})", FontSize = 12, Foreground = riskColor, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 3, 0, 0) });
+                // Counts every bonus the roll actually uses, not just the Tinfoil Shop one
+                double adjustedChance = _engine.GetEffectiveQuestSuccessChance(quest);
+                string riskLabel = quest.Risk == QuestRisk.High
+                    ? $"{riskText} ({adjustedChance:P0}) - failure detains {NumberFormatter.FormatInteger(quest.BelieversRequired)} believers"
+                    : $"{riskText} ({adjustedChance:P0})";
+                leftStack.Children.Add(new TextBlock { Text = riskLabel, FontSize = 12, Foreground = riskColor, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 3, 0, 0), TextWrapping = TextWrapping.Wrap });
 
                 var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0, 0, 0) };
                 rightStack.Children.Add(new TextBlock { Text = $"{quest.BelieversRequired} believers", FontWeight = FontWeights.Bold, Foreground = GoldBrush, HorizontalAlignment = HorizontalAlignment.Right, FontSize = 16 });

@@ -210,7 +210,9 @@ public static class SkillTreeData
         }
     };
 
-    public static Skill? GetById(string id) => AllSkills.FirstOrDefault(s => s.Id == id);
+    private static readonly Dictionary<string, Skill> ById = DataIndex.Build(AllSkills, s => s.Id);
+
+    public static Skill? GetById(string id) => ById.TryGetValue(id, out var skill) ? skill : null;
 
     public static IEnumerable<Skill> GetByBranch(SkillBranch branch) => AllSkills.Where(s => s.Branch == branch);
 }

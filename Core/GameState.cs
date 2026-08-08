@@ -101,6 +101,11 @@ public class GameState
     // Bonus believers from quests (permanent, added to generator-derived believers)
     public double BonusBelievers { get; set; }
 
+    // Believers detained on failed high-risk quests. Believers are recomputed from generators
+    // every tick, so a loss has to be carried as its own subtractive term to survive. Cleared
+    // by an ascension, like BonusBelievers.
+    public double LostBelievers { get; set; }
+
     public double AvailableBelievers => Math.Max(0, Believers - BusyBelievers);
 
     public int GetGeneratorCount(string id)

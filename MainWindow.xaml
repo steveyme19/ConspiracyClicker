@@ -483,7 +483,7 @@
                 </Grid.RowDefinitions>
 
                 <TabControl x:Name="MainTabControl" Grid.Row="0" Background="Transparent" BorderThickness="0"
-                            Padding="0">
+                            Padding="0" SelectionChanged="MainTabControl_SelectionChanged">
                     <TabControl.Resources>
                         <Style TargetType="TabItem">
                             <Setter Property="Background" Value="Transparent"/>

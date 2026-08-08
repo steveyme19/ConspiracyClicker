@@ -25,7 +25,7 @@ public static class GameConstants
     public const double STARTING_EVIDENCE_BONUS = 1_000_000_000;    // 1B starting evidence with upgrade
 
     // === OFFLINE PROGRESS ===
-    public const double OFFLINE_EARNINGS_RATE = 0.25;   // 25% of normal earnings while offline
+    public const double OFFLINE_EARNINGS_RATE = 0.50;   // 50% of normal earnings while offline
     public const double MAX_OFFLINE_HOURS = 24;         // Cap offline earnings at 24 hours
 
     // === BASE CLICK POWER ===
